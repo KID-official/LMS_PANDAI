@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  GURU
+  SISWA
+}
+
+model User {
+  id            String    @id @default(cuid())
+  identifier    String    @unique
+  password_hash String
+  role          UserRole  @default(SISWA)
+  is_active     Boolean   @default(true)
+
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  student       Student?
+  teacher       Teacher?
+  progress      UserProgress[]
+  quiz_scores   UserQuizScore[]
+  certificates  Certificate[]
+
+  @@map("users")
+}
+
+model Student {
+  id          String  @id @default(cuid())
+  nis         String  @unique
+  full_name   String
+  class_name  String
+  semester    String
+  image_url   String?
+
+  user_id     String  @unique
+  user        User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("students")
+}
+
+model Teacher {
+  id                    String  @id @default(cuid())
+  nip_nidn              String  @unique
+  full_name_with_title  String
+  official_email        String  @unique
+  functional_position   String?
+  institution           String?
+  whatsapp_contact      String?
+  image_url             String?
+
+  user_id               String  @unique
+  user                  User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("teachers")
+}
+
+model UserProgress {
+  id           String    @id @default(cuid())
+  user_id      String
+  user         User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  chapter_key  String
+  is_completed Boolean   @default(false)
+  watch_seconds Int      @default(0)
+  completed_at DateTime?
+  updated_at   DateTime  @updatedAt
+
+  @@unique([user_id, chapter_key])
+  @@map("user_progress")
+}
+
+model UserQuizScore {
+  id              String    @id @default(cuid())
+  user_id         String
+  user            User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  quiz_key        String
+  score           Int
+  attempt_number  Int       @default(1)
+  is_passed       Boolean   @default(false)
+  answers_snapshot Json
+  taken_at        DateTime  @default(now())
+
+  @@map("user_quiz_scores")
+}
+
+model Certificate {
+  id            String    @id @default(cuid())
+  user_id       String
+  user          User      @relation(fields: [user_id], references: [id])
+
+  course_key    String
+  serial_number String    @unique
+  final_score   Int
+  issued_at     DateTime  @default(now())
+
+  @@unique([user_id, course_key])
+  @@map("certificates")
+}
