@@ -155,6 +155,15 @@
   .hover-lift:hover {
     transform: translateY(-4px);
   }
+
+  /* Hide scrollbar tapi tetap bisa scroll */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @keyframes fadeInUp {
