@@ -1,29 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  List,
-  ChevronRight,
-  FileText,
-  Download,
-  GraduationCap,
-  ExternalLink,
-  Newspaper,
-} from 'lucide-react';
+import { GraduationCap, ExternalLink, Newspaper } from 'lucide-react';
 import { PUBLIC_ROUTES } from '@/app/components/navigation/routes';
-
-interface TOCItem {
-  id: string;
-  label: string;
-}
-
-const TOC_ITEMS: TOCItem[] = [
-  { id: 'urgensi-literasi', label: '1. Urgensi Deteksi Sintetis' },
-  { id: 'cara-kerja-c2pa', label: '2. Sertifikasi Konten C2PA' },
-  { id: 'metode-sift', label: '3. 4 Langkah Metode SIFT' },
-];
 
 const RELATED_NEWS = [
   {
@@ -47,90 +28,12 @@ const RELATED_NEWS = [
 ];
 
 export const ArticleSidebar: React.FC = () => {
-  const [activeSection, setActiveSection] = useState('urgensi-literasi');
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 200;
-      for (const item of TOC_ITEMS) {
-        const el = document.getElementById(item.id);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(item.id);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    const el = document.getElementById(id);
-    if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({ top, behavior: 'smooth' });
-      setActiveSection(id);
-    }
-  };
 
   return (
     <aside className="lg:col-span-4 flex flex-col gap-6">
       {/* Sticky Sidebar Container */}
       <div className="sticky top-24 flex flex-col gap-5">
-        {/* Table of Contents Widget */}
-        <div className="p-5 rounded-2xl bg-white border border-[#CAC3D8]/40 shadow-subtle flex flex-col gap-3">
-          <h4 className="text-xs font-bold text-[#061B38] flex items-center gap-1.5">
-            <List className="w-4 h-4 text-[#7F54F8]" />
-            Daftar Isi Artikel
-          </h4>
-          <nav className="flex flex-col gap-1 text-xs">
-            {TOC_ITEMS.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={(e) => scrollToSection(e, item.id)}
-                className={`py-1.5 px-3 rounded-xl flex items-center justify-between font-medium transition-colors ${
-                  activeSection === item.id
-                    ? 'bg-[#E8DEFF] text-[#5010C8] font-bold'
-                    : 'text-[#494455] hover:bg-[#F0F3FF] hover:text-[#061B38]'
-                }`}
-              >
-                <span>{item.label}</span>
-                <ChevronRight className="w-3.5 h-3.5 opacity-60" />
-              </a>
-            ))}
-          </nav>
-        </div>
-
-        {/* Whitepaper Download Widget */}
-        <div className="p-5 rounded-2xl bg-[#F0F3FF] border border-[#CAC3D8]/40 shadow-subtle flex flex-col gap-3">
-          <div className="flex items-center gap-2 text-[#7F54F8] font-bold text-xs">
-            <FileText className="w-4 h-4" />
-            <span>Whitepaper / Modul Guru</span>
-          </div>
-          <p className="text-xs text-[#494455] leading-relaxed">
-            Unduh lembar panduan analisis deteksi deepfake untuk bahan pembelajaran di kelas.
-          </p>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              alert('Mengunduh Berkas Panduan...');
-            }}
-            className="w-full py-2 px-3 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Unduh Berkas PDF</span>
-          </a>
-        </div>
-
-        {/* LMS Promotion Cross-Banner */}
+      {/* LMS Promotion Cross-Banner */}
         <div className="p-5 rounded-2xl bg-gradient-to-br from-[#7F54F8] to-[#3A4BD4] text-white shadow-md flex flex-col gap-3 relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="px-2.5 py-0.5 rounded bg-white/20 text-white text-[11px] font-bold tracking-wide">
