@@ -11,7 +11,7 @@ interface ArticleMediaProps {
 
 export const ArticleMedia: React.FC<ArticleMediaProps> = ({ article }) => {
   return (
-    <figure className="w-full px-4 sm:px-6 lg:px-8 my-4">
+    <figure className="w-full px-4 sm:px-6 lg:px-12 my-4 lg:my-8">
       <div className="max-w-7xl mx-auto flex flex-col gap-2">
         <div className="relative w-full rounded-2xl overflow-hidden bg-[#DFE8FF] aspect-[16/9] max-h-[520px] shadow-subtle border border-[#CAC3D8]/30">
           <Image

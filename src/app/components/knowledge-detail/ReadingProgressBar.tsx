@@ -20,9 +20,9 @@ export const ReadingProgressBar: React.FC = () => {
   }, []);
 
   return (
-    <div className="sticky top-16 left-0 w-full h-1 bg-[#E7EEFF] z-40 shadow-subtle">
+    <div className="sticky top-16 left-0 right-0 w-full h-1.5 bg-[#E7EEFF] z-40 shadow-sm pointer-events-none">
       <div
-        className="h-full bg-[#7F54F8] transition-all duration-150 ease-out"
+        className="h-full bg-gradient-to-r from-[#7F54F8] via-[#3A4BD4] to-[#00685F] transition-all duration-150 ease-out rounded-r-full"
         style={{ width: `${scrollProgress}%` }}
       />
     </div>

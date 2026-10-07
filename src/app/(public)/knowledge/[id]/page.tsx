@@ -38,8 +38,8 @@ export default function KnowledgeDetailPage() {
       : 'text-sm sm:text-base';
 
   return (
-    <div className="flex flex-col w-full overflow-x-hidden bg-[#F9F9FF] min-h-screen">
-      {/* Top Reading Indicator Progress Bar */}
+    <div className="flex flex-col w-full bg-[#F9F9FF] min-h-screen">
+      {/* Top Reading Indicator Progress Bar (Sticky Desktop & Mobile) */}
       <ReadingProgressBar />
 
       {/* Breadcrumbs & Utility Banner */}
@@ -56,9 +56,9 @@ export default function KnowledgeDetailPage() {
       {/* Featured Media */}
       <ArticleMedia article={article} />
 
-      {/* Main Content Layout (Grid 2 Kolom) */}
-      <div className="w-full px-4 sm:px-6 lg:px-8 my-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* Main Content Layout (Grid 2 Kolom dengan Desktop Gap Presisi) */}
+      <div className="w-full px-4 sm:px-6 lg:px-12 my-6 lg:my-12">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Primary Editorial Column (8 cols) */}
           <ArticleContent article={article} fontSizeClass={fontSizeClass} />
 

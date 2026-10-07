@@ -12,7 +12,7 @@ interface ArticleBreadcrumbsProps {
 
 export const ArticleBreadcrumbs: React.FC<ArticleBreadcrumbsProps> = ({ article }) => {
   return (
-    <section className="w-full px-4 sm:px-6 lg:px-8 py-3 bg-[#F0F3FF]/60 border-b border-[#CAC3D8]/30">
+    <section className="w-full px-4 sm:px-6 lg:px-12 py-3.5 mt-2.5 sm:mt-3.5 lg:mt-4 bg-[#F0F3FF]/60 border-b border-[#CAC3D8]/30">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
         {/* Breadcrumb Links */}
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-[#494455] flex-wrap">

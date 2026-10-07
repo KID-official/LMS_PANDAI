@@ -39,9 +39,9 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = ({
   };
 
   return (
-    <header className="w-full px-4 sm:px-6 lg:px-8 pt-6 pb-4 bg-[#F9F9FF]">
+    <header className="w-full px-4 sm:px-6 lg:px-12 pt-6 lg:pt-10 pb-4 lg:pb-8 bg-[#F9F9FF]">
       <div className="max-w-7xl mx-auto">
-        <div className="max-w-4xl flex flex-col gap-4">
+        <div className="max-w-4xl flex flex-col gap-4 lg:gap-6">
 
           {/* Badges */}
           <div className="flex items-center gap-2 flex-wrap">

@@ -107,7 +107,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
   return (
     <article
       id="articleContent"
-      className={`lg:col-span-8 flex flex-col gap-8 text-[#061B38] leading-relaxed ${fontSizeClass}`}
+      className={`lg:col-span-8 flex flex-col gap-8 lg:gap-10 text-[#061B38] leading-relaxed ${fontSizeClass}`}
     >
       {/* Key Takeaways Section */}
       <section className="p-6 rounded-2xl bg-[#F0F3FF] border border-[#CAC3D8]/40 shadow-subtle flex flex-col gap-3 relative overflow-hidden">
