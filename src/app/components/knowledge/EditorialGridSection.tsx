@@ -6,8 +6,6 @@ import {
   Eye,
   ChevronLeft,
   ChevronRight,
-  Mail,
-  Lock,
   Lightbulb,
   RefreshCw,
   ArrowRight,
@@ -15,75 +13,13 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-interface Article {
-  id: string;
-  category: string;
-  categoryColor: string;
-  author: string;
-  date: string;
-  title: string;
-  excerpt: string;
-  views: string;
-  image: string;
-  tags: string[];
-}
-
-const ALL_ARTICLES: Article[] = [
-  {
-    id: '1',
-    category: 'Eksperimen Lab',
-    categoryColor: 'text-[#7F54F8]',
-    author: 'Dr. Rizal Pratama',
-    date: '12 Okt 2026',
-    title: 'Uji Komparasi 5 Alat Detektor Teks AI Gratis: Seberapa Akurat untuk Tugas Bahasa Indonesia?',
-    excerpt: 'Pengujian blind-test pada 150 esai siswa menunjukkan tingkat positif palsu (false-positive) hingga 23% pada teks berstruktur formal klasik.',
-    views: '4.8k dilihat',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDJBLjGlN82fQ34oRqwKhOPsVmJGqHzcvGi45UIB6Ak_sdkFHvs3OXfPQfM-mhSptUyXi0JAfYJeSDGrUyHuKsITyYV7dwyvtRuKP_NUFkE9jRDUpLKKBkTX_KUkb-KmCBytg29Go1IQVzsLYm8C_PEXxNgASP0edo4vWMiPO2W_C9s1EG55jnxU9E92cr0kKE1agKEOoP4y7SfIS8rTbtCHPjBC0uWoHldlH1iYDzWOu4t8Fz_W-UZ',
-    tags: ['Forensik Digital', 'Tutorial Praktis'],
-  },
-  {
-    id: '2',
-    category: 'Privasi & Keamanan',
-    categoryColor: 'text-red-500',
-    author: 'Anisa Putri, M.Kom',
-    date: '10 Okt 2026',
-    title: 'Etika Data Pribadi: Jangan Pernah Mengunggah Foto KTP atau Wajah Teman ke Model AI Publik',
-    excerpt: 'Penjelasan mendalam tentang bagaimana platform pembuat avatar AI menyerap data wajah ke dalam dataset latihan permanen tanpa klausul penghapusan.',
-    views: '6.1k dilihat',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC64OF8HGI-zMJfiV8s4OqOm4s5vQhx5y7vQGh_tarNizcvKJ8080e4nUtoeNE85tlKTYVPYCbEBJQSoWrxC4F_37lyVvk_y78iiId17bqxxaXjZsc6qsmyS9zFZvHfDTzpVdwYbeOcEiyHVwTOJD2umpv7QQsvQIfsT7iN9YKiHCU0Zuvo-0z1GDizT7H9qFg569-bu9lmyphGODIw2UuqloGdlqX4jHbzYX-k0QHzXJkPKHvDVV7d',
-    tags: ['Etika & Regulasi'],
-  },
-  {
-    id: '3',
-    category: 'Teknologi & Forensik',
-    categoryColor: 'text-[#00685F]',
-    author: 'Fajar Ramadhan',
-    date: '08 Okt 2026',
-    title: "Mengenal 'Watermarking' Gambar Sintetis: Cara Kerja SynthID & Metadata C2PA",
-    excerpt: 'Bagaimana algoritma mampu menyisipkan tanda tangan tak kasatmata ke dalam piksel citra kecerdasan buatan bahkan setelah gambar dikompresi berulang kali.',
-    views: '3.9k dilihat',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAzKhjzPGxnp6xEiSEV982YyIAYDcOHCEj02GeYu_1vKxlgnhh4T2w1X8twkUFGas774QGVD6cm3OwqtM9nrBVwddM-Uu2mUe5G_8FMx25y2G7NcHZ-3Ra0QYX_kqUqY7K-xJlNV8Bx469iYxKttl_6Kk5LdWFVZ7pCjetHR7g08UZCuXF5lQwIr3Yf-oL7hYMNqZk99xeTSBjbV-FqThhLuj-7if3LtB_8lNbaraTe2MikVWqr6GfM',
-    tags: ['Forensik Digital'],
-  },
-  {
-    id: '4',
-    category: 'Wawancara & Opini',
-    categoryColor: 'text-[#3A4BD4]',
-    author: 'Redaksi SFA Learn',
-    date: '05 Okt 2026',
-    title: 'Wawancara Eksklusif: Membangun Literasi Digital Kritis Sejak Dini di Daerah 3T',
-    excerpt: 'Perjalanan para relawan pengajar di Maluku Tenggara mengenalkan konsep penalaran algoritma tanpa harus bergantung pada koneksi internet cepat 24 jam.',
-    views: '5.2k dilihat',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBAqagCidfNqK_iVB-hnjZcBQEItHiHk9_Dx7r-ixibccW7P2w6YdiuF5KmRDKDDSP7hL-TWIrEfiWw4IW2XIg3eRbpSgx15REI6JZqdYGWEgEG63swrIHzqh0if9FyBdOJd_TpxwDwsJTNPxa_TfYHW6rkUrywVSC2VHnn4nEQ4YOv-HiEVP-ZkYaZjyJ69hWLwV7d-6qzDDAH6mwD6_440vMefL92h7KMPIVRj7XUjfOJ76qdMuRo',
-    tags: ['Panduan Siswa & Guru', 'Riset & Opini'],
-  },
-];
+import { ALL_ARTICLES } from '@/data/articles';
 
 const CURATOR_PICKS = [
-  { rank: '1', title: 'Panduan Menulis Prompt Akademik Tanpa Terjebak Pelanggaran Integritas', readers: '14.2k pembaca' },
-  { rank: '2', title: 'Daftar 12 Aplikasi Ekstensi Browser Berbahaya yang Mengklaim AI Gratis', readers: '9.8k pembaca' },
-  { rank: '3', title: 'Buku Saku Guru: Menilai Tugas Siswa di Era Generasi Mesin Penerjemah Cerdas', readers: '8.1k pembaca' },
-  { rank: '4', title: 'Cara Menyimpan Log Percakapan AI Sebagai Lampiran Bukti Riset Mandiri', readers: '6.4k pembaca' },
+  { id: '1', rank: '1', title: 'Panduan Menulis Prompt Akademik Tanpa Terjebak Pelanggaran Integritas', readers: '14.2k pembaca' },
+  { id: '2', rank: '2', title: 'Daftar 12 Aplikasi Ekstensi Browser Berbahaya yang Mengklaim AI Gratis', readers: '9.8k pembaca' },
+  { id: '3', rank: '3', title: 'Buku Saku Guru: Menilai Tugas Siswa di Era Generasi Mesin Penerjemah Cerdas', readers: '8.1k pembaca' },
+  { id: '4', rank: '4', title: 'Cara Menyimpan Log Percakapan AI Sebagai Lampiran Bukti Riset Mandiri', readers: '6.4k pembaca' },
 ];
 
 const FACTS = [
@@ -101,8 +37,6 @@ export const EditorialGridSection: React.FC<EditorialGridSectionProps> = ({
   selectedCategory,
   searchQuery,
 }) => {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
   const [factIndex, setFactIndex] = useState(0);
   const [currentPage] = useState(1);
 
@@ -150,7 +84,7 @@ export const EditorialGridSection: React.FC<EditorialGridSectionProps> = ({
                   key={art.id}
                   className="rounded-2xl bg-white border border-[#CAC3D8]/30 shadow-subtle overflow-hidden flex flex-col justify-between group hover:shadow-md transition-shadow duration-300"
                 >
-                  <div className="relative h-48 overflow-hidden">
+                  <Link href={`/knowledge/${art.id}`} className="relative h-48 overflow-hidden block">
                     <Image
                       src={art.image}
                       alt={art.title}
@@ -162,7 +96,7 @@ export const EditorialGridSection: React.FC<EditorialGridSectionProps> = ({
                     <span className={`absolute top-3 left-3 px-3 py-0.5 rounded-full bg-white/90 backdrop-blur-sm ${art.categoryColor} text-xs font-bold shadow-sm`}>
                       {art.category}
                     </span>
-                  </div>
+                  </Link>
                   <div className="p-4 flex flex-col flex-1 justify-between gap-3">
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-2 text-xs text-[#7A7486]">
@@ -170,9 +104,11 @@ export const EditorialGridSection: React.FC<EditorialGridSectionProps> = ({
                         <span>•</span>
                         <span>{art.date}</span>
                       </div>
-                      <h3 className="text-sm font-bold text-[#061B38] group-hover:text-[#7F54F8] transition-colors leading-snug">
-                        {art.title}
-                      </h3>
+                      <Link href={`/knowledge/${art.id}`}>
+                        <h3 className="text-sm font-bold text-[#061B38] group-hover:text-[#7F54F8] transition-colors leading-snug">
+                          {art.title}
+                        </h3>
+                      </Link>
                       <p className="text-xs text-[#494455] line-clamp-2 leading-relaxed">{art.excerpt}</p>
                     </div>
                     <div className="pt-2 border-t border-[#F0F3FF] flex items-center justify-between text-xs text-[#7A7486]">
@@ -180,9 +116,9 @@ export const EditorialGridSection: React.FC<EditorialGridSectionProps> = ({
                         <Eye className="w-3.5 h-3.5" />
                         {art.views}
                       </span>
-                      <a href="#" className="text-[#7F54F8] font-bold hover:underline">
+                      <Link href={`/knowledge/${art.id}`} className="text-[#7F54F8] font-bold hover:underline">
                         Baca Analisis
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </article>
@@ -258,9 +194,9 @@ export const EditorialGridSection: React.FC<EditorialGridSectionProps> = ({
             </div>
             <div className="flex flex-col gap-2">
               {CURATOR_PICKS.map((pick) => (
-                <a
+                <Link
                   key={pick.rank}
-                  href="#"
+                  href={`/knowledge/${pick.id}`}
                   className="flex items-start gap-3 group py-1.5"
                 >
                   <span className="w-6 h-6 rounded-md bg-[#F0F3FF] text-[#061B38] text-xs font-bold flex items-center justify-center shrink-0 group-hover:bg-[#7F54F8] group-hover:text-white transition-colors">
@@ -272,7 +208,7 @@ export const EditorialGridSection: React.FC<EditorialGridSectionProps> = ({
                     </span>
                     <span className="text-xs text-[#7A7486] mt-0.5">{pick.readers}</span>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>

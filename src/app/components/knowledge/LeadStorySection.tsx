@@ -2,10 +2,12 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { TrendingUp, Clock, Share2, ArrowRight } from 'lucide-react';
 
 const TRENDING_ARTICLES = [
   {
+    id: '1',
     rank: '01',
     category: 'Kebijakan Nasional',
     categoryColor: 'text-[#7F54F8]',
@@ -16,6 +18,7 @@ const TRENDING_ARTICLES = [
     statusColor: 'text-[#00685F]',
   },
   {
+    id: '2',
     rank: '02',
     category: 'Keamanan Siber',
     categoryColor: 'text-red-500',
@@ -26,6 +29,7 @@ const TRENDING_ARTICLES = [
     statusColor: 'text-[#7A7486]',
   },
   {
+    id: '3',
     rank: '03',
     category: 'Literasi Kognitif',
     categoryColor: 'text-[#00685F]',
@@ -45,7 +49,7 @@ export const LeadStorySection: React.FC = () => {
         {/* Main Lead Hero Card — 8 cols */}
         <article className="lg:col-span-8 flex flex-col rounded-2xl bg-white border border-[#CAC3D8]/30 shadow-subtle overflow-hidden group hover:shadow-md transition-shadow duration-300">
           {/* Hero Image */}
-          <div className="relative w-full h-72 sm:h-96 overflow-hidden">
+          <Link href="/knowledge/lead" className="relative w-full h-72 sm:h-96 overflow-hidden block">
             <Image
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLnjDd4mHNWqKZZMaa0IOrcrlFdJ7yTdSlqsXpgPuXU_tnVgf2h4C00cheN7nGcZFiAXWEXCPa182g4PmK3fmlgdXnX_GyAp5VlkTabDdAr9lbGyuYFQ2yo-6gP9hLwIE8Y9inNdUrNybrUmird1CCe59Gbnhe3u7l-bcVcbcZ-CKjUkt0pCBjFKKMFirocFnNE_uDlnWBluKrKHQ5fS-8c98AQ7Ty_aTXwW2kHCaI3u0UI6C9XRkG"
               alt="Digital forensic laboratory screen visualizing synthetic media watermarking"
@@ -87,7 +91,7 @@ export const LeadStorySection: React.FC = () => {
                 Terobosan Deteksi Deepfake Berbasis C2PA: Standar Baru Keamanan Konten Sekolah 2026
               </h2>
             </div>
-          </div>
+          </Link>
 
           {/* Card Body */}
           <div className="p-6 flex flex-col justify-between flex-1 gap-4 bg-white">
@@ -104,13 +108,13 @@ export const LeadStorySection: React.FC = () => {
                   <span className="text-xs text-[#7A7486]">Kertas Kerja Forensik Komputasi</span>
                 </div>
               </div>
-              <a
-                href="#"
+              <Link
+                href="/knowledge/lead"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white text-xs font-bold transition-colors shadow-sm group/btn"
               >
                 <span>Baca Liputan Lengkap</span>
                 <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
           </div>
         </article>
@@ -139,12 +143,12 @@ export const LeadStorySection: React.FC = () => {
                   </span>
                   <div className="flex flex-col gap-1">
                     <span className={`text-xs font-bold ${art.categoryColor}`}>{art.category}</span>
-                    <a
-                      href="#"
+                    <Link
+                      href={`/knowledge/${art.id}`}
                       className="text-xs font-semibold text-[#061B38] group-hover:text-[#7F54F8] transition-colors leading-snug line-clamp-2"
                     >
                       {art.title}
-                    </a>
+                    </Link>
                   </div>
                 </div>
                 <div className="flex items-center justify-between text-xs text-[#7A7486] pt-1 border-t border-[#F0F3FF]">
