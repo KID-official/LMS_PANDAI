@@ -7,10 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:push": "bunx prisma db push",
-    "db:migrate": "bunx prisma migrate dev",
-    "db:seed": "bun prisma/seed.ts",
-    "db:studio": "bunx prisma studio"
+    "db:push": "npx prisma db push",
+    "db:migrate": "npx prisma migrate dev",
+    "db:seed": "npx prisma db seed",
+    "db:studio": "npx prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
@@ -39,6 +39,6 @@
     "typescript": "^5"
   },
   "prisma": {
-    "seed": "bun prisma/seed.ts"
+    "seed": "npx tsx prisma/seed.ts"
   }
 }

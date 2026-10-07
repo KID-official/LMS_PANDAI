@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   description: "Platform E-Learning Literasi AI",
 };
 
+import { Providers } from "./providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="id" className={cn("font-sans", jakarta.variable)}>
       <body className="antialiased">
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
