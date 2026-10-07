@@ -114,6 +114,7 @@ export function HeroSection() {
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkjr5BE2IkpADPVivm_D_UXah280KDQNBpklO3YRiOyz5sIP4ZdSpim4rFXhmRQiUjJd07D0fHelLuGUbVxhC3XYVv0KWwkUMq9de5ZOWyQNpbhSUa_dqjNOBnUbJP52-KsDmaM5W68b7EDn73AZ0oeqyhduRT_jrg312-g2J7scyERd59noMgjnJvSwF9zYmkgh4DBKoVnfjUIlzXKAgI4oD-LkHTIWBVaGA116XsxCM0GKczqoIR"
                 alt="Siswa SMP belajar etika AI dan sintesis media"
                 fill
+                unoptimized
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
                 priority

@@ -50,7 +50,7 @@ const ALL_ARTICLES: Article[] = [
     title: 'Etika Data Pribadi: Jangan Pernah Mengunggah Foto KTP atau Wajah Teman ke Model AI Publik',
     excerpt: 'Penjelasan mendalam tentang bagaimana platform pembuat avatar AI menyerap data wajah ke dalam dataset latihan permanen tanpa klausul penghapusan.',
     views: '6.1k dilihat',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC64OF8HGI-zMJfiV8s4OqOm4s5vQhx5y7vQGh_tarNizcvKJ8080e4nUtoeNE85tlKTYVPYCbEHBJQSoWrxC4F_37lyVvk_y78iiId17bqxxaXjZsc6qsmyS9zFZvHfDTzpVdwYbeOcEiyHVwTOJD2umpv7QQsvQIfsT7iN9YKiHCU0Zuvo-0z1GDizT7H9qFg569-bu9lmyphGODIw2UuqloGdlqX4jHbzYX-k0QHzXJkPKHvDVV7d',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC64OF8HGI-zMJfiV8s4OqOm4s5vQhx5y7vQGh_tarNizcvKJ8080e4nUtoeNE85tlKTYVPYCbEBJQSoWrxC4F_37lyVvk_y78iiId17bqxxaXjZsc6qsmyS9zFZvHfDTzpVdwYbeOcEiyHVwTOJD2umpv7QQsvQIfsT7iN9YKiHCU0Zuvo-0z1GDizT7H9qFg569-bu9lmyphGODIw2UuqloGdlqX4jHbzYX-k0QHzXJkPKHvDVV7d',
     tags: ['Etika & Regulasi'],
   },
   {
@@ -155,6 +155,7 @@ export const EditorialGridSection: React.FC<EditorialGridSectionProps> = ({
                       src={art.image}
                       alt={art.title}
                       fill
+                      unoptimized
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />

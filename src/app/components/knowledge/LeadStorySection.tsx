@@ -50,6 +50,7 @@ export const LeadStorySection: React.FC = () => {
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLnjDd4mHNWqKZZMaa0IOrcrlFdJ7yTdSlqsXpgPuXU_tnVgf2h4C00cheN7nGcZFiAXWEXCPa182g4PmK3fmlgdXnX_GyAp5VlkTabDdAr9lbGyuYFQ2yo-6gP9hLwIE8Y9inNdUrNybrUmird1CCe59Gbnhe3u7l-bcVcbcZ-CKjUkt0pCBjFKKMFirocFnNE_uDlnWBluKrKHQ5fS-8c98AQ7Ty_aTXwW2kHCaI3u0UI6C9XRkG"
               alt="Digital forensic laboratory screen visualizing synthetic media watermarking"
               fill
+              unoptimized
               sizes="(max-width: 1024px) 100vw, 66vw"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               priority
