@@ -3,8 +3,7 @@
  * Type augmentation untuk next-auth agar session.user mendukung
  * field custom: id, role, identifier (sesuai schema Prisma LMS-KID).
  */
-import NextAuth, { DefaultSession, DefaultUser } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
+import type { DefaultSession, DefaultUser } from 'next-auth';
 
 declare module 'next-auth' {
   interface Session {
