@@ -14,6 +14,7 @@
 export * from './navbar';
 export * from './sidebar';
 export * from './footer';
+export * from './landing';
 
 // ── Routes (untuk keperluan navigasi terprogram) ────────
 export * from './navigation/routes';

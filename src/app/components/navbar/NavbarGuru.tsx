@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Bell, Globe, ChevronDown, MoreVertical, LogOut } from 'lucide-react';
+import { Search, Bell, Globe, ChevronDown, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut, useSession } from 'next-auth/react';
 

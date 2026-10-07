@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
 import { PUBLIC_ROUTES, FOOTER_LINKS } from '../navigation/routes';
 
 /**
