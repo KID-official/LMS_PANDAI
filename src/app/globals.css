@@ -2,35 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────
+   V.2 Design Token System — LMS-KID
+   Source: design.md § Color Tokens
+   ───────────────────────────────────────────────────────── */
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* ── Canvas & Surface ── */
+    --color-background:   #F9F9FF;
+    --color-surface:      #FFFFFF;
+    --color-surface-soft: #F0F3FF;
+    --color-surface-blue: #E7EEFF;
+    --color-surface-info: #DFE8FF;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* ── Text ── */
+    --color-text-heading: #061B38;
+    --color-text-body:    #494455;
+    --color-text-muted:   #7A7486;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* ── Primary (Violet) ── */
+    --color-primary:         #7F54F8;
+    --color-primary-ink:     #6636DE;
+    --color-primary-strong:  #5010C8;
+    --color-primary-soft:    #E8DEFF;
+    --color-primary-on-soft: #20005F;
+    --color-on-primary:      #FFFCFF;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* ── Outline ── */
+    --color-outline: #CAC3D8;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* ── Success (Teal) ── */
+    --color-success:         #00685F;
+    --color-success-fill:    #008378;
+    --color-success-soft:    #89F5E7;
+    --color-success-on-soft: #00201D;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* ── Info ── */
+    --color-info:         #3A4BD4;
+    --color-info-soft:    #DFE0FF;
+    --color-info-on-soft: #000A63;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* ── Danger ── */
+    --color-danger:         #BA1A1A;
+    --color-danger-soft:    #FFDAD6;
+    --color-danger-on-soft: #93000A;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* ── Warning ── */
+    --color-warning: #B45309;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* ── Tailwind / shadcn token aliases ── */
+    --background:         240 100% 99%;
+    --foreground:         219 79%  12%;
+
+    --card:               0 0% 100%;
+    --card-foreground:    219 79%  12%;
+
+    --popover:            0 0% 100%;
+    --popover-foreground: 219 79%  12%;
+
+    --primary:            258 91%  65%;
+    --primary-foreground: 270 100% 99%;
+
+    --secondary:          228 100% 96%;
+    --secondary-foreground: 219 79% 12%;
+
+    --muted:              228 100% 96%;
+    --muted-foreground:   267 9%   50%;
+
+    --accent:             228 100% 96%;
+    --accent-foreground:  219 79%  12%;
+
+    --destructive:        0   75%  41%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 268 19% 80%;
+    --input:  228 100% 96%;
+    --ring:   258 91%  65%;
 
     --radius: 0.5rem;
   }
@@ -45,8 +93,8 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 258 91% 65%;
+    --primary-foreground: 270 100% 99%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -62,7 +110,7 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 258 91% 65%;
   }
 }
 
@@ -70,7 +118,21 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans), 'Plus Jakarta Sans', system-ui, sans-serif;
   }
+
+  /* Scrollbar tipis untuk sidebar */
+  ::-webkit-scrollbar        { width: 4px; }
+  ::-webkit-scrollbar-track  { background: transparent; }
+  ::-webkit-scrollbar-thumb  { background: #CAC3D8; border-radius: 2px; }
+}
+
+/* ── Shadow Utilities (dari design.md) ── */
+@layer utilities {
+  .shadow-subtle { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+  .shadow-shell  { box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
+  .shadow-raised { box-shadow: 0 2px 4px -2px rgba(0,0,0,0.10), 0 4px 6px -1px rgba(0,0,0,0.10); }
 }

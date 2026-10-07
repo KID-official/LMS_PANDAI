@@ -1,15 +1,25 @@
 import React from 'react';
+import { NavbarGuest } from '@/app/components/navbar';
+import { Footer } from '@/app/components/footer';
 
+/**
+ * PublicLayout
+ *
+ * Layout untuk halaman-halaman publik (guest).
+ * Struktur: NavbarGuest → main content → Footer
+ *
+ * Routes yang tercakup: /, /about, /courses, /contact, /login, /register
+ */
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-white">
-      <header className="border-b px-6 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold">LMS AI (Public)</h1>
-        <nav>
-          <a href="/login" className="text-primary hover:underline">Login</a>
-        </nav>
-      </header>
-      <main>{children}</main>
+    <div className="flex min-h-screen flex-col" style={{ background: '#F9F9FF' }}>
+      <NavbarGuest />
+
+      <main className="flex-1">
+        {children}
+      </main>
+
+      <Footer />
     </div>
   );
 }

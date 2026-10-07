@@ -1,18 +1,51 @@
-import React from 'react';
+'use client';
 
+import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { NavbarGuru } from '@/app/components/navbar';
+import { SidebarGuru } from '@/app/components/sidebar';
+
+/**
+ * GuruLayout
+ *
+ * Layout untuk seluruh area portal guru.
+ * Struktur: SidebarGuru (kiri) + { NavbarGuru + main content } (kanan)
+ *
+ * - Sidebar fixed 288px di desktop, collapsible
+ * - Di mobile: sidebar tersembunyi, toggle via NavbarGuru hamburger
+ * - Routes yang tercakup: /guru/**
+ */
 export default function GuruLayout({ children }: { children: React.ReactNode }) {
+  const { data: session } = useSession();
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  const userName     = session?.user?.name  ?? 'Guru Admin';
+  const userSubtitle = session?.user?.email ?? 'Pengmas UNAIR';
+
   return (
-    <div className="min-h-screen flex">
-      <aside className="w-64 bg-slate-900 text-white p-4">
-        <h2 className="text-xl font-bold mb-6">Portal Guru</h2>
-        <nav className="space-y-2">
-          <a href="/guru/dashboard" className="block py-2 px-3 hover:bg-slate-800 rounded">Dashboard</a>
-          <a href="/guru/students" className="block py-2 px-3 hover:bg-slate-800 rounded">Kelola Siswa</a>
-        </nav>
-      </aside>
-      <main className="flex-1 bg-slate-50 p-6">
-        {children}
-      </main>
+    <div className="flex min-h-screen" style={{ background: '#F9F9FF' }}>
+
+      {/* ── SIDEBAR ── */}
+      <SidebarGuru
+        isOpen={mobileSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}
+        userName={userName}
+        userSubtitle={userSubtitle}
+      />
+
+      {/* ── MAIN COLUMN ── */}
+      <div className="flex min-w-0 flex-1 flex-col">
+
+        {/* Top navbar */}
+        <NavbarGuru
+          onMobileMenuToggle={() => setMobileSidebarOpen((v) => !v)}
+        />
+
+        {/* Page content */}
+        <main className="flex-1 p-6">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
