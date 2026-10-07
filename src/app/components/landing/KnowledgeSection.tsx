@@ -60,7 +60,7 @@ export function KnowledgeSection() {
           </div>
           
           <Link
-            href="#"
+            href="/knowledge"
             className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#7F54F8] hover:text-[#6636DE] transition-colors group shrink-0"
           >
             <span>Kunjungi Pusat Pengetahuan Lengkap</span>

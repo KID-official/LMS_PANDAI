@@ -9,6 +9,7 @@
 // ─────────────────────────────────────────────
 export const PUBLIC_ROUTES = {
   HOME: '/',
+  KNOWLEDGE: '/knowledge',
   ABOUT: '/about',
   COURSES: '/courses',
   CONTACT: '/contact',
@@ -95,17 +96,18 @@ export type NavLink = {
 };
 
 export const GUEST_NAV_LINKS: NavLink[] = [
-  { label: 'Beranda',  href: PUBLIC_ROUTES.HOME },
-  { label: 'Kursus',   href: PUBLIC_ROUTES.COURSES },
-  { label: 'Tentang',  href: PUBLIC_ROUTES.ABOUT },
-  { label: 'Kontak',   href: PUBLIC_ROUTES.CONTACT },
+  { label: 'Beranda',           href: PUBLIC_ROUTES.HOME },
+  { label: 'Pusat Pengetahuan', href: PUBLIC_ROUTES.KNOWLEDGE },
+  { label: 'Kursus',            href: PUBLIC_ROUTES.COURSES },
+  { label: 'Tentang',           href: PUBLIC_ROUTES.ABOUT },
+  { label: 'Kontak',            href: PUBLIC_ROUTES.CONTACT },
 ];
 
 // ─────────────────────────────────────────────
 // FOOTER LINKS
 // ─────────────────────────────────────────────
 export const FOOTER_LINKS: NavLink[] = [
-  { label: 'Pusat Bantuan',    href: '/help' },
+  { label: 'Pusat Bantuan',     href: '/help' },
   { label: 'Kebijakan Privasi', href: '/privacy' },
-  { label: 'Panduan Siswa',    href: '/guide' },
+  { label: 'Panduan Siswa',     href: '/guide' },
 ];
