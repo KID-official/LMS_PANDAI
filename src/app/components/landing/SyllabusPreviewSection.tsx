@@ -114,7 +114,7 @@ export function SyllabusPreviewSection() {
             
             <Link
               href="/login"
-              className="px-5 py-2.5 rounded-xl bg-[#7F54F8] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm hover:bg-[#6636DE] transition-all hover:-translate-y-0.5 shrink-0"
+              className="px-5 py-2.5 rounded-xl bg-[#7F54F8] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm hover:bg-[#6636DE] transition-colors transition-transform transition-shadow duration-300 hover:-translate-y-0.5 shrink-0"
             >
               <BookOpen className="w-4 h-4" />
               <span>Buka Silabus di Portal</span>
@@ -127,7 +127,7 @@ export function SyllabusPreviewSection() {
             {steps.map((step) => (
               <div
                 key={step.number}
-                className={`p-4 rounded-xl border flex flex-col gap-3 transition-all duration-300 hover-lift ${step.cardBg}`}
+                className={`p-4 rounded-xl border flex flex-col gap-3 transition-colors transition-transform transition-shadow duration-300 hover-lift ${step.cardBg}`}
               >
                 <div className="flex items-center justify-between">
                   <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${step.badgeClass}`}>

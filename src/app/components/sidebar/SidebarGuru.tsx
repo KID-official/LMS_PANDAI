@@ -99,7 +99,7 @@ export default function SidebarGuru({
         role="navigation"
         aria-label="Navigasi portal guru"
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex flex-col bg-white transition-all duration-300 ease-in-out',
+          'fixed inset-y-0 left-0 z-50 flex flex-col bg-white transition-colors transition-transform transition-shadow duration-300 ease-in-out overscroll-contain',
           'lg:relative lg:translate-x-0',
           // mobile: show/hide via translate
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'

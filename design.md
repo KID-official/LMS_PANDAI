@@ -230,3 +230,14 @@ for implementation—not interactions verified in Figma.
 - [ ] Save actions do not obscure content.
 - [ ] Responsive layouts and overflow are checked.
 - [ ] Contrast, focus, labels, and keyboard access are checked.
+
+## Motion and Polish (better-ui)
+
+- **Transitions:** Drive interactive state changes with CSS transitions (e.g., `transition-colors`, `transition-transform`), never `transition-all`.
+- **Button Press:** Buttons scale to `0.96` on press (`active:scale-[0.96] duration-150 ease-out`), excluding disabled states (`disabled:active:scale-100`).
+- **High-frequency Interactions:** Keystrokes, row hovers, and tab switches get instant feedback or a max `150ms` transition on `opacity`/`background-color`.
+- **Reduced Motion:** Gate motion behind `prefers-reduced-motion: no-preference` (use `motion-safe:` variants in Tailwind) and fallback to opacity cross-fade.
+- **Scroll Containment:** Dialogs, drawers, and menus must use `overscroll-behavior: contain`.
+- **Shadow Borders:** Use `border border-transparent` alongside structural shadows to ensure visibility in forced-colors mode.
+- **Image Outlines:** Content images get a `1px` outline inset: `ring-1 ring-inset ring-black/10` (light mode).
+- **Alignment:** Nudge icons optically if geometric centering looks off.

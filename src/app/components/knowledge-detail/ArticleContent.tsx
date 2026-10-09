@@ -377,7 +377,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
         <Link
           href="/knowledge/1"
-          className="p-4 rounded-2xl bg-[#F0F3FF] hover:bg-[#E7EEFF] transition-all flex flex-col gap-1 text-left group border border-[#CAC3D8]/30"
+          className="p-4 rounded-2xl bg-[#F0F3FF] hover:bg-[#E7EEFF] transition-colors transition-transform transition-shadow duration-300 flex flex-col gap-1 text-left group border border-[#CAC3D8]/30"
         >
           <span className="text-xs text-[#7A7486] font-medium flex items-center gap-1">
             <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform text-[#7F54F8]" />
@@ -389,7 +389,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
         </Link>
         <Link
           href="/knowledge/2"
-          className="p-4 rounded-2xl bg-[#F0F3FF] hover:bg-[#E7EEFF] transition-all flex flex-col gap-1 text-right group border border-[#CAC3D8]/30"
+          className="p-4 rounded-2xl bg-[#F0F3FF] hover:bg-[#E7EEFF] transition-colors transition-transform transition-shadow duration-300 flex flex-col gap-1 text-right group border border-[#CAC3D8]/30"
         >
           <span className="text-xs text-[#7A7486] font-medium flex items-center justify-end gap-1">
             Artikel Selanjutnya

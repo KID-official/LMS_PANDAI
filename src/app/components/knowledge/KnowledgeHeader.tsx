@@ -81,7 +81,7 @@ export const KnowledgeHeader: React.FC<KnowledgeHeaderProps> = ({
                 key={category}
                 type="button"
                 onClick={() => onSelectCategory(category)}
-                className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold shrink-0 transition-all duration-200 ${
+                className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold shrink-0 transition-colors transition-transform transition-shadow duration-300 ${
                   isActive
                     ? 'bg-[#7F54F8] text-white shadow-sm scale-[1.02]'
                     : 'bg-[#F0F3FF] hover:bg-[#E7EEFF] text-[#061B38]'

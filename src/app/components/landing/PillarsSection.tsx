@@ -25,7 +25,7 @@ export function PillarsSection() {
         {/* 3 Pillars Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Pillar 1 */}
-          <div className="p-6 rounded-2xl bg-[#F9F9FF] border border-[#E7EEFF] flex flex-col gap-4 shadow-subtle hover-lift hover:border-[#7F54F8]/40 transition-all duration-300 group">
+          <div className="p-6 rounded-2xl bg-[#F9F9FF] border border-[#E7EEFF] flex flex-col gap-4 shadow-subtle hover-lift hover:border-[#7F54F8]/40 transition-colors transition-transform transition-shadow duration-300 group">
             <div className="w-12 h-12 rounded-xl bg-[#E8DEFF] text-[#7F54F8] flex items-center justify-center shadow-sm group-hover:bg-[#7F54F8] group-hover:text-white transition-colors duration-300">
               <Layers className="w-6 h-6" />
             </div>
@@ -46,7 +46,7 @@ export function PillarsSection() {
           </div>
 
           {/* Pillar 2 */}
-          <div className="p-6 rounded-2xl bg-[#F9F9FF] border border-[#E7EEFF] flex flex-col gap-4 shadow-subtle hover-lift hover:border-[#3A4BD4]/40 transition-all duration-300 group">
+          <div className="p-6 rounded-2xl bg-[#F9F9FF] border border-[#E7EEFF] flex flex-col gap-4 shadow-subtle hover-lift hover:border-[#3A4BD4]/40 transition-colors transition-transform transition-shadow duration-300 group">
             <div className="w-12 h-12 rounded-xl bg-[#DFE0FF] text-[#3A4BD4] flex items-center justify-center shadow-sm group-hover:bg-[#3A4BD4] group-hover:text-white transition-colors duration-300">
               <ShieldCheck className="w-6 h-6" />
             </div>
@@ -67,7 +67,7 @@ export function PillarsSection() {
           </div>
 
           {/* Pillar 3 */}
-          <div className="p-6 rounded-2xl bg-[#F9F9FF] border border-[#E7EEFF] flex flex-col gap-4 shadow-subtle hover-lift hover:border-[#00685F]/40 transition-all duration-300 group">
+          <div className="p-6 rounded-2xl bg-[#F9F9FF] border border-[#E7EEFF] flex flex-col gap-4 shadow-subtle hover-lift hover:border-[#00685F]/40 transition-colors transition-transform transition-shadow duration-300 group">
             <div className="w-12 h-12 rounded-xl bg-[#89F5E7]/40 text-[#00685F] flex items-center justify-center shadow-sm group-hover:bg-[#00685F] group-hover:text-white transition-colors duration-300">
               <QrCode className="w-6 h-6" />
             </div>

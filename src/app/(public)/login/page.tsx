@@ -194,7 +194,7 @@ export default function LoginPage() {
                   required
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  className="block w-full rounded-lg bg-surface-soft border border-transparent p-3 pl-10 text-[13px] text-body placeholder:text-muted-foreground focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+                  className="block w-full rounded-lg bg-surface-soft border border-transparent p-3 pl-10 text-[13px] text-body placeholder:text-muted-foreground focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
                   placeholder="Contoh: 20260101 atau ID Akun"
                 />
               </div>
@@ -220,7 +220,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full rounded-lg bg-surface-soft border border-transparent p-3 pl-10 pr-10 text-[13px] text-body placeholder:text-muted-foreground focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+                  className="block w-full rounded-lg bg-surface-soft border border-transparent p-3 pl-10 pr-10 text-[13px] text-body placeholder:text-muted-foreground focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
                   placeholder="••••••••••••"
                 />
                 <button
@@ -250,7 +250,7 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               className={cn(
-                "mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 text-[14px] font-bold text-on-primary transition-all hover:bg-primary-strong active:scale-[0.98]",
+                "mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 text-[14px] font-bold text-on-primary transition-colors hover:bg-primary-strong active:scale-[0.96] duration-150 ease-out",
                 loading && "opacity-70 pointer-events-none"
               )}
             >

@@ -36,7 +36,7 @@ export function CtaBannerSection() {
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-2">
               <Link
                 href="/login"
-                className="px-8 py-3.5 rounded-xl bg-white text-[#7F54F8] text-sm font-extrabold shadow-lg hover:bg-[#F0F3FF] hover:scale-105 transition-all duration-300 inline-flex items-center justify-center gap-2 group"
+                className="px-8 py-3.5 rounded-xl bg-white text-[#7F54F8] text-sm font-extrabold shadow-lg hover:bg-[#F0F3FF] hover:scale-105 transition-colors transition-transform transition-shadow duration-300 inline-flex items-center justify-center gap-2 group"
               >
                 <span>Masuk ke Portal LMS Sekarang</span>
                 <LogIn className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

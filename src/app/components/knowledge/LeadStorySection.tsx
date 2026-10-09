@@ -135,7 +135,7 @@ export const LeadStorySection: React.FC = () => {
             {TRENDING_ARTICLES.map((art) => (
               <article
                 key={art.rank}
-                className="flex-1 p-4 rounded-xl bg-white border border-[#CAC3D8]/30 shadow-subtle hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-3 group"
+                className="flex-1 p-4 rounded-xl bg-white border border-[#CAC3D8]/30 shadow-subtle hover:shadow-md transition-colors transition-transform transition-shadow duration-300 flex flex-col justify-between gap-3 group"
               >
                 <div className="flex items-start gap-3">
                   <span className={`w-8 h-8 rounded-lg ${art.rankBg} text-sm font-bold flex items-center justify-center shrink-0`}>

@@ -46,7 +46,7 @@ export function HeroSection() {
           <div className="flex flex-wrap items-center gap-4">
             <Link
               href="/login"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#7F54F8] text-white font-semibold text-sm shadow-md hover:bg-[#6636DE] hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 group"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#7F54F8] text-white font-semibold text-sm shadow-md hover:bg-[#6636DE] hover:shadow-lg transition-colors transition-transform transition-shadow duration-300 hover:-translate-y-0.5 group"
             >
               <span>Masuk Portal Belajar</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -54,7 +54,7 @@ export function HeroSection() {
             
             <Link
               href="#knowledge"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-[#061B38] font-semibold text-sm border border-[#CAC3D8]/60 shadow-sm hover:bg-[#F0F3FF] hover:border-[#7F54F8]/40 transition-all duration-300 hover:-translate-y-0.5"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-[#061B38] font-semibold text-sm border border-[#CAC3D8]/60 shadow-sm hover:bg-[#F0F3FF] hover:border-[#7F54F8]/40 transition-colors transition-transform transition-shadow duration-300 hover:-translate-y-0.5"
             >
               <BookOpen className="w-4 h-4 text-[#7F54F8]" />
               <span>Jelajahi Warta &amp; Riset</span>
@@ -169,7 +169,7 @@ export function HeroSection() {
                 </div>
                 <p className="text-xs font-bold text-[#061B38]">Cek Glitch Mata &amp; Bayangan</p>
                 <div className="w-full bg-[#E7EEFF] rounded-full h-1.5 mt-1.5">
-                  <div className="bg-[#7F54F8] h-1.5 rounded-full transition-all duration-500" style={{ width: '78%' }}></div>
+                  <div className="bg-[#7F54F8] h-1.5 rounded-full transition-colors transition-transform transition-shadow duration-300" style={{ width: '78%' }}></div>
                 </div>
               </div>
 

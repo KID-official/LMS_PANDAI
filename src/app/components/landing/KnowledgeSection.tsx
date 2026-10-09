@@ -73,7 +73,7 @@ export function KnowledgeSection() {
           {articles.map((art) => (
             <article
               key={art.id}
-              className="flex flex-col rounded-2xl bg-white border border-[#CAC3D8]/40 overflow-hidden shadow-subtle hover-lift hover:shadow-md transition-all duration-300 group"
+              className="flex flex-col rounded-2xl bg-white border border-[#CAC3D8]/40 overflow-hidden shadow-subtle hover-lift hover:shadow-md transition-colors transition-transform transition-shadow duration-300 group"
             >
               <div className="h-48 w-full overflow-hidden relative bg-[#E7EEFF]">
                 <Image

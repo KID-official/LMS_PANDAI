@@ -100,7 +100,7 @@ export const PillarModulesSection: React.FC = () => {
             return (
               <div
                 key={module.id}
-                className="p-6 rounded-2xl bg-white border border-[#CAC3D8]/30 shadow-subtle flex flex-col justify-between gap-6 group hover-lift transition-all duration-300"
+                className="p-6 rounded-2xl bg-white border border-[#CAC3D8]/30 shadow-subtle flex flex-col justify-between gap-6 group hover-lift transition-colors transition-transform transition-shadow duration-300"
               >
                 <div className="flex flex-col gap-4">
                   {/* Icon */}
