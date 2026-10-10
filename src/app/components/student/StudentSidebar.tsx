@@ -7,10 +7,8 @@ import {
   LayoutDashboard,
   BookOpen,
   User,
-  Award,
   HelpCircle,
   ShieldCheck,
-  ChevronRight,
 } from 'lucide-react';
 import { STUDENT_ROUTES, PUBLIC_ROUTES } from '@/app/components/navigation/routes';
 

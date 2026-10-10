@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BookOpen, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { BookOpen, Sparkles, ArrowRight } from 'lucide-react';
 import { getAllCourses } from '@/data/curriculum';
 
 export const EmptyCourseState: React.FC = () => {

@@ -125,7 +125,18 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
         averageQuizScore,
         certificatesEarnedCount,
       },
-      activeCourses: activeCoursesMap.map(({ hasStartedCourse, ...rest }) => rest),
+      activeCourses: activeCoursesMap.map((c) => ({
+        key: c.key,
+        title: c.title,
+        category: c.category,
+        thumbnail: c.thumbnail,
+        badge: c.badge,
+        completedChaptersCount: c.completedChaptersCount,
+        totalChaptersCount: c.totalChaptersCount,
+        progressPercentage: c.progressPercentage,
+        lastAccessedChapterKey: c.lastAccessedChapterKey,
+        isFullyCompleted: c.isFullyCompleted,
+      })),
       hasAnyProgress,
     };
   } catch (error) {
