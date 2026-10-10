@@ -29,7 +29,7 @@ export const StudentNavbar: React.FC = () => {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         
         {/* Left: Brand Logo & Portal Tag */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 shrink-0">
           <Link href={STUDENT_ROUTES.DASHBOARD} className="flex items-center gap-2.5 group">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#7F54F8] to-[#5010C8] text-white shadow-sm transition-transform group-hover:scale-105">
               <Sparkles className="h-5 w-5" />
@@ -43,43 +43,44 @@ export const StudentNavbar: React.FC = () => {
               </span>
             </div>
           </Link>
-
-          <span className="hidden md:inline-block h-5 w-px bg-[#CAC3D8]/40" />
-
-          <span className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-[#E8DEFF] px-2.5 py-0.5 text-[11px] font-bold text-[#5010C8]">
-            <GraduationCap className="h-3.5 w-3.5 text-[#7F54F8]" />
-            Siswa Terverifikasi
-          </span>
         </div>
 
-        {/* Center/Right Desktop Navigation Links & User Profile Dropdown */}
-        <div className="hidden md:flex items-center gap-4">
-          <nav className="flex items-center gap-1">
-            <Link
-              href={STUDENT_ROUTES.DASHBOARD}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                pathname === STUDENT_ROUTES.DASHBOARD
-                  ? 'bg-[#F0F3FF] text-[#7F54F8]'
-                  : 'text-[#494455] hover:text-[#061B38] hover:bg-gray-50'
-              }`}
-            >
-              Dashboard
-            </Link>
-            <Link
-              href={PUBLIC_ROUTES.KNOWLEDGE}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                pathname.startsWith('/knowledge')
-                  ? 'bg-[#F0F3FF] text-[#7F54F8]'
-                  : 'text-[#494455] hover:text-[#061B38] hover:bg-gray-50'
-              }`}
-            >
-              Warta & Riset AI
-            </Link>
-          </nav>
+        {/* Center Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center justify-center gap-2 flex-1 px-8">
+          <Link
+            href={STUDENT_ROUTES.DASHBOARD}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+              pathname === STUDENT_ROUTES.DASHBOARD
+                ? 'bg-[#7F54F8] text-white shadow-sm'
+                : 'text-[#494455] hover:text-[#061B38] hover:bg-[#F0F3FF]'
+            }`}
+          >
+            Dashboard
+          </Link>
+          <Link
+            href={PUBLIC_ROUTES.COURSES}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+              pathname.startsWith('/courses')
+                ? 'bg-[#7F54F8] text-white shadow-sm'
+                : 'text-[#494455] hover:text-[#061B38] hover:bg-[#F0F3FF]'
+            }`}
+          >
+            Katalog Course
+          </Link>
+          <Link
+            href="/student/certificates"
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+              pathname.startsWith('/student/certificates')
+                ? 'bg-[#7F54F8] text-white shadow-sm'
+                : 'text-[#494455] hover:text-[#061B38] hover:bg-[#F0F3FF]'
+            }`}
+          >
+            Certificate
+          </Link>
+        </nav>
 
-          <span className="h-5 w-px bg-[#CAC3D8]/40" />
-
-          {/* User Account Menu Dropdown */}
+        {/* Right User Profile Dropdown */}
+        <div className="hidden md:flex items-center gap-4 shrink-0">
           <div className="relative">
             <button
               type="button"
@@ -155,15 +156,23 @@ export const StudentNavbar: React.FC = () => {
               className="px-3 py-2 rounded-xl text-xs font-bold text-[#061B38] hover:bg-[#F0F3FF] hover:text-[#7F54F8] flex items-center gap-2"
             >
               <BookOpen className="h-4 w-4 text-[#7F54F8]" />
-              <span>Dashboard Belajar</span>
+              <span>Dashboard</span>
             </Link>
             <Link
-              href={PUBLIC_ROUTES.KNOWLEDGE}
+              href={PUBLIC_ROUTES.COURSES}
               onClick={() => setMobileMenuOpen(false)}
               className="px-3 py-2 rounded-xl text-xs font-bold text-[#061B38] hover:bg-[#F0F3FF] hover:text-[#7F54F8] flex items-center gap-2"
             >
               <Sparkles className="h-4 w-4 text-[#7F54F8]" />
-              <span>Pusat Pengetahuan AI</span>
+              <span>Katalog Course</span>
+            </Link>
+            <Link
+              href="/student/certificates"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 rounded-xl text-xs font-bold text-[#061B38] hover:bg-[#F0F3FF] hover:text-[#7F54F8] flex items-center gap-2"
+            >
+              <GraduationCap className="h-4 w-4 text-[#7F54F8]" />
+              <span>Certificate</span>
             </Link>
             <Link
               href={STUDENT_ROUTES.PROFILE}

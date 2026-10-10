@@ -1,0 +1,6 @@
+login:1  GET http://localhost:3000/_next/static/css/app/layout.css?v=1791660243606 net::ERR_ABORTED 500 (Internal Server Error)
+login:1  GET http://localhost:3000/_next/static/chunks/main-app.js?v=1791660243606 net::ERR_ABORTED 500 (Internal Server Error)
+login:1  GET http://localhost:3000/_next/static/chunks/app-pages-internals.js net::ERR_ABORTED 500 (Internal Server Error)
+login:1  GET http://localhost:3000/_next/static/chunks/app/(public)/login/page.js net::ERR_ABORTED 500 (Internal Server Error)
+login:1  GET http://localhost:3000/_next/static/chunks/app/(public)/layout.js net::ERR_ABORTED 500 (Internal Server Error)
+login:1  GET http://localhost:3000/_next/static/chunks/app/layout.js net::ERR_ABORTED 500 (Internal Server Error)
