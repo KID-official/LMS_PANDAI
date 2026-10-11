@@ -2,18 +2,41 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, LogIn, Menu, X } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { Search, LogIn, Menu, X, User } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { PUBLIC_ROUTES } from '@/app/components/navigation/routes';
+import {
+  PUBLIC_ROUTES,
+  STUDENT_ROUTES,
+  GURU_ROUTES,
+  SUPERADMIN_ROUTES,
+} from '@/app/components/navigation/routes';
 
 export function NavbarLanding() {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const userRole = session?.user?.role;
+  const dashboardHref =
+    userRole === 'SUPER_ADMIN'
+      ? SUPERADMIN_ROUTES.DASHBOARD
+      : userRole === 'GURU'
+      ? GURU_ROUTES.DASHBOARD
+      : STUDENT_ROUTES.DASHBOARD;
+
+  const portalLabel =
+    userRole === 'GURU'
+      ? 'Portal Guru'
+      : userRole === 'SUPER_ADMIN'
+      ? 'Portal Admin'
+      : 'Portal Siswa';
 
   const navLinks = [
     { label: 'Beranda', href: PUBLIC_ROUTES.HOME },
     { label: 'Pusat Pengetahuan', href: PUBLIC_ROUTES.KNOWLEDGE },
+    { label: 'Katalog Course', href: PUBLIC_ROUTES.COURSES },
   ];
 
   return (
@@ -74,13 +97,23 @@ export function NavbarLanding() {
             <button className="rounded-full px-3 py-1 hover:text-heading transition-colors">EN</button>
           </div>
 
-          <Link
-            href={PUBLIC_ROUTES.LOGIN}
-            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-[13px] font-bold text-white shadow-sm transition-colors duration-150 hover:bg-primary-strong active:scale-[0.96] ease-out"
-          >
-            <LogIn className="h-4 w-4" />
-            Masuk Portal
-          </Link>
+          {session?.user ? (
+            <Link
+              href={dashboardHref}
+              className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-[13px] font-bold text-white shadow-sm transition-colors duration-150 hover:bg-primary-strong active:scale-[0.96] ease-out"
+            >
+              <User className="h-4 w-4" />
+              {portalLabel}
+            </Link>
+          ) : (
+            <Link
+              href={PUBLIC_ROUTES.LOGIN}
+              className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-[13px] font-bold text-white shadow-sm transition-colors duration-150 hover:bg-primary-strong active:scale-[0.96] ease-out"
+            >
+              <LogIn className="h-4 w-4" />
+              Masuk Portal
+            </Link>
+          )}
         </div>
 
         {/* Mobile Toggle */}
@@ -124,13 +157,23 @@ export function NavbarLanding() {
             />
           </div>
 
-          <Link
-            href={PUBLIC_ROUTES.LOGIN}
-            className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-[14px] font-bold text-white shadow-sm transition-colors hover:bg-primary-strong active:scale-[0.96] ease-out"
-          >
-            <LogIn className="h-4 w-4" />
-            Masuk Portal
-          </Link>
+          {session?.user ? (
+            <Link
+              href={dashboardHref}
+              className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-[14px] font-bold text-white shadow-sm transition-colors hover:bg-primary-strong active:scale-[0.96] ease-out"
+            >
+              <User className="h-4 w-4" />
+              {portalLabel}
+            </Link>
+          ) : (
+            <Link
+              href={PUBLIC_ROUTES.LOGIN}
+              className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-[14px] font-bold text-white shadow-sm transition-colors hover:bg-primary-strong active:scale-[0.96] ease-out"
+            >
+              <LogIn className="h-4 w-4" />
+              Masuk Portal
+            </Link>
+          )}
         </div>
       )}
     </header>

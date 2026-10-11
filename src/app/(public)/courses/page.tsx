@@ -3,10 +3,13 @@
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Search, BookOpen, Clock, ShieldCheck, ArrowRight, BookMarked, Sparkles } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { Search, BookOpen, Clock, ShieldCheck, ArrowRight, BookMarked, Sparkles, UserCheck } from 'lucide-react';
 import { getAllCourses, Course } from '@/data/curriculum';
+import { STUDENT_ROUTES } from '@/app/components/navigation/routes';
 
 export default function CourseCatalogPage() {
+  const { data: session } = useSession();
   const allCourses = getAllCourses();
   
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,9 +34,23 @@ export default function CourseCatalogPage() {
           <Sparkles className="w-64 h-64" />
         </div>
         <div className="max-w-7xl mx-auto relative z-10 flex flex-col items-center text-center">
-          <span className="px-3 py-1 bg-[#7F54F8]/20 border border-[#7F54F8]/50 text-[#89F5E7] text-xs font-bold rounded-full mb-4 inline-block uppercase tracking-wider">
+          <span className="px-3 py-1 bg-[#7F54F8]/20 border border-[#7F54F8]/50 text-[#89F5E7] text-xs font-bold rounded-full mb-3 inline-block uppercase tracking-wider">
             Kurikulum 2026
           </span>
+
+          {session?.user && (
+            <div className="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold">
+              <UserCheck className="w-4 h-4 text-[#89F5E7]" />
+              <span>Login sebagai {session.user.identifier}</span>
+              <span className="text-white/40">•</span>
+              <Link
+                href={STUDENT_ROUTES.MY_COURSES}
+                className="text-[#89F5E7] hover:underline font-bold"
+              >
+                Buka di Portal Siswa &rarr;
+              </Link>
+            </div>
+          )}
           <h1 className="text-3xl md:text-5xl font-extrabold mb-4 text-white">
             Katalog Course &amp; Modul Literasi AI UNAIR 2026
           </h1>
@@ -141,13 +158,19 @@ export default function CourseCatalogPage() {
                 </div>
 
                 {/* Footer Action */}
-                <div className="p-5 pt-0">
+                <div className="p-5 pt-0 grid grid-cols-2 gap-2">
+                  <Link
+                    href={`/student/courses/${course.key}`}
+                    className="py-2.5 px-3 rounded-xl bg-white border border-[#CAC3D8]/50 hover:bg-[#F0F3FF] text-[#061B38] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm text-center"
+                  >
+                    <span>Silabus</span>
+                  </Link>
                   <Link
                     href={`/student/courses/${course.key}/chapter/${course.chapters[0]?.key || ''}`}
-                    className="w-full py-3 px-4 rounded-xl bg-[#F0F3FF] group-hover:bg-[#7F54F8] text-[#7F54F8] group-hover:text-white text-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-sm"
+                    className="py-2.5 px-3 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm text-center"
                   >
-                    <span>Mulai Belajar Modul</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span>Mulai Belajar</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               </div>

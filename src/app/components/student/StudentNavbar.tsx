@@ -58,9 +58,9 @@ export const StudentNavbar: React.FC = () => {
             Dashboard
           </Link>
           <Link
-            href={PUBLIC_ROUTES.COURSES}
+            href={STUDENT_ROUTES.MY_COURSES}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
-              pathname.startsWith('/courses')
+              pathname.startsWith('/student/courses') || pathname.startsWith('/courses')
                 ? 'bg-[#7F54F8] text-white shadow-sm'
                 : 'text-[#494455] hover:text-[#061B38] hover:bg-[#F0F3FF]'
             }`}
@@ -159,7 +159,7 @@ export const StudentNavbar: React.FC = () => {
               <span>Dashboard</span>
             </Link>
             <Link
-              href={PUBLIC_ROUTES.COURSES}
+              href={STUDENT_ROUTES.MY_COURSES}
               onClick={() => setMobileMenuOpen(false)}
               className="px-3 py-2 rounded-xl text-xs font-bold text-[#061B38] hover:bg-[#F0F3FF] hover:text-[#7F54F8] flex items-center gap-2"
             >

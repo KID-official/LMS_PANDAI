@@ -1,7 +1,10 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
-import { getAllCourses, getTotalChaptersCount } from '@/data/curriculum';
+import { getAllCourses, getTotalChaptersCount, getCourseByKey, Course, Chapter } from '@/data/curriculum';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 const prisma = new PrismaClient();
 
@@ -84,9 +87,10 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
           : 0;
 
         // Find last accessed chapter
-        const lastRecord = courseProgress.sort((a, b) => 
+        const sortedProgress = [...courseProgress].sort((a, b) => 
           new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-        )[0];
+        );
+        const lastRecord = sortedProgress[0];
 
         const hasStartedCourse = courseProgress.length > 0;
 
@@ -102,9 +106,11 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
           lastAccessedChapterKey: lastRecord?.chapter_key || course.chapters[0]?.key,
           isFullyCompleted: courseCompletedChapters === totalCourseChapters && totalCourseChapters > 0,
           hasStartedCourse,
+          lastAccessedAt: lastRecord ? new Date(lastRecord.updated_at).getTime() : 0,
         };
       })
-      .filter((course) => course.hasStartedCourse);
+      .filter((course) => course.hasStartedCourse)
+      .sort((a, b) => b.lastAccessedAt - a.lastAccessedAt);
 
     const hasAnyProgress = progressRecords.length > 0 || quizScores.length > 0 || certificates.length > 0;
 
@@ -155,3 +161,255 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
     };
   }
 }
+
+export type ChapterProgressStatus = 'COMPLETED' | 'ACTIVE' | 'LOCKED';
+
+export interface ChapterWithStatus extends Chapter {
+  status: ChapterProgressStatus;
+  isCompleted: boolean;
+  isLocked: boolean;
+  isActive: boolean;
+  watchSeconds: number;
+  completedAt?: Date | null;
+}
+
+export interface CourseWithProgressDetails {
+  course: Course;
+  chaptersWithStatus: ChapterWithStatus[];
+  completedCount: number;
+  totalChapters: number;
+  progressPercentage: number;
+  activeChapterKey: string;
+  isAllCompleted: boolean;
+}
+
+export async function markChapterCompletedAction(
+  courseKey: string,
+  chapterKey: string,
+  watchSeconds: number
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return { success: false, error: 'Unauthorized' };
+    }
+
+    const userId = session.user.id;
+
+    await prisma.userProgress.upsert({
+      where: {
+        user_id_chapter_key: {
+          user_id: userId,
+          chapter_key: chapterKey,
+        },
+      },
+      update: {
+        is_completed: true,
+        watch_seconds: Math.max(watchSeconds, 1),
+        completed_at: new Date(),
+      },
+      create: {
+        user_id: userId,
+        chapter_key: chapterKey,
+        is_completed: true,
+        watch_seconds: Math.max(watchSeconds, 1),
+        completed_at: new Date(),
+      },
+    });
+
+    try {
+      revalidatePath('/student/dashboard');
+      revalidatePath(`/student/courses/${courseKey}`);
+      revalidatePath(`/student/courses/${courseKey}/chapter/${chapterKey}`);
+    } catch {
+      // Ignore if called outside server request context
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error marking chapter completed:', error);
+    return { success: false, error: 'Gagal memperbarui progres bab.' };
+  }
+}
+
+export async function recordChapterAccessAction(
+  courseKey: string,
+  chapterKey: string,
+  userId?: string
+) {
+  try {
+    let targetUserId = userId;
+    if (!targetUserId) {
+      const session = await getServerSession(authOptions);
+      if (!session || !session.user) {
+        return { success: false, error: 'Unauthorized' };
+      }
+      targetUserId = session.user.id;
+    }
+
+    await prisma.userProgress.upsert({
+      where: {
+        user_id_chapter_key: {
+          user_id: targetUserId,
+          chapter_key: chapterKey,
+        },
+      },
+      update: {
+        updated_at: new Date(),
+      },
+      create: {
+        user_id: targetUserId,
+        chapter_key: chapterKey,
+        is_completed: false,
+        watch_seconds: 0,
+      },
+    });
+
+    try {
+      revalidatePath('/student/dashboard');
+      revalidatePath(`/student/courses/${courseKey}`);
+    } catch {
+      // Ignore if called outside server request context
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error recording chapter access:', error);
+    return { success: false, error: 'Failed to record chapter access' };
+  }
+}
+
+export async function updateWatchSecondsAction(
+  courseKey: string,
+  chapterKey: string,
+  watchSeconds: number
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) return { success: false };
+
+    await prisma.userProgress.upsert({
+      where: {
+        user_id_chapter_key: {
+          user_id: session.user.id,
+          chapter_key: chapterKey,
+        },
+      },
+      update: {
+        watch_seconds: watchSeconds,
+        updated_at: new Date(),
+      },
+      create: {
+        user_id: session.user.id,
+        chapter_key: chapterKey,
+        is_completed: false,
+        watch_seconds: watchSeconds,
+      },
+    });
+
+    return { success: true };
+  } catch {
+    return { success: false };
+  }
+}
+
+export async function getCourseDetailsWithProgress(
+  courseKey: string,
+  userId: string
+): Promise<CourseWithProgressDetails | null> {
+  try {
+    const course = getCourseByKey(courseKey);
+    if (!course) return null;
+
+    const userProgressRecords = await prisma.userProgress.findMany({
+      where: { user_id: userId },
+    });
+
+    const progressMap = new Map(
+      userProgressRecords.map((p) => [p.chapter_key, p])
+    );
+
+    let foundFirstIncomplete = false;
+    let completedCount = 0;
+    let activeChapterKey = course.chapters[0]?.key || '';
+
+    const chaptersWithStatus: ChapterWithStatus[] = course.chapters.map(
+      (ch, index) => {
+        const record = progressMap.get(ch.key);
+        const isCompleted = !!record?.is_completed;
+        const watchSeconds = record?.watch_seconds || 0;
+        const completedAt = record?.completed_at || null;
+
+        if (isCompleted) {
+          completedCount++;
+          return {
+            ...ch,
+            status: 'COMPLETED' as ChapterProgressStatus,
+            isCompleted: true,
+            isLocked: false,
+            isActive: false,
+            watchSeconds,
+            completedAt,
+          };
+        }
+
+        // Sequential rule:
+        // Chapter 0 is unlocked.
+        // Chapter i is unlocked if Chapter i-1 was completed.
+        const prevChapter = index > 0 ? course.chapters[index - 1] : null;
+        const prevRecord = prevChapter ? progressMap.get(prevChapter.key) : null;
+        const isPrevCompleted = index === 0 || !!prevRecord?.is_completed;
+
+        if (isPrevCompleted) {
+          const isActive = !foundFirstIncomplete;
+          if (isActive) {
+            foundFirstIncomplete = true;
+            activeChapterKey = ch.key;
+          }
+          return {
+            ...ch,
+            status: 'ACTIVE' as ChapterProgressStatus,
+            isCompleted: false,
+            isLocked: false,
+            isActive,
+            watchSeconds,
+            completedAt,
+          };
+        }
+
+        // Otherwise locked
+        return {
+          ...ch,
+          status: 'LOCKED' as ChapterProgressStatus,
+          isCompleted: false,
+          isLocked: true,
+          isActive: false,
+          watchSeconds,
+          completedAt,
+        };
+      }
+    );
+
+    const totalChapters = course.chapters.length;
+    const progressPercentage =
+      totalChapters > 0
+        ? Math.min(100, Math.round((completedCount / totalChapters) * 100))
+        : 0;
+
+    const isAllCompleted = completedCount === totalChapters && totalChapters > 0;
+
+    return {
+      course,
+      chaptersWithStatus,
+      completedCount,
+      totalChapters,
+      progressPercentage,
+      activeChapterKey,
+      isAllCompleted,
+    };
+  } catch (error) {
+    console.error('Error fetching course details with progress:', error);
+    return null;
+  }
+}
+
