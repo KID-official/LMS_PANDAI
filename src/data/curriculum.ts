@@ -189,3 +189,24 @@ export function getTotalChaptersCount(courseKey?: string): number {
   }
   return COURSES_DATA.reduce((acc, curr) => acc + curr.chapters.length, 0);
 }
+
+export function getNextChapter(courseKey: string, currentChapterKey: string): Chapter | undefined {
+  const course = getCourseByKey(courseKey);
+  if (!course) return undefined;
+  const currentIndex = course.chapters.findIndex((ch) => ch.key === currentChapterKey);
+  if (currentIndex === -1 || currentIndex >= course.chapters.length - 1) {
+    return undefined;
+  }
+  return course.chapters[currentIndex + 1];
+}
+
+export function getPreviousChapter(courseKey: string, currentChapterKey: string): Chapter | undefined {
+  const course = getCourseByKey(courseKey);
+  if (!course) return undefined;
+  const currentIndex = course.chapters.findIndex((ch) => ch.key === currentChapterKey);
+  if (currentIndex <= 0) {
+    return undefined;
+  }
+  return course.chapters[currentIndex - 1];
+}
+
