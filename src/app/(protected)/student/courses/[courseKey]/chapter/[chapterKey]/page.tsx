@@ -8,7 +8,10 @@ import {
   getCourseByKey,
   getNextChapter,
 } from '@/data/curriculum';
-import { getCourseDetailsWithProgress } from '@/actions/progressActions';
+import {
+  getCourseDetailsWithProgress,
+  recordChapterAccessAction,
+} from '@/actions/progressActions';
 import {
   ChapterHeader,
   VideoPlayerContainer,
@@ -226,7 +229,9 @@ export default async function ChapterPlayerPage({ params }: ChapterPageProps) {
     );
   }
 
-  // 4. Normal Chapter Player View
+  // 4. Normal Chapter Player View - Record access
+  await recordChapterAccessAction(courseKey, chapterKey, session.user.id);
+
   const isAlreadyCompleted = currentChapterStatus?.isCompleted || false;
 
   return (

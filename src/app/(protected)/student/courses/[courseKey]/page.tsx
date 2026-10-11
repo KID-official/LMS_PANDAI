@@ -2,7 +2,10 @@ import React from 'react';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
-import { getCourseDetailsWithProgress } from '@/actions/progressActions';
+import {
+  getCourseDetailsWithProgress,
+  recordChapterAccessAction,
+} from '@/actions/progressActions';
 import { getCourseByKey } from '@/data/curriculum';
 import { PUBLIC_ROUTES } from '@/app/components/navigation/routes';
 import {
@@ -57,6 +60,12 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
     activeChapterKey,
     isAllCompleted,
   } = courseData;
+
+  // Record user access to this course's active or first chapter
+  const targetChapterKey = activeChapterKey || course.chapters[0]?.key;
+  if (targetChapterKey) {
+    await recordChapterAccessAction(params.courseKey, targetChapterKey, session.user.id);
+  }
 
   // Compute active & locked counts
   const activeCount = chaptersWithStatus.filter((c) => c.status === 'ACTIVE').length;

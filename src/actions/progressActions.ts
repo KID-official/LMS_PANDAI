@@ -87,9 +87,10 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
           : 0;
 
         // Find last accessed chapter
-        const lastRecord = courseProgress.sort((a, b) => 
+        const sortedProgress = [...courseProgress].sort((a, b) => 
           new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-        )[0];
+        );
+        const lastRecord = sortedProgress[0];
 
         const hasStartedCourse = courseProgress.length > 0;
 
@@ -105,9 +106,11 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
           lastAccessedChapterKey: lastRecord?.chapter_key || course.chapters[0]?.key,
           isFullyCompleted: courseCompletedChapters === totalCourseChapters && totalCourseChapters > 0,
           hasStartedCourse,
+          lastAccessedAt: lastRecord ? new Date(lastRecord.updated_at).getTime() : 0,
         };
       })
-      .filter((course) => course.hasStartedCourse);
+      .filter((course) => course.hasStartedCourse)
+      .sort((a, b) => b.lastAccessedAt - a.lastAccessedAt);
 
     const hasAnyProgress = progressRecords.length > 0 || quizScores.length > 0 || certificates.length > 0;
 
@@ -214,14 +217,99 @@ export async function markChapterCompletedAction(
       },
     });
 
-    revalidatePath('/student/dashboard');
-    revalidatePath(`/student/courses/${courseKey}`);
-    revalidatePath(`/student/courses/${courseKey}/chapter/${chapterKey}`);
+    try {
+      revalidatePath('/student/dashboard');
+      revalidatePath(`/student/courses/${courseKey}`);
+      revalidatePath(`/student/courses/${courseKey}/chapter/${chapterKey}`);
+    } catch {
+      // Ignore if called outside server request context
+    }
 
     return { success: true };
   } catch (error) {
     console.error('Error marking chapter completed:', error);
     return { success: false, error: 'Gagal memperbarui progres bab.' };
+  }
+}
+
+export async function recordChapterAccessAction(
+  courseKey: string,
+  chapterKey: string,
+  userId?: string
+) {
+  try {
+    let targetUserId = userId;
+    if (!targetUserId) {
+      const session = await getServerSession(authOptions);
+      if (!session || !session.user) {
+        return { success: false, error: 'Unauthorized' };
+      }
+      targetUserId = session.user.id;
+    }
+
+    await prisma.userProgress.upsert({
+      where: {
+        user_id_chapter_key: {
+          user_id: targetUserId,
+          chapter_key: chapterKey,
+        },
+      },
+      update: {
+        updated_at: new Date(),
+      },
+      create: {
+        user_id: targetUserId,
+        chapter_key: chapterKey,
+        is_completed: false,
+        watch_seconds: 0,
+      },
+    });
+
+    try {
+      revalidatePath('/student/dashboard');
+      revalidatePath(`/student/courses/${courseKey}`);
+    } catch {
+      // Ignore if called outside server request context
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error recording chapter access:', error);
+    return { success: false, error: 'Failed to record chapter access' };
+  }
+}
+
+export async function updateWatchSecondsAction(
+  courseKey: string,
+  chapterKey: string,
+  watchSeconds: number
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) return { success: false };
+
+    await prisma.userProgress.upsert({
+      where: {
+        user_id_chapter_key: {
+          user_id: session.user.id,
+          chapter_key: chapterKey,
+        },
+      },
+      update: {
+        watch_seconds: watchSeconds,
+        updated_at: new Date(),
+      },
+      create: {
+        user_id: session.user.id,
+        chapter_key: chapterKey,
+        is_completed: false,
+        watch_seconds: watchSeconds,
+      },
+    });
+
+    return { success: true };
+  } catch {
+    return { success: false };
   }
 }
 
