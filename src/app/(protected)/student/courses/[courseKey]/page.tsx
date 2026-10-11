@@ -114,8 +114,8 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
         {/* Right Column (35% / lg:col-span-4): Progress Card & Supporting Widgets */}
         <aside className="lg:col-span-4 w-full flex flex-col gap-6">
-          {/* Desktop Progress Card */}
-          <div className="hidden lg:block sticky top-24 z-10">
+          {/* Desktop Progress Card (scrolls naturally with page) */}
+          <div className="hidden lg:block">
             <CourseProgressCard
               courseKey={course.key}
               completedCount={completedCount}

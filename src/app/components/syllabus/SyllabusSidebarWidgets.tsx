@@ -149,42 +149,6 @@ export const SyllabusSidebarWidgets: React.FC<SyllabusSidebarWidgetsProps> = ({
           E-Sertifikat resmi ber-barcode akan otomatis diterbitkan setelah seluruh {totalChapters} bab diselesaikan ({completedCount}/{totalChapters} bab tuntas).
         </p>
       </div>
-
-      {/* ── Widget 4: Bantuan & Konsultasi ── */}
-      <div className="bg-white rounded-2xl border border-[#CAC3D8]/40 shadow-subtle p-5 flex flex-col gap-3">
-        <span className="text-sm font-bold text-[#061B38] border-b border-[#CAC3D8]/30 pb-3">
-          Bantuan &amp; Konsultasi Lab
-        </span>
-
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#89F5E7]/30 text-[#00685F] flex items-center justify-center font-bold text-xs shrink-0">
-            BP
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-bold text-[#061B38]">
-              Bambang Prakoso, S.Pd.
-            </span>
-            <span className="text-[11px] text-[#7A7486]">
-              Guru Pembimbing Lab Komputer
-            </span>
-          </div>
-        </div>
-
-        <div className="bg-[#F0F3FF] rounded-xl p-3 flex flex-col gap-1 text-[11px] text-[#494455] border border-[#CAC3D8]/30">
-          <div className="flex items-center justify-between">
-            <span>Jadwal Tanya Jawab:</span>
-            <strong className="text-[#061B38]">Rabu &amp; Jumat</strong>
-          </div>
-          <div className="flex items-center justify-between">
-            <span>Waktu:</span>
-            <strong className="text-[#061B38]">14:00 - 15:30 WIB</strong>
-          </div>
-          <div className="flex items-center justify-between">
-            <span>Lokasi:</span>
-            <strong className="text-[#061B38]">Lab Multimedia 2</strong>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
