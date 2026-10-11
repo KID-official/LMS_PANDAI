@@ -18,6 +18,7 @@ export * from './landing';
 export * from './knowledge';
 export * from './knowledge-detail';
 export * from './student';
+export * from './syllabus';
 
 // ── Routes (untuk keperluan navigasi terprogram) ────────
 export * from './navigation/routes';
