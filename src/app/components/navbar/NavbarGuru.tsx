@@ -20,6 +20,9 @@ import { signOut, useSession } from 'next-auth/react';
 
 type Props = {
   onMobileMenuToggle?: () => void;
+  userImage?: string | null;
+  userName?: string;
+  userEmail?: string;
 };
 
 const LANGUAGES = [
@@ -29,15 +32,21 @@ const LANGUAGES = [
 
 type LangCode = 'id' | 'en';
 
-export default function NavbarGuru({ onMobileMenuToggle }: Props) {
+export default function NavbarGuru({
+  onMobileMenuToggle,
+  userImage: propImage,
+  userName: propName,
+  userEmail: propEmail,
+}: Props) {
   const { data: session } = useSession();
   const [lang, setLang] = useState<LangCode>('id');
   const [langOpen, setLangOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifCount] = useState(3); // placeholder — ganti dengan data real
 
-  const userName  = session?.user?.name  ?? 'Guru Admin';
-  const userEmail = session?.user?.email ?? 'Pengmas UNAIR';
+  const userName  = propName ?? session?.user?.name  ?? 'Guru Admin';
+  const userEmail = propEmail ?? session?.user?.email ?? 'Pengmas UNAIR';
+  const userImage = propImage ?? session?.user?.image ?? null;
 
   // Inisial avatar dari nama
   const initials = userName
@@ -171,11 +180,15 @@ export default function NavbarGuru({ onMobileMenuToggle }: Props) {
           >
             {/* Avatar */}
             <span
-              className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
+              className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white overflow-hidden"
               style={{ background: '#7F54F8' }}
               aria-hidden
             >
-              {initials}
+              {userImage ? (
+                <img src={userImage} alt={userName} className="h-full w-full object-cover" />
+              ) : (
+                initials
+              )}
             </span>
 
             {/* Name & institution */}

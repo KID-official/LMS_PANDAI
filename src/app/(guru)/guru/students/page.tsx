@@ -11,7 +11,7 @@ export default async function StudentsPage({
   const page = parseInt(searchParams.page || '1', 10);
   const limit = 10;
 
-  const { users, total } = await getStudents(search, status, page, limit);
+  const { users, total, stats } = await getStudents(search, status, page, limit);
 
   return (
     <div className="w-full flex flex-col gap-6 p-6 md:p-8 overflow-x-hidden">
@@ -23,10 +23,10 @@ export default async function StudentsPage({
           <span className="text-muted-foreground">• Academic Year 2026/2027</span>
         </div>
         <h1 className="text-[28px] font-bold text-heading mt-1">Student Management</h1>
-        <p className="text-[13px] text-muted-foreground">Total <strong className="text-primary">{total} siswa SMP aktif</strong> terdaftar dalam sistem modul AI</p>
+        <p className="text-[13px] text-muted-foreground">Total <strong className="text-primary">{stats.totalActiveStudents} siswa SMP aktif</strong> terdaftar dalam sistem modul AI</p>
       </div>
 
-      <StudentManagementClient initialUsers={users} total={total} currentPage={page} />
+      <StudentManagementClient initialUsers={users} total={total} currentPage={page} stats={stats} />
     </div>
   );
 }

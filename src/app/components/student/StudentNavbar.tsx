@@ -23,6 +23,16 @@ export const StudentNavbar: React.FC = () => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const userIdentifier = session?.user?.identifier || 'Siswa';
+  const userName = session?.user?.name || userIdentifier;
+
+  // Inisial avatar jika siswa belum memiliki foto (contoh: "Ahmad Fauzi" -> "AF")
+  const initials = userName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w: string) => w[0])
+    .join('')
+    .toUpperCase() || 'SI';
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-[#CAC3D8]/30 shadow-shell">
@@ -87,10 +97,14 @@ export const StudentNavbar: React.FC = () => {
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
               className="flex items-center gap-2 rounded-xl bg-[#F0F3FF] border border-[#CAC3D8]/40 p-1.5 pr-3 text-xs font-bold text-[#061B38] hover:bg-[#E7EEFF] transition-colors"
             >
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#7F54F8] text-white text-xs font-extrabold uppercase">
-                {userIdentifier.slice(0, 2)}
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#7F54F8] text-white text-xs font-extrabold uppercase overflow-hidden">
+                {session?.user?.image ? (
+                  <img src={session.user.image} alt={userName} className="h-full w-full object-cover" />
+                ) : (
+                  initials
+                )}
               </div>
-              <span className="max-w-[120px] truncate">{userIdentifier}</span>
+              <span className="max-w-[120px] truncate">{userName}</span>
               <ChevronDown className="h-3.5 w-3.5 text-[#7A7486]" />
             </button>
 
@@ -140,12 +154,16 @@ export const StudentNavbar: React.FC = () => {
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-[#CAC3D8]/30 bg-white px-4 pt-3 pb-6 flex flex-col gap-3 shadow-md animate-fade-in-up">
           <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#F0F3FF]">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#7F54F8] text-white text-xs font-extrabold uppercase">
-              {userIdentifier.slice(0, 2)}
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#7F54F8] text-white text-xs font-extrabold uppercase overflow-hidden">
+              {session?.user?.image ? (
+                <img src={session.user.image} alt={userName} className="h-full w-full object-cover" />
+              ) : (
+                initials
+              )}
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-[#061B38]">NIS: {userIdentifier}</span>
-              <span className="text-[11px] font-medium text-[#7F54F8]">Siswa Aktif</span>
+              <span className="text-xs font-bold text-[#061B38]">{userName}</span>
+              <span className="text-[11px] font-medium text-[#7F54F8]">NIS: {userIdentifier}</span>
             </div>
           </div>
 

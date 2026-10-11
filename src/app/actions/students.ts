@@ -26,7 +26,7 @@ export async function getStudents(search = '', status = '', page = 1, limit = 10
     whereCondition.is_active = false;
   }
 
-  const [users, total] = await Promise.all([
+  const [users, total, totalAllStudents, totalActiveStudents, studentsWithProgress] = await Promise.all([
     prisma.user.findMany({
       where: whereCondition,
       include: {
@@ -37,9 +37,48 @@ export async function getStudents(search = '', status = '', page = 1, limit = 10
       orderBy: { created_at: 'desc' },
     }),
     prisma.user.count({ where: whereCondition }),
+    prisma.user.count({ where: { role: UserRole.SISWA } }),
+    prisma.user.count({ where: { role: UserRole.SISWA, is_active: true } }),
+    prisma.user.findMany({
+      where: { role: UserRole.SISWA },
+      select: {
+        id: true,
+        progress: {
+          select: { is_completed: true },
+        },
+      },
+    }),
   ]);
 
-  return { users, total };
+  // Persentase jumlah akun aktif dari total semua akun terdaftar
+  const activePercentage = totalAllStudents > 0
+    ? `${((totalActiveStudents / totalAllStudents) * 100).toFixed(1)}%`
+    : '0%';
+
+  // Rata-rata progress belajar siswa (standard kurikulum: 5 modul)
+  const TOTAL_MODULES = 5;
+  let totalProgressSum = 0;
+  if (studentsWithProgress.length > 0) {
+    for (const s of studentsWithProgress) {
+      const completed = s.progress.filter((p) => p.is_completed).length;
+      const percent = Math.min(100, (completed / TOTAL_MODULES) * 100);
+      totalProgressSum += percent;
+    }
+  }
+  const averageProgress = studentsWithProgress.length > 0
+    ? `${(totalProgressSum / studentsWithProgress.length).toFixed(1)}%`
+    : '0%';
+
+  return {
+    users,
+    total,
+    stats: {
+      totalAllStudents,
+      totalActiveStudents,
+      activePercentage,
+      averageProgress,
+    },
+  };
 }
 
 export async function createStudent(data: { nis: string; fullName: string; className: string; semester: string; password?: string }) {

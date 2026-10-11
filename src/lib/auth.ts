@@ -50,13 +50,28 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token) {
+      if (token?.id) {
         session.user = {
           ...session.user,
           id: token.id as string,
           role: token.role as string,
           identifier: token.identifier as string,
         };
+
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            include: { teacher: true, student: true },
+          });
+
+          if (dbUser) {
+            session.user.name = dbUser.teacher?.full_name_with_title || dbUser.student?.full_name || dbUser.identifier;
+            session.user.email = dbUser.teacher?.official_email || dbUser.identifier;
+            session.user.image = dbUser.teacher?.image_url || dbUser.student?.image_url || null;
+          }
+        } catch (e) {
+          console.error("Error fetching latest user in session callback:", e);
+        }
       }
       return session;
     }

@@ -62,6 +62,9 @@ type Props = {
   onClose?: () => void;
   userName?: string;
   userSubtitle?: string;
+  userImage?: string | null;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 };
 
 export default function SidebarGuru({
@@ -69,9 +72,15 @@ export default function SidebarGuru({
   onClose,
   userName = 'Guru Admin',
   userSubtitle = 'Pengmas UNAIR',
+  userImage,
+  isCollapsed: controlledCollapsed,
+  onToggleCollapse,
 }: Props) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
+
+  const collapsed = controlledCollapsed !== undefined ? controlledCollapsed : internalCollapsed;
+  const toggleCollapsed = onToggleCollapse ?? (() => setInternalCollapsed((v) => !v));
 
   // Inisial avatar
   const initials = userName
@@ -94,14 +103,13 @@ export default function SidebarGuru({
         />
       )}
 
-      {/* ── SIDEBAR PANEL ── */}
+      {/* ── SIDEBAR PANEL (Fixed on Desktop & Mobile) ── */}
       <aside
         role="navigation"
         aria-label="Navigasi portal guru"
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex flex-col bg-white transition-colors transition-transform transition-shadow duration-300 ease-in-out overscroll-contain',
-          'lg:relative lg:translate-x-0',
-          // mobile: show/hide via translate
+          'fixed inset-y-0 left-0 z-40 flex h-screen flex-col bg-white transition-all duration-300 ease-in-out overscroll-contain',
+          // mobile: show/hide via translate; desktop: always in place
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
         style={{
@@ -161,7 +169,7 @@ export default function SidebarGuru({
           <button
             className="hidden h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-[#F0F3FF] lg:flex"
             style={{ color: '#7A7486' }}
-            onClick={() => setCollapsed((v) => !v)}
+            onClick={toggleCollapsed}
             aria-label={collapsed ? 'Perluas sidebar' : 'Ciutkan sidebar'}
           >
             {collapsed
@@ -229,11 +237,15 @@ export default function SidebarGuru({
           >
             {/* Avatar */}
             <span
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white overflow-hidden"
               style={{ background: '#7F54F8' }}
               aria-hidden
             >
-              {initials}
+              {userImage ? (
+                <img src={userImage} alt={userName} className="h-full w-full object-cover" />
+              ) : (
+                initials
+              )}
             </span>
 
             {/* Name + subtitle */}

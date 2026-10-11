@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createStudent, updateStudent, deleteStudent } from '@/app/actions/students';
 import { 
-  Search, Filter, Plus, Edit2, Trash2, ShieldCheck, 
+  Search, Plus, Edit2, Trash2, ShieldCheck, 
   GraduationCap, TrendingUp, Flag, RefreshCw, X 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -18,17 +18,25 @@ type StudentUser = {
     full_name: string;
     class_name: string;
     semester: string;
+    image_url?: string | null;
   } | null;
 };
 
 export function StudentManagementClient({ 
   initialUsers, 
   total, 
-  currentPage 
+  currentPage,
+  stats,
 }: { 
   initialUsers: StudentUser[]; 
   total: number; 
   currentPage: number; 
+  stats?: {
+    totalAllStudents: number;
+    totalActiveStudents: number;
+    activePercentage: string;
+    averageProgress: string;
+  };
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -118,7 +126,7 @@ export function StudentManagementClient({
         <div className="flex items-center justify-between rounded-xl bg-white p-5 shadow-subtle border border-outline/30">
           <div className="flex flex-col gap-1">
             <span className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">TOTAL SISWA</span>
-            <span className="text-[24px] font-bold text-heading">{total}</span>
+            <span className="text-[24px] font-bold text-heading">{stats?.totalAllStudents ?? total}</span>
             <span className="text-[11px] font-semibold text-success">+14 semester ini</span>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary-strong">
@@ -129,8 +137,10 @@ export function StudentManagementClient({
         <div className="flex items-center justify-between rounded-xl bg-white p-5 shadow-subtle border border-outline/30">
           <div className="flex flex-col gap-1">
             <span className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">AKUN AKTIF</span>
-            <span className="text-[24px] font-bold text-heading">{initialUsers.filter(u => u.is_active).length}</span>
-            <span className="text-[11px] font-semibold text-success">95.1% Partisipasi</span>
+            <span className="text-[24px] font-bold text-heading">{stats?.totalActiveStudents ?? initialUsers.filter(u => u.is_active).length}</span>
+            <span className="text-[11px] font-semibold text-success">
+              {stats?.activePercentage ? `${stats.activePercentage} Partisipasi` : '0% Partisipasi'}
+            </span>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-success-soft text-success">
             <ShieldCheck className="h-6 w-6" />
@@ -140,7 +150,7 @@ export function StudentManagementClient({
         <div className="flex items-center justify-between rounded-xl bg-white p-5 shadow-subtle border border-outline/30">
           <div className="flex flex-col gap-1">
             <span className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">RATA-RATA PROGRESS</span>
-            <span className="text-[24px] font-bold text-heading">68.4%</span>
+            <span className="text-[24px] font-bold text-heading">{stats?.averageProgress ?? '0%'}</span>
             <span className="text-[11px] font-semibold text-primary">112 modul tuntas</span>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-blue text-info">
@@ -190,13 +200,10 @@ export function StudentManagementClient({
           </button>
         </form>
 
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <button className="flex-1 md:flex-none flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-white border border-outline/50 text-[13px] font-semibold text-body hover:bg-surface-soft transition-colors">
-            <Filter className="h-4 w-4" /> Filtered By
-          </button>
+        <div className="flex items-center gap-3 w-full md:w-auto justify-end">
           <button 
             onClick={openCreateModal}
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 h-10 px-4 rounded-lg bg-primary text-[13px] font-bold text-white hover:bg-primary-strong transition-colors active:scale-[0.96] duration-150 ease-out"
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 h-10 px-5 rounded-lg bg-primary text-[13px] font-bold text-white hover:bg-primary-strong transition-colors active:scale-[0.96] duration-150 ease-out"
           >
             <Plus className="h-4 w-4" /> Add Student Manual
           </button>
@@ -229,8 +236,18 @@ export function StudentManagementClient({
                   <td className="p-4"><input type="checkbox" className="rounded border-outline" /></td>
                   <td className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[12px] font-bold text-primary-strong uppercase">
-                        {user.student?.full_name?.substring(0, 2) || 'SI'}
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[12px] font-bold text-primary-strong uppercase overflow-hidden">
+                        {user.student?.image_url ? (
+                          <img src={user.student.image_url} alt={user.student.full_name} className="h-full w-full object-cover" />
+                        ) : (
+                          (user.student?.full_name || user.identifier)
+                            .split(' ')
+                            .filter(Boolean)
+                            .slice(0, 2)
+                            .map((w) => w[0])
+                            .join('')
+                            .toUpperCase() || 'SI'
+                        )}
                       </div>
                       <div className="flex flex-col">
                         <span className="font-bold text-heading">{user.student?.full_name || 'Tanpa Nama'}</span>
