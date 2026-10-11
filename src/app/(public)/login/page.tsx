@@ -16,7 +16,7 @@ import {
   HelpCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { PUBLIC_ROUTES, GURU_ROUTES, STUDENT_ROUTES, SUPERADMIN_ROUTES } from '@/app/components/navigation/routes';
+import { GURU_ROUTES, STUDENT_ROUTES, SUPERADMIN_ROUTES } from '@/app/components/navigation/routes';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -54,7 +54,7 @@ export default function LoginPage() {
           router.push(STUDENT_ROUTES.DASHBOARD);
         }
       }
-    } catch (err) {
+    } catch {
       setError('Terjadi kesalahan. Silakan coba lagi.');
       setLoading(false);
     }

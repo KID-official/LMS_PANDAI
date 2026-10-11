@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 export async function getStudents(search = '', status = '', page = 1, limit = 10) {
   const skip = (page - 1) * limit;
 
-  const whereCondition: any = {
+  const whereCondition: Record<string, unknown> = {
     role: UserRole.SISWA,
   };
 

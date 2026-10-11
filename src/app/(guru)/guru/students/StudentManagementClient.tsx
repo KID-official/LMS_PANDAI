@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createStudent, updateStudent, deleteStudent } from '@/app/actions/students';
 import { 
-  Search, Filter, Plus, MoreVertical, Edit2, Trash2, ShieldCheck, 
+  Search, Filter, Plus, Edit2, Trash2, ShieldCheck, 
   GraduationCap, TrendingUp, Flag, RefreshCw, X 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
