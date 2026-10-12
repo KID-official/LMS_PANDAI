@@ -6,7 +6,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { 
   ArrowLeft, Camera, Shield, Eye, EyeOff, Check, AlertCircle, 
-  HelpCircle, User, Award, Target, CheckCircle2, Clock, 
+  HelpCircle, Award, Target, CheckCircle2, Clock, 
   LogOut, Loader2, Info 
 } from 'lucide-react';
 import { updateStudentProfile, changePassword } from '@/app/actions/profile';
@@ -87,8 +87,8 @@ export function StudentProfileClient({ initialData }: { initialData: StudentData
       await updateStudentProfile({ imageUrl: data.url });
       await update();
       router.refresh();
-    } catch (err: any) {
-      alert(err.message || 'Terjadi kesalahan saat mengunggah foto.');
+    } catch (err: unknown) {
+      alert((err instanceof Error ? err.message : '') || 'Terjadi kesalahan saat mengunggah foto.');
     } finally {
       setIsUploadingAvatar(false);
     }
@@ -119,8 +119,8 @@ export function StudentProfileClient({ initialData }: { initialData: StudentData
         setPasswordFeedback({ type: 'success', message: res.message || 'Password baru berhasil disimpan!' });
         setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
       }
-    } catch (err: any) {
-      setPasswordFeedback({ type: 'error', message: err?.message || 'Terjadi kesalahan.' });
+    } catch (err: unknown) {
+      setPasswordFeedback({ type: 'error', message: (err instanceof Error ? err.message : '') || 'Terjadi kesalahan.' });
     } finally {
       setPasswordLoading(false);
     }

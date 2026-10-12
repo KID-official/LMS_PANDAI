@@ -26,7 +26,7 @@ export const GURU_ROUTES = {
   CATEGORIES: '/guru/categories',
   INSTRUCTORS: '/guru/instructors',
   STUDENTS: '/guru/students',
-  REPORTS: '/guru/reports',
+  REPORTS: '/guru/progress',
   MESSAGES: '/guru/messages',
   SETTINGS: '/guru/settings',
 } as const;
@@ -45,10 +45,13 @@ export const STUDENT_ROUTES = {
 // ─────────────────────────────────────────────
 export const SUPERADMIN_ROUTES = {
   DASHBOARD: '/superadmin/dashboard',
+  TEACHERS: '/superadmin/teachers',
+  IMPORT_STUDENTS: '/superadmin/import-students',
+  IMPORT_TEACHERS: '/superadmin/import-teachers',
 } as const;
 
 // ─────────────────────────────────────────────
-// SIDEBAR MENU DEFINITIONS — GURU
+// SIDEBAR MENU DEFINITIONS — GURU & SUPERADMIN
 // ─────────────────────────────────────────────
 export type SidebarMenuItem = {
   label: string;
@@ -71,18 +74,44 @@ export const GURU_SIDEBAR_MENU: SidebarMenuGroup[] = [
   {
     groupLabel: 'LEARNING MANAGEMENT',
     items: [
-      { label: 'Courses',      href: GURU_ROUTES.COURSES,      icon: 'BookOpen' },
-      { label: 'Categories',   href: GURU_ROUTES.CATEGORIES,   icon: 'Shapes' },
-      { label: 'Instructors',  href: GURU_ROUTES.INSTRUCTORS,  icon: 'UserCog' },
-      { label: 'Students',     href: GURU_ROUTES.STUDENTS,     icon: 'GraduationCap' },
+      { label: 'Students', href: GURU_ROUTES.STUDENTS, icon: 'GraduationCap' },
     ],
   },
   {
     groupLabel: 'APPLICATIONS',
     items: [
-      { label: 'Reports',   href: GURU_ROUTES.REPORTS,   icon: 'BarChart2' },
-      { label: 'Messages',  href: GURU_ROUTES.MESSAGES,  icon: 'MessageSquare' },
-      { label: 'Settings',  href: GURU_ROUTES.SETTINGS,  icon: 'Settings' },
+      { label: 'Reports',  href: GURU_ROUTES.REPORTS,  icon: 'BarChart2' },
+      { label: 'Settings', href: GURU_ROUTES.SETTINGS, icon: 'Settings' },
+    ],
+  },
+];
+
+export const SUPERADMIN_SIDEBAR_MENU: SidebarMenuGroup[] = [
+  {
+    groupLabel: 'OVERVIEW',
+    items: [
+      { label: 'Dashboard', href: SUPERADMIN_ROUTES.DASHBOARD, icon: 'LayoutDashboard' },
+    ],
+  },
+  {
+    groupLabel: 'LEARNING MANAGEMENT',
+    items: [
+      { label: 'Students', href: GURU_ROUTES.STUDENTS, icon: 'GraduationCap' },
+    ],
+  },
+  {
+    groupLabel: 'USER ADMINISTRATION',
+    items: [
+      { label: 'Kelola Guru',          href: SUPERADMIN_ROUTES.TEACHERS,         icon: 'Users' },
+      { label: 'Import Massal Siswa',  href: SUPERADMIN_ROUTES.IMPORT_STUDENTS,  icon: 'FileSpreadsheet' },
+      { label: 'Import Massal Guru',   href: SUPERADMIN_ROUTES.IMPORT_TEACHERS,  icon: 'UploadCloud' },
+    ],
+  },
+  {
+    groupLabel: 'APPLICATIONS',
+    items: [
+      { label: 'Reports',  href: GURU_ROUTES.REPORTS,  icon: 'BarChart2' },
+      { label: 'Settings', href: GURU_ROUTES.SETTINGS, icon: 'Settings' },
     ],
   },
 ];

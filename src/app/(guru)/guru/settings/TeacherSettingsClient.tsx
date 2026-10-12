@@ -5,7 +5,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { 
   Camera, Mail, Building, Phone, Award, Shield, Eye, EyeOff, 
-  Check, AlertCircle, LogOut, Loader2, Sparkles, UserCheck 
+  Check, AlertCircle, LogOut, Loader2, UserCheck 
 } from 'lucide-react';
 import { updateTeacherProfile, changePassword } from '@/app/actions/profile';
 import { cn } from '@/lib/utils';
@@ -120,8 +120,8 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
       await update();
       router.refresh();
       setProfileFeedback({ type: 'success', message: 'Foto profil berhasil diperbarui!' });
-    } catch (err: any) {
-      alert(err.message || 'Terjadi kesalahan saat upload.');
+    } catch (err: unknown) {
+      alert((err instanceof Error ? err.message : '') || 'Terjadi kesalahan saat upload.');
     } finally {
       setIsUploadingAvatar(false);
     }
@@ -147,8 +147,8 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
       await update();
       router.refresh();
       setProfileFeedback({ type: 'success', message: 'Perubahan profil pengajar berhasil disimpan!' });
-    } catch (err: any) {
-      setProfileFeedback({ type: 'error', message: err?.message || 'Gagal menyimpan profil.' });
+    } catch (err: unknown) {
+      setProfileFeedback({ type: 'error', message: (err instanceof Error ? err.message : '') || 'Gagal menyimpan profil.' });
     } finally {
       setProfileLoading(false);
     }
@@ -179,8 +179,8 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
         setPasswordFeedback({ type: 'success', message: res.message || 'Password berhasil diperbarui!' });
         setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
       }
-    } catch (err: any) {
-      setPasswordFeedback({ type: 'error', message: err?.message || 'Terjadi kesalahan.' });
+    } catch (err: unknown) {
+      setProfileFeedback({ type: 'error', message: (err instanceof Error ? err.message : '') || 'Terjadi kesalahan.' });
     } finally {
       setPasswordLoading(false);
     }
@@ -390,7 +390,7 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
                 />
               </div>
               <p className="text-[11px] text-muted-foreground">
-                Kontak ini akan tampil di menu 'Pusat Bantuan Siswa' saat jam praktikum aktif.
+                Kontak ini akan tampil di menu &apos;Pusat Bantuan Siswa&apos; saat jam praktikum aktif.
               </p>
             </div>
 

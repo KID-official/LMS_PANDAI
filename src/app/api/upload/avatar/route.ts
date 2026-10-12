@@ -25,10 +25,10 @@ export async function POST(req: NextRequest) {
       url: result.url,
       filename: result.filename,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error saat upload avatar:', error);
     return NextResponse.json(
-      { error: error?.message || 'Gagal mengunggah foto profil.' },
+      { error: (error instanceof Error ? error.message : '') || 'Gagal mengunggah foto profil.' },
       { status: 500 }
     );
   }

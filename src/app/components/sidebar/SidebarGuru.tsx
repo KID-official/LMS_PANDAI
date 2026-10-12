@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import {
   LayoutDashboard,
   BookOpen,
@@ -16,33 +17,32 @@ import {
   MoreVertical,
   ChevronLeft,
   ChevronRight,
+  Users,
+  FileSpreadsheet,
+  UploadCloud,
   LucideProps,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { GURU_SIDEBAR_MENU, GURU_ROUTES } from '../navigation/routes';
+import {
+  GURU_SIDEBAR_MENU,
+  SUPERADMIN_SIDEBAR_MENU,
+  GURU_ROUTES,
+  SUPERADMIN_ROUTES,
+} from '../navigation/routes';
 
 /**
- * SidebarGuru
+ * SidebarGuru & SuperAdmin
  *
- * Sidebar navigasi untuk portal guru.
+ * Sidebar navigasi untuk portal guru dan super admin.
  * Mendukung:
- * - Grup menu berlabel (OVERVIEW, LEARNING MANAGEMENT, APPLICATIONS)
+ * - Menampilkan menu dinamis berdasarkan role (Guru vs Super Admin)
+ * - Grup menu berlabel (LEARNING MANAGEMENT, USER ADMINISTRATION, APPLICATIONS)
  * - Active state dengan highlight violet
  * - Collapsed mode (icon-only) untuk ruang kerja lebih luas
  * - Mobile overlay mode
- *
- * Design reference: DesignReferences/Sidebar Guru.png
- * Design token: design.md § Color Tokens & Components → Navigation
- *
- * Props:
- * - isOpen      : apakah sidebar ditampilkan (untuk mobile overlay)
- * - onClose     : callback untuk menutup sidebar mobile
- * - userName    : nama guru yang ditampilkan di bagian bawah
- * - userSubtitle: jabatan/institusi guru
  */
 
 // ── Icon Registry ────────────────────────────────────
-// Mapping string icon name dari routes.ts ke komponen Lucide
 type IconComponent = React.FC<LucideProps>;
 
 const ICON_MAP: Record<string, IconComponent> = {
@@ -54,6 +54,9 @@ const ICON_MAP: Record<string, IconComponent> = {
   BarChart2,
   MessageSquare,
   Settings,
+  Users,
+  FileSpreadsheet,
+  UploadCloud,
 };
 
 // ── Component ────────────────────────────────────────
@@ -63,6 +66,7 @@ type Props = {
   userName?: string;
   userSubtitle?: string;
   userImage?: string | null;
+  role?: string;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
 };
@@ -73,14 +77,21 @@ export default function SidebarGuru({
   userName = 'Guru Admin',
   userSubtitle = 'Pengmas UNAIR',
   userImage,
+  role,
   isCollapsed: controlledCollapsed,
   onToggleCollapse,
 }: Props) {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const [internalCollapsed, setInternalCollapsed] = useState(false);
 
   const collapsed = controlledCollapsed !== undefined ? controlledCollapsed : internalCollapsed;
   const toggleCollapsed = onToggleCollapse ?? (() => setInternalCollapsed((v) => !v));
+
+  const effectiveRole = role || session?.user?.role;
+  const isSuperAdmin = effectiveRole === 'SUPER_ADMIN';
+  const menuGroups = isSuperAdmin ? SUPERADMIN_SIDEBAR_MENU : GURU_SIDEBAR_MENU;
+  const homeRoute = isSuperAdmin ? SUPERADMIN_ROUTES.DASHBOARD : GURU_ROUTES.DASHBOARD;
 
   // Inisial avatar
   const initials = userName
@@ -106,10 +117,9 @@ export default function SidebarGuru({
       {/* ── SIDEBAR PANEL (Fixed on Desktop & Mobile) ── */}
       <aside
         role="navigation"
-        aria-label="Navigasi portal guru"
+        aria-label="Navigasi portal"
         className={cn(
           'fixed inset-y-0 left-0 z-40 flex h-screen flex-col bg-white transition-all duration-300 ease-in-out overscroll-contain',
-          // mobile: show/hide via translate; desktop: always in place
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
         style={{
@@ -125,13 +135,13 @@ export default function SidebarGuru({
         >
           {/* Logo — hidden when collapsed */}
           <Link
-            href={GURU_ROUTES.DASHBOARD}
+            href={homeRoute}
             className={cn(
               'flex items-center gap-3 select-none transition-opacity',
               collapsed && 'opacity-0 pointer-events-none'
             )}
             tabIndex={collapsed ? -1 : 0}
-            aria-label="SFA Learn — Dashboard Guru"
+            aria-label="SFA Learn — Portal LMS"
           >
             <span
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
@@ -148,7 +158,7 @@ export default function SidebarGuru({
                 SFA Learn
               </span>
               <span className="block text-[11px] font-semibold" style={{ color: '#7F54F8' }}>
-                AI Literacy LMS
+                {isSuperAdmin ? 'Super Admin Portal' : 'AI Literacy LMS'}
               </span>
             </span>
           </Link>
@@ -156,10 +166,10 @@ export default function SidebarGuru({
           {/* Collapsed icon — center */}
           {collapsed && (
             <Link
-              href={GURU_ROUTES.DASHBOARD}
+              href={homeRoute}
               className="mx-auto flex h-9 w-9 items-center justify-center rounded-xl"
               style={{ background: '#7F54F8' }}
-              aria-label="SFA Learn — Dashboard Guru"
+              aria-label="SFA Learn — Portal LMS"
             >
               <Sparkles className="h-4.5 w-4.5 text-white" />
             </Link>
@@ -167,7 +177,7 @@ export default function SidebarGuru({
 
           {/* Collapse toggle — desktop only */}
           <button
-            className="hidden h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-[#F0F3FF] lg:flex"
+            className="hidden h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-[#F0F3FF] lg:flex cursor-pointer"
             style={{ color: '#7A7486' }}
             onClick={toggleCollapsed}
             aria-label={collapsed ? 'Perluas sidebar' : 'Ciutkan sidebar'}
@@ -181,7 +191,7 @@ export default function SidebarGuru({
 
         {/* ── MENU GROUPS ── */}
         <nav className="flex-1 overflow-y-auto py-4 px-3" aria-label="Menu utama">
-          {GURU_SIDEBAR_MENU.map((group) => (
+          {menuGroups.map((group) => (
             <div key={group.groupLabel} className="mb-4">
               {/* Group label — hidden when collapsed */}
               {!collapsed && (
