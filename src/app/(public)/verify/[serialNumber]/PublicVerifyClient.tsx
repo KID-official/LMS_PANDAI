@@ -8,7 +8,8 @@ import {
   CheckCircle2,
   Copy,
   Check,
-  Printer,
+  Download,
+  Loader2,
   Search,
   ExternalLink,
   Award,
@@ -18,6 +19,7 @@ import {
 } from 'lucide-react';
 import { PublicVerificationResult } from '@/actions/certificateActions';
 import { CertificateFrame } from '@/app/components/certificate';
+import { exportCertificateToPdf } from '@/lib/pdfExporter';
 
 interface PublicVerifyClientProps {
   serialNumber: string;
@@ -31,6 +33,8 @@ export const PublicVerifyClient: React.FC<PublicVerifyClientProps> = ({
   const [copied, setCopied] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFullPreview, setShowFullPreview] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const handleCopyLink = async () => {
     try {
@@ -42,8 +46,25 @@ export const PublicVerifyClient: React.FC<PublicVerifyClientProps> = ({
     }
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownloadPdf = async () => {
+    if (isDownloading) return;
+    setIsDownloading(true);
+    setToastMessage('Membuat dokumen PDF resmi resolusi tinggi...');
+
+    const success = await exportCertificateToPdf({
+      elementId: 'printable-certificate-frame',
+      studentName: result.studentName || 'Siswa',
+      serialNumber: result.serialNumber || serialNumber,
+      courseTitle: result.courseTitle,
+    });
+
+    setIsDownloading(false);
+    if (success) {
+      setToastMessage('Sertifikat resmi berhasil diunduh dalam format PDF!');
+    } else {
+      setToastMessage('Gagal membuat dokumen PDF. Silakan coba lagi.');
+    }
+    setTimeout(() => setToastMessage(null), 3500);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -171,11 +192,21 @@ export const PublicVerifyClient: React.FC<PublicVerifyClientProps> = ({
             </button>
 
             <button
-              onClick={handlePrint}
-              className="px-3.5 py-2 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
+              onClick={handleDownloadPdf}
+              disabled={isDownloading}
+              className="px-3.5 py-2 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all active:scale-95 disabled:opacity-75 disabled:cursor-wait"
             >
-              <Printer className="w-3.5 h-3.5 text-white" />
-              <span>Cetak / PDF</span>
+              {isDownloading ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#89F5E7]" />
+                  <span>Mengunduh...</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-3.5 h-3.5 text-[#89F5E7]" />
+                  <span>Unduh Sertifikat (PDF)</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -304,23 +335,43 @@ export const PublicVerifyClient: React.FC<PublicVerifyClientProps> = ({
             </span>
           </button>
 
-          {showFullPreview && (
-            <div className="pt-4 border-t border-[#CAC3D8]/40 flex justify-center">
-              <CertificateFrame
-                serialNumber={result.serialNumber || serialNumber}
-                studentName={result.studentName || 'Siswa'}
-                studentNis={result.studentNis || '-'}
-                className={result.className || '-'}
-                courseTitle={result.courseTitle || 'Literasi & Etika Kecerdasan Buatan'}
-                finalScore={result.finalScore || 85}
-                issuedAt={result.issuedAt || new Date()}
-                verificationUrl={result.verificationUrl}
-                instructorName={result.instructorName}
-              />
-            </div>
-          )}
+          {/* 
+            Certificate Frame:
+            Rendered visible when showFullPreview is true.
+            When showFullPreview is false, stays mounted off-screen with fixed width (w-[900px])
+            so html2canvas can capture it at full desktop resolution at any moment!
+          */}
+          <div
+            className={
+              showFullPreview
+                ? 'pt-4 border-t border-[#CAC3D8]/40 flex justify-center w-full'
+                : 'fixed -left-[99999px] top-0 pointer-events-none opacity-0 w-[900px] z-[-1]'
+            }
+            aria-hidden={!showFullPreview}
+          >
+            <CertificateFrame
+              id="printable-certificate-frame"
+              serialNumber={result.serialNumber || serialNumber}
+              studentName={result.studentName || 'Siswa'}
+              studentNis={result.studentNis || '-'}
+              className={result.className || '-'}
+              courseTitle={result.courseTitle || 'Literasi & Etika Kecerdasan Buatan'}
+              finalScore={result.finalScore || 85}
+              issuedAt={result.issuedAt || new Date()}
+              verificationUrl={result.verificationUrl}
+              instructorName={result.instructorName}
+            />
+          </div>
         </div>
       </div>
+
+      {/* Floating Micro-interaction Toast */}
+      {toastMessage && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#061B38] text-white px-5 py-2.5 rounded-full shadow-2xl text-xs sm:text-sm font-semibold z-50 flex items-center gap-2 animate-bounce">
+          <ShieldCheck className="w-4 h-4 text-[#89F5E7]" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   );
 };

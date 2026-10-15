@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Download, Share2, Check, Copy, Shield, Sparkles, Loader2 } from 'lucide-react';
 import { launchConfetti } from '@/lib/confetti';
+import { exportCertificateToPdf } from '@/lib/pdfExporter';
 
 export interface CertificateActionsProps {
   serialNumber: string;
@@ -17,7 +18,7 @@ export const CertificateActions: React.FC<CertificateActionsProps> = ({
   courseTitle,
   verificationUrl,
 }) => {
-  const [isPrinting, setIsPrinting] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -28,19 +29,27 @@ export const CertificateActions: React.FC<CertificateActionsProps> = ({
     }, 3500);
   };
 
-  const handleDownloadPdf = () => {
-    if (isPrinting) return;
+  const handleDownloadPdf = async () => {
+    if (isDownloading) return;
 
-    // Trigger celebratory confetti burst!
+    // Trigger celebratory confetti burst on the web UI!
     launchConfetti(3500);
-    setIsPrinting(true);
-    showToast('Menyiapkan format cetak sertifikat resolusi tinggi...');
+    setIsDownloading(true);
+    showToast('Membuat file PDF resmi resolusi tinggi...');
 
-    setTimeout(() => {
-      window.print();
-      setIsPrinting(false);
-      showToast('Sertifikat siap disimpan sebagai file PDF!');
-    }, 600);
+    const success = await exportCertificateToPdf({
+      elementId: 'printable-certificate-frame',
+      studentName,
+      serialNumber,
+      courseTitle,
+    });
+
+    setIsDownloading(false);
+    if (success) {
+      showToast('Sertifikat resmi berhasil diunduh dalam format PDF!');
+    } else {
+      showToast('Gagal membuat dokumen PDF. Silakan coba lagi.');
+    }
   };
 
   const handleShare = async () => {
@@ -93,14 +102,15 @@ export const CertificateActions: React.FC<CertificateActionsProps> = ({
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          /* Hide all surrounding interface elements */
+          /* Hide all surrounding interface elements and floating confetti canvas */
           header,
           footer,
           nav,
           aside,
           .no-print,
           button,
-          .certificate-hide-on-print {
+          .certificate-hide-on-print,
+          #pure-confetti-canvas {
             display: none !important;
           }
           /* Center and scale the certificate frame to fill A4 landscape */
@@ -130,13 +140,13 @@ export const CertificateActions: React.FC<CertificateActionsProps> = ({
           <button
             type="button"
             onClick={handleDownloadPdf}
-            disabled={isPrinting}
+            disabled={isDownloading}
             className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#7F54F8] to-[#6636DE] hover:from-[#6636DE] hover:to-[#5010C8] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-[0.98] transition-all disabled:opacity-75 disabled:cursor-wait group"
           >
-            {isPrinting ? (
+            {isDownloading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin text-[#89F5E7]" />
-                <span>Menyiapkan PDF Siap Cetak...</span>
+                <span>Membuat File PDF Resmi...</span>
               </>
             ) : (
               <>
