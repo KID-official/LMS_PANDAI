@@ -115,7 +115,7 @@ export const PublicVerifyClient: React.FC<PublicVerifyClientProps> = ({
     : '12 Oktober 2026';
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex flex-col gap-6 sm:gap-8">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col gap-6 sm:gap-8">
       {/* ── Official Verification Banner ── */}
       <div className="relative overflow-hidden bg-gradient-to-r from-[#00685F] via-[#008378] to-[#005049] rounded-3xl p-6 sm:p-8 text-white shadow-lg">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left relative z-10">

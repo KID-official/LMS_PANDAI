@@ -79,64 +79,88 @@ export const CertificateViewerClient: React.FC<CertificateViewerClientProps> = (
   const { certificate, student, course, verificationUrl } = data;
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col gap-5 sm:gap-6">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col gap-5 sm:gap-6">
       {/* ── Top Navigation Action Bar ── */}
       <div className="flex items-center justify-between certificate-hide-on-print">
         <Link
           href={`/student/courses/${courseKey}`}
-          className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#7F54F8] hover:text-[#5010C8] p-1.5 rounded-lg hover:bg-[#F0F3FF] transition-all group"
+          className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#7F54F8] hover:text-[#5010C8] p-2 rounded-xl hover:bg-[#F0F3FF] transition-all group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
           <span>Kembali ke Silabus Kursus</span>
         </Link>
 
-        <span className="text-[11px] sm:text-xs font-mono font-bold text-[#7A7486] bg-[#F0F3FF] px-3 py-1 rounded-full border border-[#CAC3D8]/30">
-          ID: {certificate.serialNumber}
+        <span className="text-[11px] sm:text-xs font-mono font-bold text-[#7A7486] bg-[#F0F3FF] px-3.5 py-1.5 rounded-full border border-[#CAC3D8]/30">
+          No. Seri: {certificate.serialNumber}
         </span>
       </div>
 
       {/* ── Congratulatory Delight Banner (Matching Stitch UI-08) ── */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#6636DE] to-[#7F54F8] rounded-2xl p-4 sm:p-5 text-white shadow-md certificate-hide-on-print">
-        <div className="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
-        <div className="flex items-center gap-3 sm:gap-4 relative z-10">
-          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20">
-            <CheckCircle2 className="w-6 h-6 sm:w-7 sm:h-7 text-[#89F5E7]" />
+      <div className="relative overflow-hidden bg-gradient-to-r from-[#6636DE] to-[#7F54F8] rounded-3xl p-5 sm:p-6 text-white shadow-md certificate-hide-on-print">
+        <div className="absolute -right-6 -bottom-6 w-40 h-40 rounded-full bg-white/10 blur-xl pointer-events-none" />
+        <div className="flex items-center gap-3.5 sm:gap-4 relative z-10">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20 shadow-inner">
+            <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8 text-[#89F5E7]" />
           </div>
           <div className="flex flex-col">
             <h2 className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight">
               Selamat atas Kelulusanmu, {student.fullName}!
             </h2>
-            <p className="text-xs sm:text-sm text-[#E8DEFF] font-medium opacity-95">
+            <p className="text-xs sm:text-sm text-[#E8DEFF] font-medium opacity-95 mt-0.5">
               Sertifikat kompetensi resmi terverifikasi pangkalan data Pengmas UNAIR &amp; SFA Learn.
             </p>
           </div>
         </div>
       </div>
 
-      {/* ── Realistic Certificate Frame Render ── */}
-      <section className="w-full flex justify-center">
-        <CertificateFrame
-          serialNumber={certificate.serialNumber}
-          studentName={student.fullName}
-          studentNis={student.nis}
-          className={student.className}
-          courseTitle={course.title}
-          finalScore={certificate.finalScore}
-          issuedAt={certificate.issuedAt}
-          verificationUrl={verificationUrl}
-          instructorName={course.instructorName}
-        />
-      </section>
+      {/* ── Responsive 12-Column Desktop Grid ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column (8 cols on Desktop): Certificate Frame Render */}
+        <section className="lg:col-span-8 w-full flex justify-center">
+          <CertificateFrame
+            serialNumber={certificate.serialNumber}
+            studentName={student.fullName}
+            studentNis={student.nis}
+            className={student.className}
+            courseTitle={course.title}
+            finalScore={certificate.finalScore}
+            issuedAt={certificate.issuedAt}
+            verificationUrl={verificationUrl}
+            instructorName={course.instructorName}
+          />
+        </section>
 
-      {/* ── Action Buttons & Security Box ── */}
-      <section className="w-full">
-        <CertificateActions
-          serialNumber={certificate.serialNumber}
-          studentName={student.fullName}
-          courseTitle={course.title}
-          verificationUrl={verificationUrl}
-        />
-      </section>
+        {/* Right Column (4 cols on Desktop / Sticky): Credential Card & Actions */}
+        <aside className="lg:col-span-4 w-full flex flex-col gap-5 lg:sticky lg:top-8 certificate-hide-on-print">
+          {/* Quick Credential Summary Card */}
+          <div className="bg-white rounded-3xl p-5 shadow-xs border border-[#CAC3D8]/40 flex flex-col gap-3.5">
+            <div className="flex items-center gap-3 border-b border-[#CAC3D8]/30 pb-3.5">
+              <div className="w-11 h-11 rounded-2xl bg-[#E8DEFF] text-[#5010C8] flex items-center justify-center font-bold text-base shrink-0 shadow-xs">
+                {student.fullName.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-sm font-extrabold text-[#061B38] truncate">{student.fullName}</span>
+                <span className="text-xs text-[#7A7486]">NIS: {student.nis} • {student.className}</span>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-2xl bg-[#F0F3FF] border border-[#CAC3D8]/30 flex items-center justify-between text-xs">
+              <span className="text-[#494455] font-semibold">Predikat Kelulusan:</span>
+              <span className="font-extrabold text-[#00685F] bg-[#89F5E7]/40 px-2.5 py-0.5 rounded-full">
+                Sangat Baik ({certificate.finalScore}/100)
+              </span>
+            </div>
+          </div>
+
+          {/* Action Buttons & Security Guarantee */}
+          <CertificateActions
+            serialNumber={certificate.serialNumber}
+            studentName={student.fullName}
+            courseTitle={course.title}
+            verificationUrl={verificationUrl}
+          />
+        </aside>
+      </div>
     </div>
   );
 };

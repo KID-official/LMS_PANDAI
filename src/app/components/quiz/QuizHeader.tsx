@@ -45,10 +45,10 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
   return (
     <header className="w-full">
       {/* Top Floating Glass Nav Bar */}
-      <div className="sticky top-0 z-40 w-full bg-[#F9F9FF]/80 backdrop-blur-xl border-b border-[#CAC3D8]/20 shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-        <div className="max-w-4xl mx-auto h-16 px-4 flex items-center justify-between">
+      <div className="sticky top-0 z-40 w-full bg-[#F9F9FF]/85 backdrop-blur-xl border-b border-[#CAC3D8]/20 shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+        <div className="max-w-7xl mx-auto h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Back Action & Breadcrumb Title */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               type="button"
               onClick={onExitClick}
@@ -61,14 +61,14 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
               <span className="text-[11px] font-semibold text-[#7A7486] uppercase tracking-wider">
                 Interactive Assessment
               </span>
-              <h1 className="font-bold text-sm sm:text-base text-[#061B38] truncate max-w-[220px] sm:max-w-md">
+              <h1 className="font-bold text-sm sm:text-base text-[#061B38] truncate max-w-[220px] sm:max-w-md lg:max-w-xl">
                 {quizTitle}
               </h1>
             </div>
           </div>
 
           {/* Right Header Helpers */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-3">
             {onHelpClick && (
               <button
                 type="button"
@@ -79,6 +79,14 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
                 <HelpCircle className="w-5 h-5" />
               </button>
             )}
+            <button
+              type="button"
+              onClick={onExitClick}
+              className="h-9 px-3.5 rounded-full bg-[#E7EEFF] hover:bg-[#DFE8FF] text-[#061B38] flex items-center justify-center gap-1.5 transition-all active:scale-95 text-xs font-bold"
+            >
+              <X className="w-4 h-4" />
+              <span>Keluar</span>
+            </button>
             <div className="w-8 h-8 rounded-full bg-[#7F54F8] flex items-center justify-center shrink-0 shadow-sm text-white">
               <User className="w-4 h-4" />
             </div>
@@ -86,8 +94,8 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
         </div>
       </div>
 
-      {/* Quiz Context Bar & Exit Button */}
-      <div className="max-w-4xl mx-auto px-4 pt-4 pb-2">
+      {/* Quiz Mobile Context Bar & Metric Pills (Hidden on Desktop because Desktop Sidebar shows them) */}
+      <div className="lg:hidden max-w-4xl mx-auto px-4 pt-4 pb-2">
         <div className="flex items-center justify-between py-1">
           <div className="flex flex-col min-w-0 pr-3">
             <div className="flex items-center gap-1.5 mb-0.5">
@@ -100,18 +108,9 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
               {quizTitle}
             </h2>
           </div>
-
-          <button
-            type="button"
-            onClick={onExitClick}
-            className="h-9 px-3 rounded-full bg-[#E7EEFF] hover:bg-[#DFE8FF] text-[#061B38] flex items-center justify-center gap-1.5 transition-all active:scale-95 shrink-0 shadow-xs text-xs font-semibold"
-          >
-            <X className="w-4 h-4" />
-            <span>Keluar</span>
-          </button>
         </div>
 
-        {/* Quiz Meta & Metric Pills */}
+        {/* Quiz Meta & Metric Pills (Mobile) */}
         <div className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-xs border border-[#CAC3D8]/30 mt-3 flex flex-col gap-3">
           <div className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar py-0.5">
             {/* Passing Grade Pill (Soft Lavender) */}

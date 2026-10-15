@@ -83,9 +83,9 @@ export default async function QuizResultPage({ params }: QuizResultPageProps) {
     <div className="min-h-screen bg-[#F9F9FF] text-[#061B38] antialiased flex flex-col">
       {/* ── Fixed Top Utility Header (Stitch UI-07) ────────────────────────── */}
       <header className="fixed top-0 w-full z-40 bg-[#F9F9FF]/85 backdrop-blur-xl border-b border-[#CAC3D8]/20 shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-        <div className="max-w-3xl mx-auto h-16 px-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Back Action & Title */}
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <Link
               href={`/student/courses/${courseKey}`}
               aria-label="Kembali ke Silabus Kursus"
@@ -95,7 +95,7 @@ export default async function QuizResultPage({ params }: QuizResultPageProps) {
             </Link>
 
             <div className="min-w-0 flex flex-col">
-              <span className="text-[10px] text-[#7A7486] font-semibold uppercase tracking-wider truncate">
+              <span className="text-[10px] sm:text-xs text-[#7A7486] font-semibold uppercase tracking-wider truncate">
                 {result.courseTitle}
               </span>
               <h1 className="text-sm sm:text-base font-bold text-[#061B38] truncate">
@@ -105,7 +105,14 @@ export default async function QuizResultPage({ params }: QuizResultPageProps) {
           </div>
 
           {/* Right Header Controls: Info & Avatar */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <Link
+              href={`/student/courses/${courseKey}`}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F0F3FF] hover:bg-[#DFE8FF] text-xs font-bold text-[#7F54F8] transition-colors border border-[#CAC3D8]/30"
+            >
+              <span>Silabus Kursus</span>
+            </Link>
+
             <Link
               href="/student/profile"
               aria-label="Profil Siswa"
@@ -117,75 +124,82 @@ export default async function QuizResultPage({ params }: QuizResultPageProps) {
         </div>
       </header>
 
-      {/* ── Main Content Area ──────────────────────────────────────────────── */}
-      <main className="flex-1 flex flex-col w-full max-w-3xl mx-auto px-4 pt-20 pb-12 sm:pt-22 sm:pb-16 space-y-4 sm:space-y-5">
-        {/* 1. Header Rekapitulasi & Perayaan Nilai */}
-        <QuizResultHeader
-          studentName={result.studentName}
-          score={result.score}
-          passingScore={result.passingScore}
-          isPassed={result.isPassed}
-          attemptNumber={result.attemptNumber}
-          quizTitle={result.quizTitle}
-        />
+      {/* ── Main Content Area (Responsive 12-Column Desktop Grid) ──────────── */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 sm:pt-24 sm:pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column (5 cols on Desktop / Sticky): Score Summary, Stats, & Actions */}
+          <section className="lg:col-span-5 lg:sticky lg:top-24 flex flex-col gap-5 w-full">
+            {/* 1. Header Rekapitulasi & Perayaan Nilai */}
+            <QuizResultHeader
+              studentName={result.studentName}
+              score={result.score}
+              passingScore={result.passingScore}
+              isPassed={result.isPassed}
+              attemptNumber={result.attemptNumber}
+              quizTitle={result.quizTitle}
+            />
 
-        {/* 2. Grid 3 Ubin Metrik Performa (Benar, Waktu, Percobaan) */}
-        <ScoreBreakdownTiles
-          correctCount={result.correctCount}
-          totalQuestions={result.totalQuestions}
-          accuracyPercentage={result.accuracyPercentage}
-          timeSpentFormatted={result.timeSpentFormatted}
-          timeLimitFormatted={result.timeLimitFormatted}
-          attemptNumber={result.attemptNumber}
-          maxAttempts={result.maxAttempts}
-          remainingAttempts={result.remainingAttempts}
-        />
+            {/* 2. Grid 3 Ubin Metrik Performa (Benar, Waktu, Percobaan) */}
+            <ScoreBreakdownTiles
+              correctCount={result.correctCount}
+              totalQuestions={result.totalQuestions}
+              accuracyPercentage={result.accuracyPercentage}
+              timeSpentFormatted={result.timeSpentFormatted}
+              timeLimitFormatted={result.timeLimitFormatted}
+              attemptNumber={result.attemptNumber}
+              maxAttempts={result.maxAttempts}
+              remainingAttempts={result.remainingAttempts}
+            />
 
-        {/* 3. Banner Delight Gradien Modul Terbuka / Kursus Tuntas */}
-        <UnlockedModuleBanner
-          unlockedModule={result.unlockedModule}
-          isCourseCompleted={result.isCourseCompleted}
-          isPassed={result.isPassed}
-          courseTitle={result.courseTitle}
-        />
+            {/* 3. Banner Delight Gradien Modul Terbuka / Kursus Tuntas */}
+            <UnlockedModuleBanner
+              unlockedModule={result.unlockedModule}
+              isCourseCompleted={result.isCourseCompleted}
+              isPassed={result.isPassed}
+              courseTitle={result.courseTitle}
+            />
 
-        {/* 4. Daftar Rincian Evaluasi Butir Soal (Jawaban vs Kunci & Pembahasan) */}
-        <QuestionReviewList questions={result.questionReviews} />
+            {/* 4. Action CTA Navigation Buttons */}
+            <ResultActionButtons
+              courseKey={result.courseKey}
+              quizKey={result.quizKey}
+              currentChapterKey={result.currentChapterKey}
+              currentChapterNumber={result.currentChapterNumber}
+              unlockedModule={result.unlockedModule}
+              isCourseCompleted={result.isCourseCompleted}
+              isPassed={result.isPassed}
+              attemptNumber={result.attemptNumber}
+              maxAttempts={result.maxAttempts}
+              remainingAttempts={result.remainingAttempts}
+            />
 
-        {/* 5. Visual Delight: Lencana Literasi AI Portofolio Preview */}
-        {result.isPassed && (
-          <div className="rounded-2xl bg-white p-4 sm:p-5 shadow-xs border border-[#CAC3D8]/30 flex items-center gap-3.5 transition-all hover:shadow-sm">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-tr from-[#7F54F8] to-[#5566EE] text-white flex items-center justify-center shrink-0 shadow-sm">
-              <Award className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-            </div>
+            {/* 5. Visual Delight: Lencana Literasi AI Portofolio Preview */}
+            {result.isPassed && (
+              <div className="rounded-2xl bg-white p-4 sm:p-5 shadow-xs border border-[#CAC3D8]/30 flex items-center gap-3.5 transition-all hover:shadow-sm">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-tr from-[#7F54F8] to-[#5566EE] text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <Award className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                </div>
 
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs sm:text-sm font-bold text-[#061B38] truncate">
-                  Lencana Pencapaian Kuis AI
-                </span>
-                <Sparkles className="w-4 h-4 text-[#7F54F8] shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs sm:text-sm font-bold text-[#061B38] truncate">
+                      Lencana Pencapaian Kuis AI
+                    </span>
+                    <Sparkles className="w-4 h-4 text-[#7F54F8] shrink-0" />
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-[#494455] mt-0.5 leading-snug">
+                    Pencapaian evaluasi ini tersimpan otomatis dalam portofolio belajar dan rekap sertifikasimu.
+                  </p>
+                </div>
               </div>
-              <p className="text-[11px] sm:text-xs text-[#494455] mt-0.5 leading-snug">
-                Pencapaian evaluasi ini tersimpan otomatis dalam portofolio belajar dan rekap sertifikasimu.
-              </p>
-            </div>
-          </div>
-        )}
+            )}
+          </section>
 
-        {/* 6. Action CTA Navigation Buttons */}
-        <ResultActionButtons
-          courseKey={result.courseKey}
-          quizKey={result.quizKey}
-          currentChapterKey={result.currentChapterKey}
-          currentChapterNumber={result.currentChapterNumber}
-          unlockedModule={result.unlockedModule}
-          isCourseCompleted={result.isCourseCompleted}
-          isPassed={result.isPassed}
-          attemptNumber={result.attemptNumber}
-          maxAttempts={result.maxAttempts}
-          remainingAttempts={result.remainingAttempts}
-        />
+          {/* Right Column (7 cols on Desktop): Detailed Question Review & Explanations */}
+          <section className="lg:col-span-7 flex flex-col gap-5 w-full">
+            <QuestionReviewList questions={result.questionReviews} />
+          </section>
+        </div>
       </main>
     </div>
   );

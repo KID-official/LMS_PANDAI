@@ -8,7 +8,8 @@ import { QuestionCard } from './QuestionCard';
 import { QuizDrawerNav } from './QuizDrawerNav';
 import { QuizFooterBar } from './QuizFooterBar';
 import { QuizConfirmModal, QuizConfirmModalMode } from './QuizConfirmModal';
-import { AlertCircle, HelpCircle, X } from 'lucide-react';
+import { QuizDesktopSidebar } from './QuizDesktopSidebar';
+import { AlertCircle, HelpCircle, X, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 
 export interface QuizSessionClientProps {
   quizData: ClientQuizDataPayload;
@@ -151,11 +152,11 @@ export const QuizSessionClient: React.FC<QuizSessionClientProps> = ({
         isSubmitting={isPending}
       />
 
-      {/* Main Question Body Container */}
-      <main className="flex-1 w-full max-w-2xl mx-auto px-4 pt-3 pb-36">
+      {/* Main Question Body Container (Responsive 12-col Desktop Grid) */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-36 lg:pb-16">
         {/* Error Alert Banner if any */}
         {errorMessage && (
-          <div className="mb-4 p-4 rounded-2xl bg-[#FFDAD6] border border-[#BA1A1A]/30 text-[#93000A] flex items-start gap-3 shadow-xs">
+          <div className="mb-6 p-4 rounded-2xl bg-[#FFDAD6] border border-[#BA1A1A]/30 text-[#93000A] flex items-start gap-3 shadow-xs">
             <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
             <div className="text-xs sm:text-sm">
               <strong className="block font-bold">Terjadi Kendala:</strong>
@@ -171,41 +172,111 @@ export const QuizSessionClient: React.FC<QuizSessionClientProps> = ({
           </div>
         )}
 
-        {/* Current Question Card */}
-        {currentQuestion && (
-          <QuestionCard
-            question={currentQuestion}
-            questionNumber={currentIndex + 1}
-            totalQuestions={totalQuestions}
-            selectedOption={answers[currentQuestion.id]}
-            onSelectOption={handleSelectOption}
-            disabled={isPending}
-          />
-        )}
+        {/* 12-Column Responsive Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column (lg:col-span-8): Question Card & Desktop Nav */}
+          <section className="lg:col-span-8 flex flex-col gap-6 w-full">
+            {currentQuestion && (
+              <QuestionCard
+                question={currentQuestion}
+                questionNumber={currentIndex + 1}
+                totalQuestions={totalQuestions}
+                selectedOption={answers[currentQuestion.id]}
+                onSelectOption={handleSelectOption}
+                disabled={isPending}
+              />
+            )}
+
+            {/* Desktop-only Inline Navigation Footer */}
+            <div className="hidden lg:flex items-center justify-between p-4 bg-white rounded-2xl border border-[#CAC3D8]/40 shadow-xs">
+              <button
+                type="button"
+                onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
+                disabled={currentIndex === 0 || isPending}
+                className="h-11 px-5 rounded-xl bg-[#E7EEFF] hover:bg-[#DFE8FF] text-[#061B38] font-bold text-xs sm:text-sm flex items-center gap-2 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border border-[#CAC3D8]/30"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Soal Sebelumnya</span>
+              </button>
+
+              <span className="text-xs font-bold text-[#7A7486]">
+                Soal <strong className="text-[#061B38]">{currentIndex + 1}</strong> dari{' '}
+                <strong className="text-[#061B38]">{totalQuestions}</strong>
+              </span>
+
+              {currentIndex < totalQuestions - 1 ? (
+                <button
+                  type="button"
+                  onClick={() => setCurrentIndex((prev) => Math.min(totalQuestions - 1, prev + 1))}
+                  disabled={isPending}
+                  className="h-11 px-6 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md shadow-[#7F54F8]/25 transition-all active:scale-95"
+                >
+                  <span>Soal Selanjutnya</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setModalMode('submit')}
+                  disabled={isPending}
+                  className="h-11 px-6 rounded-xl bg-[#008378] hover:bg-[#00685F] text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md shadow-[#008378]/25 transition-all active:scale-95"
+                >
+                  <CheckCircle className="w-4 h-4 text-[#89F5E7]" />
+                  <span>Kumpulkan Jawaban</span>
+                </button>
+              )}
+            </div>
+          </section>
+
+          {/* Right Column (lg:col-span-4): Sticky Desktop Sidebar */}
+          <div className="hidden lg:block lg:col-span-4 sticky top-24">
+            <QuizDesktopSidebar
+              quizTitle={quizData.title}
+              moduleBadge={quizData.moduleBadge}
+              passingScore={quizData.passingScore}
+              attemptNumber={quizData.attemptNumber}
+              maxAttempts={quizData.maxAttempts}
+              durationMinutes={quizData.durationMinutes}
+              timerSeconds={timerSeconds}
+              currentIndex={currentIndex}
+              totalQuestions={totalQuestions}
+              answers={answers}
+              questionIds={questionIds}
+              onSelectQuestion={(idx) => setCurrentIndex(idx)}
+              onSubmit={() => setModalMode('submit')}
+              onHelpClick={() => setShowHelpModal(true)}
+              isSubmitting={isPending}
+            />
+          </div>
+        </div>
       </main>
 
-      {/* Drawer Overlay for Question Navigation Grid */}
-      <QuizDrawerNav
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        totalQuestions={totalQuestions}
-        currentIndex={currentIndex}
-        answers={answers}
-        questionIds={questionIds}
-        onSelectQuestion={(idx) => setCurrentIndex(idx)}
-      />
+      {/* Drawer Overlay for Mobile Question Navigation Grid */}
+      <div className="lg:hidden">
+        <QuizDrawerNav
+          isOpen={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          totalQuestions={totalQuestions}
+          currentIndex={currentIndex}
+          answers={answers}
+          questionIds={questionIds}
+          onSelectQuestion={(idx) => setCurrentIndex(idx)}
+        />
+      </div>
 
-      {/* Floating Bottom Action Bar */}
-      <QuizFooterBar
-        currentIndex={currentIndex}
-        totalQuestions={totalQuestions}
-        onPrev={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
-        onNext={() => setCurrentIndex((prev) => Math.min(totalQuestions - 1, prev + 1))}
-        onSubmit={() => setModalMode('submit')}
-        onToggleDrawer={() => setIsDrawerOpen((prev) => !prev)}
-        isDrawerOpen={isDrawerOpen}
-        isSubmitting={isPending}
-      />
+      {/* Floating Bottom Action Bar (Mobile Only: lg:hidden) */}
+      <div className="lg:hidden">
+        <QuizFooterBar
+          currentIndex={currentIndex}
+          totalQuestions={totalQuestions}
+          onPrev={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
+          onNext={() => setCurrentIndex((prev) => Math.min(totalQuestions - 1, prev + 1))}
+          onSubmit={() => setModalMode('submit')}
+          onToggleDrawer={() => setIsDrawerOpen((prev) => !prev)}
+          isDrawerOpen={isDrawerOpen}
+          isSubmitting={isPending}
+        />
+      </div>
 
       {/* Confirmation & Timeout Modal */}
       <QuizConfirmModal

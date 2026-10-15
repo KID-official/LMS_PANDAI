@@ -6,6 +6,7 @@ export * from './QuizDrawerNav';
 export * from './QuizFooterBar';
 export * from './QuizConfirmModal';
 export * from './QuizSessionClient';
+export * from './QuizDesktopSidebar';
 
 // Quiz Result Components (UI-07)
 export * from './QuizResultHeader';
