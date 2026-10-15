@@ -105,6 +105,66 @@ export async function getQuizDataAction(
     const attemptNumber = Math.min(attemptCount + 1, maxAttempts);
     const canAttempt = attemptCount < maxAttempts;
 
+    // Validasi Prasyarat: Cari chapter untuk kuis ini dan periksa kelayakan akses
+    let matchedChapter: (typeof COURSES_DATA)[0]['chapters'][0] | null = null;
+    let matchedCourseKey = courseKey || staticQuiz.courseKey;
+    for (const c of COURSES_DATA) {
+      for (const ch of c.chapters) {
+        if (ch.quizKey === staticQuiz.quizKey || ch.quizKey === quizKey) {
+          matchedChapter = ch;
+          matchedCourseKey = c.key;
+          break;
+        }
+      }
+      if (matchedChapter) break;
+    }
+
+    if (matchedChapter) {
+      // 1. Cek apakah bab ini terkunci karena bab sebelumnya belum lulus kuis
+      const course = COURSES_DATA.find((c) => c.key === matchedCourseKey);
+      if (course) {
+        const chIndex = course.chapters.findIndex((c) => c.key === matchedChapter?.key);
+        if (chIndex > 0) {
+          const prevChapter = course.chapters[chIndex - 1];
+          if (prevChapter.hasQuiz && prevChapter.quizKey) {
+            const prevPassed = await prisma.userQuizScore.findFirst({
+              where: {
+                user_id: userId,
+                quiz_key: prevChapter.quizKey,
+                is_passed: true,
+              },
+            });
+            if (!prevPassed) {
+              return {
+                success: false,
+                error: `Bab ini masih terkunci. Anda wajib menyelesaikan dan lulus kuis Bab ${prevChapter.chapterNumber} terlebih dahulu.`,
+              };
+            }
+          }
+        }
+      }
+
+      // 2. Cek apakah siswa sudah memenuhi durasi tonton minimal materi bab ini
+      const progressRecord = await prisma.userProgress.findUnique({
+        where: {
+          user_id_chapter_key: {
+            user_id: userId,
+            chapter_key: matchedChapter.key,
+          },
+        },
+      });
+
+      const hasWatchedEnough = (progressRecord?.watch_seconds || 0) >= (matchedChapter.minWatchSeconds || 0);
+
+      // Jika belum pernah lulus, belum pernah attempt, dan belum selesai tonton video
+      if (!isPassed && existingScores.length === 0 && !hasWatchedEnough && (matchedChapter.minWatchSeconds || 0) > 0) {
+        return {
+          success: false,
+          error: `Anda belum menyelesaikan waktu tonton wajib materi bab ini (${matchedChapter.minWatchSeconds} detik). Silakan putar dan simak video materi terlebih dahulu sebelum mengambil kuis evaluasi.`,
+        };
+      }
+    }
+
     // Filter data soal: hapus correctOption dan explanation untuk proteksi integritas ujian
     const sanitizedQuestions: ClientQuestion[] = staticQuiz.questions.map((q: StaticQuizQuestion) => ({
       id: q.id,

@@ -254,11 +254,13 @@ export default async function ChapterPlayerPage({ params }: ChapterPageProps) {
             {/* Video Player Container */}
             <div className="mt-3">
               <VideoPlayerContainer
+                courseKey={course.key}
                 chapterKey={chapter.key}
                 youtubeUrl={chapter.youtubeUrl}
                 title={chapter.title}
                 minWatchSeconds={chapter.minWatchSeconds}
                 isAlreadyCompleted={isAlreadyCompleted}
+                initialWatchSeconds={currentChapterStatus?.watchSeconds || 0}
               />
             </div>
 

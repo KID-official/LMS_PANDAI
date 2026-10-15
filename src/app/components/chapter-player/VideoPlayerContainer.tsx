@@ -3,21 +3,26 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Play, Pause, Tv2 } from 'lucide-react';
 import { useChapterTimerStore } from '@/stores/useChapterTimerStore';
+import { updateWatchSecondsAction } from '@/actions/progressActions';
 
 interface VideoPlayerContainerProps {
+  courseKey: string;
   chapterKey: string;
   youtubeUrl: string;
   title: string;
   minWatchSeconds: number;
   isAlreadyCompleted: boolean;
+  initialWatchSeconds?: number;
 }
 
 export function VideoPlayerContainer({
+  courseKey,
   chapterKey,
   youtubeUrl,
   title,
   minWatchSeconds,
   isAlreadyCompleted,
+  initialWatchSeconds = 0,
 }: VideoPlayerContainerProps) {
   const {
     isPlaying,
@@ -28,13 +33,14 @@ export function VideoPlayerContainer({
     tick,
   } = useChapterTimerStore();
 
-  const [hasStarted, setHasStarted] = useState(false);
+  const isAlreadyWatched = isAlreadyCompleted || initialWatchSeconds >= minWatchSeconds;
+  const [hasStarted, setHasStarted] = useState(isAlreadyWatched);
 
   // Initialize chapter store on mount or chapter change
   useEffect(() => {
-    initChapter(chapterKey, minWatchSeconds, isAlreadyCompleted);
-    setHasStarted(isAlreadyCompleted);
-  }, [chapterKey, minWatchSeconds, isAlreadyCompleted, initChapter]);
+    initChapter(chapterKey, minWatchSeconds, isAlreadyWatched);
+    setHasStarted(isAlreadyWatched);
+  }, [chapterKey, minWatchSeconds, isAlreadyWatched, initChapter]);
 
   // Handle timer tick interval every 1000ms when video is playing
   useEffect(() => {
@@ -50,6 +56,13 @@ export function VideoPlayerContainer({
       }
     };
   }, [isPlaying, tick]);
+
+  // Persist watch progress to database when watch requirement is met
+  useEffect(() => {
+    if (isCompleted && courseKey && chapterKey) {
+      updateWatchSecondsAction(courseKey, chapterKey, minWatchSeconds).catch(() => {});
+    }
+  }, [isCompleted, courseKey, chapterKey, minWatchSeconds]);
 
   // Transform youtube embed url with autoplay parameters if playing
   const embedUrl = useMemo(() => {

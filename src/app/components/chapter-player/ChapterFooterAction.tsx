@@ -9,7 +9,10 @@ import {
   FileQuestion,
   RotateCcw,
   Award,
+  Clock,
+  Sparkles,
 } from 'lucide-react';
+import { useChapterTimerStore } from '@/stores/useChapterTimerStore';
 
 interface NextChapterInfo {
   key: string;
@@ -19,7 +22,7 @@ interface NextChapterInfo {
 
 interface ChapterFooterActionProps {
   courseKey: string;
-  chapterKey: string;
+  chapterKey?: string;
   isAlreadyCompleted: boolean;
   nextChapter?: NextChapterInfo;
   hasQuiz?: boolean;
@@ -33,6 +36,9 @@ export function ChapterFooterAction({
   hasQuiz = true,
   quizKey,
 }: ChapterFooterActionProps) {
+  const { isCompleted: isTimerCompleted, remainingSeconds } = useChapterTimerStore();
+  const canTakeQuiz = isAlreadyCompleted || isTimerCompleted || remainingSeconds === 0;
+
   // ── Render Actions saat Bab SUDAH TUNTAS (Lulus Kuis) ────────────────────────
   if (isAlreadyCompleted) {
     return (
@@ -43,7 +49,7 @@ export function ChapterFooterAction({
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-[#00685F]" />
               <span className="text-xs font-bold text-[#061B38]">
-                Status: Bab Tuntas & Terverifikasi
+                Status: Bab Tuntas &amp; Terverifikasi
               </span>
             </div>
 
@@ -86,7 +92,7 @@ export function ChapterFooterAction({
                 className="py-3 px-5 rounded-xl bg-[#00685F] hover:bg-[#005049] text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all active:scale-[0.98] group"
               >
                 <Award className="w-4 h-4 text-white" />
-                <span>Lihat & Klaim E-Sertifikat</span>
+                <span>Lihat &amp; Klaim E-Sertifikat</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             )}
@@ -143,45 +149,70 @@ export function ChapterFooterAction({
     );
   }
 
-  // ── Render Actions saat Bab BELUM TUNTAS (Wajib Kerjakan Kuis) ───────────────
+  // ── Render Actions saat Bab BELUM TUNTAS (Kuis Terkunci sampai Video Selesai) ──
   return (
     <>
       {/* Desktop View (Inline Box) */}
       <div className="hidden lg:flex flex-col gap-3.5 mt-8 p-5 rounded-2xl bg-white border border-[#CAC3D8]/40 shadow-subtle">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#7F54F8] animate-pulse" />
+            <span
+              className={`w-2.5 h-2.5 rounded-full ${
+                canTakeQuiz ? 'bg-[#00685F]' : 'bg-[#7F54F8] animate-pulse'
+              }`}
+            />
             <span className="text-xs font-bold text-[#061B38]">
-              Status: Sedang Mempelajari Bab
+              {canTakeQuiz
+                ? 'Status: Video Selesai — Siap Kerjakan Kuis'
+                : 'Status: Sedang Mempelajari Video Bab'}
             </span>
           </div>
 
-          <span className="text-xs font-bold text-[#5010C8] bg-[#E8DEFF] px-3 py-1 rounded-full">
-            Prasyarat: Lulus Kuis (Passing Grade: 75)
+          <span
+            className={`text-xs font-bold px-3 py-1 rounded-full ${
+              canTakeQuiz
+                ? 'bg-[#89F5E7]/30 text-[#00685F]'
+                : 'bg-[#E8DEFF] text-[#5010C8]'
+            }`}
+          >
+            {canTakeQuiz ? 'Kuis Siap Dikerjakan' : 'Waktu Tonton Wajib'}
           </span>
         </div>
 
-        {/* Primary CTA: Kerjakan Kuis Evaluasi */}
+        {/* Primary CTA: Kerjakan Kuis Evaluasi (Terkunci jika timer belum selesai) */}
         {hasQuiz && quizKey ? (
           <div className="space-y-2">
-            <Link
-              href={`/student/courses/${courseKey}/quiz/${quizKey}`}
-              className="w-full py-3.5 px-6 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg transition-all active:scale-[0.99] group"
-            >
-              <FileQuestion className="w-5 h-5 text-white" />
-              <span>Kerjakan Kuis Evaluasi Bab Ini</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            {canTakeQuiz ? (
+              <Link
+                href={`/student/courses/${courseKey}/quiz/${quizKey}`}
+                className="w-full py-3.5 px-6 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg transition-all active:scale-[0.99] group animate-in fade-in"
+              >
+                <FileQuestion className="w-5 h-5 text-white" />
+                <span>Kerjakan Kuis Evaluasi Bab Ini</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <div
+                className="w-full py-3.5 px-6 rounded-xl bg-[#F0F3FF] border border-[#CAC3D8]/50 text-[#7A7486] font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 cursor-not-allowed select-none shadow-xs"
+                title="Selesaikan pemutaran video materi terlebih dahulu agar kuis terbuka"
+              >
+                <Lock className="w-5 h-5 text-[#7A7486]" />
+                <span>Kuis Terkunci (Tonton Video: Tersisa {remainingSeconds} dtk)</span>
+              </div>
+            )}
 
             <div className="flex items-center justify-between text-xs text-[#7A7486] px-1 pt-0.5">
-              <span className="flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-[#7A7486]" />
-                {nextChapter ? (
-                  <span>Bab {nextChapter.chapterNumber} masih terkunci hingga kuis ini lulus</span>
-                ) : (
-                  <span>Klaim E-Sertifikat terkunci hingga kuis ini lulus</span>
-                )}
-              </span>
+              {canTakeQuiz ? (
+                <span className="flex items-center gap-1.5 text-[#00685F] font-semibold">
+                  <Sparkles className="w-3.5 h-3.5 text-[#00685F]" />
+                  <span>Syarat tontonan selesai! Kamu siap evaluasi kuis</span>
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 text-[#5010C8] font-medium">
+                  <Clock className="w-3.5 h-3.5 text-[#7F54F8]" />
+                  <span>Simak materi video di atas hingga durasi minimal selesai</span>
+                </span>
+              )}
               <span className="font-semibold text-[#7F54F8]">Passing Grade: 75</span>
             </div>
           </div>
@@ -201,22 +232,35 @@ export function ChapterFooterAction({
           {/* Tracker Status Line */}
           <div className="flex items-center justify-between px-1 text-[11px]">
             <div className="flex items-center gap-1.5 text-[#494455] font-semibold">
-              <span className="w-2 h-2 rounded-full bg-[#7F54F8] animate-pulse" />
-              <span>Mempelajari Bab</span>
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  canTakeQuiz ? 'bg-[#00685F]' : 'bg-[#7F54F8] animate-pulse'
+                }`}
+              />
+              <span>{canTakeQuiz ? 'Siap Kuis' : 'Menyimak Video'}</span>
             </div>
             <span className="font-bold text-[#5010C8]">Passing Grade: 75</span>
           </div>
 
           {/* Primary CTA Button */}
           {hasQuiz && quizKey ? (
-            <Link
-              href={`/student/courses/${courseKey}/quiz/${quizKey}`}
-              className="w-full py-3 px-4 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-all"
-            >
-              <FileQuestion className="w-4 h-4 text-white" />
-              <span>Kerjakan Kuis Evaluasi Bab</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            canTakeQuiz ? (
+              <Link
+                href={`/student/courses/${courseKey}/quiz/${quizKey}`}
+                className="w-full py-3 px-4 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-all animate-in fade-in"
+              >
+                <FileQuestion className="w-4 h-4 text-white" />
+                <span>Kerjakan Kuis Evaluasi Bab</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <div
+                className="w-full py-2.5 px-3 rounded-xl bg-[#F0F3FF] border border-[#CAC3D8]/40 text-[#7A7486] font-bold text-xs flex items-center justify-center gap-2 cursor-not-allowed select-none"
+              >
+                <Lock className="w-4 h-4 text-[#7A7486]" />
+                <span>Kuis Terkunci (Tonton {remainingSeconds}s lagi)</span>
+              </div>
+            )
           ) : (
             <Link
               href={`/student/courses/${courseKey}`}
