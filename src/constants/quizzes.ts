@@ -222,6 +222,170 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
     ],
   },
 
+  [QUIZ_KEYS.QUIZ_BEGINNER_CH4]: {
+    quizKey: QUIZ_KEYS.QUIZ_BEGINNER_CH4,
+    title: "Evaluasi Pemahaman Bab 4: Integritas Akademik & Standar Sitasi Prompt",
+    courseKey: "course-beginner",
+    moduleBadge: "Etika & Keamanan AI",
+    passingScore: 75,
+    durationMinutes: 15,
+    questions: [
+      {
+        id: "q1",
+        questionText: "Bagaimana cara melakukan sitasi yang benar ketika menggunakan model AI dalam tugas riset sekolah sesuai standar integritas akademik?",
+        points: 50,
+        category: "Standar Sitasi AI",
+        options: [
+          { key: "A", text: "Tidak perlu mencantumkan sitasi karena AI adalah alat komputasi bebas" },
+          { key: "B", text: "Mencantumkan nama model, versi rilis, tanggal prompt, serta salinan prompt yang digunakan pada lampiran" },
+          { key: "C", text: "Hanya menyebutkan kata 'AI' tanpa detail model atau tanggal akses" },
+          { key: "D", text: "Menyalin seluruh jawaban AI dan mengklaimnya sebagai karya tulis orisinal" },
+        ],
+        correctOption: "B",
+        explanation: "Standar sitasi akademik (seperti APA 7th Edition) mewajibkan pencantuman nama model AI, versi, tanggal akses, dan kutipan prompt yang digunakan untuk menjamin kejujuran ilmiah.",
+        insightTip: "Petunjuk: Transparansi metodologi adalah fondasi integritas akademik.",
+      },
+      {
+        id: "q2",
+        questionText: "Apa peran ideal kecerdasan artifisial (AI) dalam proses belajar siswa di sekolah?",
+        points: 50,
+        category: "Integritas Akademik",
+        options: [
+          { key: "A", text: "Sebagai asisten bernalar (thinking copilot) untuk mengeksplorasi ide, bukan pengganti proses berpikir kritis" },
+          { key: "B", text: "Sebagai pengganti total peran guru dan siswa dalam menyelesaikan seluruh tugas" },
+          { key: "C", text: "Alat untuk menjiplak esai secara otomatis tanpa perlu memahami isinya" },
+          { key: "D", text: "Mesin untuk mengerjakan ulangan secara rahasia tanpa ketahuan" },
+        ],
+        correctOption: "A",
+        explanation: "AI harus diposisikan sebagai 'thinking copilot' yang memperkaya proses penalaran mandiri siswa, bukan sebagai alat penjiplakan yang merusak nalar kritis.",
+        insightTip: "Petunjuk: Kecerdasan buatan mendukung manusia, bukan meniadakan proses belajar pribadi.",
+      },
+    ],
+  },
+
+  [QUIZ_KEYS.QUIZ_INTERMEDIATE_CH1]: {
+    quizKey: QUIZ_KEYS.QUIZ_INTERMEDIATE_CH1,
+    title: "Evaluasi Pemahaman Bab 1: Prinsip Dasar Media Sintetis & Deepfake",
+    courseKey: "course-intermediate",
+    moduleBadge: "Forensik Digital & Keamanan",
+    passingScore: 75,
+    durationMinutes: 15,
+    questions: [
+      {
+        id: "q1",
+        questionText: "Teknologi komputasi apakah yang umum digunakan untuk menghasilkan sintesis wajah dan suara (deepfake) realistis?",
+        points: 50,
+        category: "Arsitektur Media Sintetis",
+        options: [
+          { key: "A", text: "Generative Adversarial Networks (GANs) dan Model Difusi" },
+          { key: "B", text: "Sistem Manajemen Basis Data Relasional (RDBMS)" },
+          { key: "C", text: "Kompresi File ZIP Standar" },
+          { key: "D", text: "Protokol HyperText Transfer Protocol (HTTP)" },
+        ],
+        correctOption: "A",
+        explanation: "GANs dan model difusi modern menggunakan jaringan generator dan diskriminator yang saling bersaing untuk menghasilkan citra dan audio sintetis yang sangat mirip aslinya.",
+        insightTip: "Petunjuk: Perhatikan model generatif yang belajar dari jutaan dataset wajah manusia.",
+      },
+      {
+        id: "q2",
+        questionText: "Apa bahaya utama dari manipulasi kloning suara (voice cloning) berbasis AI pada rekayasa sosial?",
+        points: 50,
+        category: "Ancaman Rekayasa Sosial",
+        options: [
+          { key: "A", text: "Meningkatkan ukuran file audio menjadi terlalu besar" },
+          { key: "B", text: "Digunakan penipu untuk meniru suara orang tua atau guru dalam skenario penipuan darurat finansial" },
+          { key: "C", text: "Menghapus aplikasi pemutar musik di gawai" },
+          { key: "D", text: "Mengubah nada dering ponsel secara acak" },
+        ],
+        correctOption: "B",
+        explanation: "Kloning suara sering dimanfaatkan dalam penipuan vishing (voice phishing) karena korban cenderung percaya pada suara anggota keluarga yang dikenal.",
+        insightTip: "Petunjuk: Rekayasa sosial menyasar psikologis kepanikan korban.",
+      },
+    ],
+  },
+
+  [QUIZ_KEYS.QUIZ_INTERMEDIATE_CH2]: {
+    quizKey: QUIZ_KEYS.QUIZ_INTERMEDIATE_CH2,
+    title: "Evaluasi Pemahaman Bab 2: Analisis Artefak Visual & Metode SIFT",
+    courseKey: "course-intermediate",
+    moduleBadge: "Forensik Digital & Keamanan",
+    passingScore: 75,
+    durationMinutes: 15,
+    questions: [
+      {
+        id: "q1",
+        questionText: "Manakah ciri visual yang sering menjadi indikator kuat bahwa sebuah foto wajah merupakan hasil rekayasa AI (deepfake)?",
+        points: 50,
+        category: "Analisis Forensik Citra",
+        options: [
+          { key: "A", text: "Inkonsistensi pantulan cahaya pada kornea mata, tekstur kulit terlalu halus, dan kelainan bentuk daun telinga atau jari" },
+          { key: "B", text: "Foto memiliki resolusi gambar yang sangat rendah" },
+          { key: "C", text: "Foto berformat file PNG alih-alih JPG" },
+          { key: "D", text: "Warna pakaian subjek berwarna merah atau biru tua" },
+        ],
+        correctOption: "A",
+        explanation: "AI generatif sering kesulitan mereplikasi pantulan cahaya spekular yang identik pada kedua iris mata dan geometri mikro yang rumit seperti lipatan telinga dan tekstur pori-pori.",
+        insightTip: "Petunjuk: Amati mata dan simetri pencahayaan subjek.",
+      },
+      {
+        id: "q2",
+        questionText: "Apa kepanjangan dan prinsip dari metode verifikasi fakta SIFT yang dikembangkan Stanford University?",
+        points: 50,
+        category: "Metodologi Cek Fakta",
+        options: [
+          { key: "A", text: "Stop, Investigate the source, Find better coverage, Trace claims to original context" },
+          { key: "B", text: "Search, Install, Filter, Terminate" },
+          { key: "C", text: "Send, Ignore, Follow, Trust" },
+          { key: "D", text: "Save, Inspect, Forward, Tweet" },
+        ],
+        correctOption: "A",
+        explanation: "SIFT (Stop, Investigate source, Find better coverage, Trace original context) adalah 4 gerakan lateral reading efektif untuk menguji keabsahan informasi digital.",
+        insightTip: "Petunjuk: Metode SIFT menekankan penelusuran klaim ke sumber primer sebelum membagikan informasi.",
+      },
+    ],
+  },
+
+  [QUIZ_KEYS.QUIZ_INTERMEDIATE_CH3]: {
+    quizKey: QUIZ_KEYS.QUIZ_INTERMEDIATE_CH3,
+    title: "Evaluasi Pemahaman Bab 3: Inspeksi Enkripsi C2PA & Watermark SynthID",
+    courseKey: "course-intermediate",
+    moduleBadge: "Forensik Digital & Keamanan",
+    passingScore: 75,
+    durationMinutes: 15,
+    questions: [
+      {
+        id: "q1",
+        questionText: "Apa fungsi utama dari standar manifest kriptografi C2PA (Coalition for Content Provenance and Authenticity)?",
+        points: 50,
+        category: "Standar Metadata Otentikasi",
+        options: [
+          { key: "A", text: "Menyediakan jejak asal-usul (provenance) digital yang terenkripsi mengenai siapa, alat apa, dan kapan suatu media dibuat atau diedit" },
+          { key: "B", text: "Mempercepat proses rendering video pada aplikasi editing" },
+          { key: "C", text: "Menghapus metadata file agar ukuran gambar menjadi lebih ringan" },
+          { key: "D", text: "Memblokir tangkapan layar (screenshot) pada layar ponsel" },
+        ],
+        correctOption: "A",
+        explanation: "C2PA menyematkan manifest bersertifikat kriptografi pada file media untuk membuktikan apakah suatu konten asli tangkapan kamera atau hasil modifikasi model kecerdasan buatan.",
+        insightTip: "Petunjuk: C2PA bertindak seperti 'label nutrisi dan paspor digital' bagi file media.",
+      },
+      {
+        id: "q2",
+        questionText: "Bagaimana teknologi watermark digital tak kasat mata seperti Google SynthID bekerja?",
+        points: 50,
+        category: "Watermark Digital AI",
+        options: [
+          { key: "A", text: "Menyematkan pola watermark imperseptibel langsung ke dalam piksel atau spektrogram audio tanpa merusak kualitas perseptual manusia" },
+          { key: "B", text: "Menambahkan logo teks besar di bagian tengah gambar yang menutupi subjek" },
+          { key: "C", text: "Mengubah ekstensi nama file secara otomatis menjadi format .ai" },
+          { key: "D", text: "Mengunci file gambar dengan kata sandi khusus" },
+        ],
+        correctOption: "A",
+        explanation: "SynthID menyematkan tanda pengenal digital langsung ke dalam struktur piksel gambar atau frekuensi audio sehingga tetap dapat dideteksi meskipun file dipotong (crop), dikompresi, atau difilter.",
+        insightTip: "Petunjuk: Watermark imperseptibel tidak terlihat oleh mata manusia tetapi terdeteksi oleh perangkat lunak detektor.",
+      },
+    ],
+  },
+
   "quiz-literasi-ai-dasar": {
     quizKey: "quiz-literasi-ai-dasar",
     title: "Kuis Komprehensif: Literasi AI Dasar",
@@ -287,7 +451,13 @@ export function getStaticQuiz(quizKey?: string): StaticQuiz {
   if (quizKey && STATIC_QUIZZES[quizKey]) {
     return STATIC_QUIZZES[quizKey];
   }
-  return STATIC_QUIZZES[QUIZ_KEYS.QUIZ_BEGINNER_CH2] || STATIC_QUIZZES[QUIZ_KEYS.QUIZ_BEGINNER_CH1] || Object.values(STATIC_QUIZZES)[0];
+  if (quizKey) {
+    const matched = Object.values(STATIC_QUIZZES).find(
+      (q) => q.quizKey === quizKey || quizKey.includes(q.quizKey) || q.quizKey.includes(quizKey)
+    );
+    if (matched) return matched;
+  }
+  return STATIC_QUIZZES[QUIZ_KEYS.QUIZ_BEGINNER_CH1] || Object.values(STATIC_QUIZZES)[0];
 }
 
 // Backwards compatibility untuk bagian lama yang mungkin mengimpor QUIZZES
@@ -310,6 +480,14 @@ export const QUIZZES = {
   },
   [QUIZ_KEYS.QUIZ_BEGINNER_CH3]: {
     questions: STATIC_QUIZZES[QUIZ_KEYS.QUIZ_BEGINNER_CH3]?.questions.map((q) => ({
+      id: q.id,
+      question: q.questionText,
+      options: q.options.map((opt) => opt.text),
+      correctAnswer: q.options.find((opt) => opt.key === q.correctOption)?.text || "",
+    })) || [],
+  },
+  [QUIZ_KEYS.QUIZ_BEGINNER_CH4]: {
+    questions: STATIC_QUIZZES[QUIZ_KEYS.QUIZ_BEGINNER_CH4]?.questions.map((q) => ({
       id: q.id,
       question: q.questionText,
       options: q.options.map((opt) => opt.text),

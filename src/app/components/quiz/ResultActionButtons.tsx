@@ -46,7 +46,7 @@ export const ResultActionButtons: React.FC<ResultActionButtonsProps> = ({
             </Link>
           ) : isCourseCompleted ? (
             <Link
-              href="/student/profile"
+              href={`/student/courses/${courseKey}/certificate`}
               className="w-full py-3.5 px-4 rounded-xl bg-[#00685F] hover:bg-[#005049] text-white font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
             >
               <Award className="w-4 h-4 text-[#89F5E7]" />
