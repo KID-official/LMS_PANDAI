@@ -222,50 +222,52 @@ export async function submitQuizAction(input: SubmitQuizInput): Promise<SubmitQu
       },
     });
 
-    // Jika lulus (isPassed === true), buka akses bab atau tandai bab terkait sebagai selesai
-    if (isPassed) {
-      let matchedChapterKey: string | null = null;
+    let matchedChapterKey: string | null = null;
 
-      // Cari chapter mana yang memiliki quizKey ini
-      for (const course of COURSES_DATA) {
-        for (const ch of course.chapters) {
-          if (ch.quizKey === staticQuiz.quizKey || ch.quizKey === quizKey) {
-            matchedChapterKey = ch.key;
-            break;
-          }
+    // Cari chapter mana yang memiliki quizKey ini
+    for (const course of COURSES_DATA) {
+      for (const ch of course.chapters) {
+        if (ch.quizKey === staticQuiz.quizKey || ch.quizKey === quizKey) {
+          matchedChapterKey = ch.key;
+          break;
         }
-        if (matchedChapterKey) break;
       }
+      if (matchedChapterKey) break;
+    }
 
-      // Jika tidak langsung ketemu dari COURSES_DATA, coba inferensi dari quizKey
-      if (!matchedChapterKey) {
-        if (quizKey.includes('ch-1')) matchedChapterKey = 'beginner-ch-1';
-        else if (quizKey.includes('ch-2')) matchedChapterKey = 'beginner-ch-2';
-        else if (quizKey.includes('ch-3')) matchedChapterKey = 'beginner-ch-3';
-        else if (quizKey.includes('ch-4')) matchedChapterKey = 'beginner-ch-4';
-      }
+    // Jika tidak langsung ketemu dari COURSES_DATA, coba inferensi dari quizKey
+    if (!matchedChapterKey) {
+      if (quizKey.includes('intermediate') && quizKey.includes('ch-1')) matchedChapterKey = 'intermediate-ch-1';
+      else if (quizKey.includes('intermediate') && quizKey.includes('ch-2')) matchedChapterKey = 'intermediate-ch-2';
+      else if (quizKey.includes('intermediate') && quizKey.includes('ch-3')) matchedChapterKey = 'intermediate-ch-3';
+      else if (quizKey.includes('ch-1')) matchedChapterKey = 'beginner-ch-1';
+      else if (quizKey.includes('ch-2')) matchedChapterKey = 'beginner-ch-2';
+      else if (quizKey.includes('ch-3')) matchedChapterKey = 'beginner-ch-3';
+      else if (quizKey.includes('ch-4')) matchedChapterKey = 'beginner-ch-4';
+    }
 
-      if (matchedChapterKey) {
-        await prisma.userProgress.upsert({
-          where: {
-            user_id_chapter_key: {
-              user_id: userId,
-              chapter_key: matchedChapterKey,
-            },
-          },
-          update: {
-            is_completed: true,
-            completed_at: new Date(),
-          },
-          create: {
+    const hasEverPassed = existingScores.some((s) => s.is_passed) || isPassed;
+
+    if (matchedChapterKey) {
+      await prisma.userProgress.upsert({
+        where: {
+          user_id_chapter_key: {
             user_id: userId,
             chapter_key: matchedChapterKey,
-            is_completed: true,
-            completed_at: new Date(),
-            watch_seconds: Math.max(timeSpentSeconds || 60, 60),
           },
-        });
-      }
+        },
+        update: {
+          is_completed: hasEverPassed,
+          completed_at: hasEverPassed ? new Date() : null,
+        },
+        create: {
+          user_id: userId,
+          chapter_key: matchedChapterKey,
+          is_completed: hasEverPassed,
+          completed_at: hasEverPassed ? new Date() : null,
+          watch_seconds: Math.max(timeSpentSeconds || 60, 60),
+        },
+      });
     }
 
     // Revalidate rute halaman terkait agar cache Next.js terbarui

@@ -63,7 +63,16 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
     // Calculate overall stats
     const totalWatchSeconds = progressRecords.reduce((acc, curr) => acc + (curr.watch_seconds || 0), 0);
     const totalHoursWatched = parseFloat((totalWatchSeconds / 3600).toFixed(1));
-    const completedChaptersCount = progressRecords.filter((p) => p.is_completed).length;
+
+    const passedQuizKeys = new Set(quizScores.filter((s) => s.is_passed).map((s) => s.quiz_key));
+    const isChapterCompletedFn = (ch: Chapter, pRecord?: { is_completed: boolean }) => {
+      if (ch.hasQuiz && ch.quizKey) {
+        return passedQuizKeys.has(ch.quizKey);
+      }
+      return !!pRecord?.is_completed;
+    };
+
+    const progressMapForDash = new Map(progressRecords.map((p) => [p.chapter_key, p]));
 
     const totalQuizScoresSum = quizScores.reduce((acc, curr) => acc + curr.score, 0);
     const averageQuizScore = quizScores.length > 0 ? Math.round(totalQuizScoresSum / quizScores.length) : 0;
@@ -72,6 +81,8 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
     const allCourses = getAllCourses();
     const totalChaptersAll = getTotalChaptersCount();
 
+    let totalCompletedChaptersAll = 0;
+
     // Map progress to active courses
     const activeCoursesMap = allCourses
       .map((course) => {
@@ -79,7 +90,11 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
         
         // Filter progress records belonging to this course
         const courseProgress = progressRecords.filter((p) => courseChapterKeys.has(p.chapter_key));
-        const courseCompletedChapters = courseProgress.filter((p) => p.is_completed).length;
+        const courseCompletedChapters = course.chapters.filter((ch) =>
+          isChapterCompletedFn(ch, progressMapForDash.get(ch.key))
+        ).length;
+
+        totalCompletedChaptersAll += courseCompletedChapters;
 
         const totalCourseChapters = course.chapters.length;
         const progressPercentage = totalCourseChapters > 0
@@ -92,7 +107,7 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
         );
         const lastRecord = sortedProgress[0];
 
-        const hasStartedCourse = courseProgress.length > 0;
+        const hasStartedCourse = courseProgress.length > 0 || courseCompletedChapters > 0;
 
         return {
           key: course.key,
@@ -111,6 +126,8 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
       })
       .filter((course) => course.hasStartedCourse)
       .sort((a, b) => b.lastAccessedAt - a.lastAccessedAt);
+
+    const completedChaptersCount = totalCompletedChaptersAll;
 
     const hasAnyProgress = progressRecords.length > 0 || quizScores.length > 0 || certificates.length > 0;
 
@@ -195,6 +212,16 @@ export async function markChapterCompletedAction(
     }
 
     const userId = session.user.id;
+
+    // Check if chapter has quiz: if so, completion must be earned through passing the quiz
+    const course = getCourseByKey(courseKey);
+    const chapter = course?.chapters.find((c) => c.key === chapterKey);
+    if (chapter?.hasQuiz) {
+      return {
+        success: false,
+        error: 'Bab ini memiliki kuis evaluasi. Bab akan tuntas secara otomatis setelah Anda lulus kuis (nilai minimal 75).',
+      };
+    }
 
     await prisma.userProgress.upsert({
       where: {
@@ -325,6 +352,14 @@ export async function getCourseDetailsWithProgress(
       where: { user_id: userId },
     });
 
+    const userQuizScores = await prisma.userQuizScore.findMany({
+      where: {
+        user_id: userId,
+        is_passed: true,
+      },
+    });
+    const passedQuizKeys = new Set(userQuizScores.map((q) => q.quiz_key));
+
     const progressMap = new Map(
       userProgressRecords.map((p) => [p.chapter_key, p])
     );
@@ -333,52 +368,65 @@ export async function getCourseDetailsWithProgress(
     let completedCount = 0;
     let activeChapterKey = course.chapters[0]?.key || '';
 
-    const chaptersWithStatus: ChapterWithStatus[] = course.chapters.map(
-      (ch, index) => {
-        const record = progressMap.get(ch.key);
-        const isCompleted = !!record?.is_completed;
-        const watchSeconds = record?.watch_seconds || 0;
-        const completedAt = record?.completed_at || null;
+    const chaptersWithStatus: ChapterWithStatus[] = [];
 
-        if (isCompleted) {
-          completedCount++;
-          return {
-            ...ch,
-            status: 'COMPLETED' as ChapterProgressStatus,
-            isCompleted: true,
-            isLocked: false,
-            isActive: false,
-            watchSeconds,
-            completedAt,
-          };
+    for (let index = 0; index < course.chapters.length; index++) {
+      const ch = course.chapters[index];
+      const record = progressMap.get(ch.key);
+
+      const isQuizPassed = ch.hasQuiz && ch.quizKey ? passedQuizKeys.has(ch.quizKey) : true;
+      const isCompleted = ch.hasQuiz && ch.quizKey ? isQuizPassed : !!record?.is_completed;
+      const watchSeconds = record?.watch_seconds || 0;
+      const completedAt = record?.completed_at || null;
+
+      // Auto-sync record di database jika status is_completed berbeda dengan kelulusan kuis
+      if (record && record.is_completed !== isCompleted) {
+        prisma.userProgress
+          .update({
+            where: { id: record.id },
+            data: { is_completed: isCompleted },
+          })
+          .catch(() => {});
+      }
+
+      if (isCompleted) {
+        completedCount++;
+        chaptersWithStatus.push({
+          ...ch,
+          status: 'COMPLETED' as ChapterProgressStatus,
+          isCompleted: true,
+          isLocked: false,
+          isActive: false,
+          watchSeconds,
+          completedAt,
+        });
+        continue;
+      }
+
+      // Sequential rule:
+      // Bab 0 selalu terbuka (ACTIVE jika belum tuntas).
+      // Bab i terbuka (ACTIVE) HANYA jika Bab i-1 telah TUNTAS (lulus kuis).
+      const prevChapterStatus = index > 0 ? chaptersWithStatus[index - 1] : null;
+      const isPrevCompleted = index === 0 || !!prevChapterStatus?.isCompleted;
+
+      if (isPrevCompleted) {
+        const isActive = !foundFirstIncomplete;
+        if (isActive) {
+          foundFirstIncomplete = true;
+          activeChapterKey = ch.key;
         }
-
-        // Sequential rule:
-        // Chapter 0 is unlocked.
-        // Chapter i is unlocked if Chapter i-1 was completed.
-        const prevChapter = index > 0 ? course.chapters[index - 1] : null;
-        const prevRecord = prevChapter ? progressMap.get(prevChapter.key) : null;
-        const isPrevCompleted = index === 0 || !!prevRecord?.is_completed;
-
-        if (isPrevCompleted) {
-          const isActive = !foundFirstIncomplete;
-          if (isActive) {
-            foundFirstIncomplete = true;
-            activeChapterKey = ch.key;
-          }
-          return {
-            ...ch,
-            status: 'ACTIVE' as ChapterProgressStatus,
-            isCompleted: false,
-            isLocked: false,
-            isActive,
-            watchSeconds,
-            completedAt,
-          };
-        }
-
-        // Otherwise locked
-        return {
+        chaptersWithStatus.push({
+          ...ch,
+          status: 'ACTIVE' as ChapterProgressStatus,
+          isCompleted: false,
+          isLocked: false,
+          isActive,
+          watchSeconds,
+          completedAt,
+        });
+      } else {
+        // Jika bab sebelumnya belum tuntas / lulus kuis, bab ini TERKUNCI (LOCKED)
+        chaptersWithStatus.push({
           ...ch,
           status: 'LOCKED' as ChapterProgressStatus,
           isCompleted: false,
@@ -386,9 +434,9 @@ export async function getCourseDetailsWithProgress(
           isActive: false,
           watchSeconds,
           completedAt,
-        };
+        });
       }
-    );
+    }
 
     const totalChapters = course.chapters.length;
     const progressPercentage =

@@ -191,7 +191,7 @@ export default async function ChapterPlayerPage({ params }: ChapterPageProps) {
                 </div>
                 <div className="flex items-start gap-2.5 text-xs text-[#494455]">
                   <CheckCircle2 className="w-4 h-4 text-[#00685F] shrink-0 mt-0.5" />
-                  <span>Klik &quot;Tandai Bab Selesai&quot; atau selesaikan kuis evaluasi jika tersedia.</span>
+                  <span>Kerjakan &amp; lulus kuis evaluasi bab (skor minimal 75) untuk membuka bab ini secara otomatis.</span>
                 </div>
               </div>
             </div>
