@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { getCourseByKey, Course } from '@/data/curriculum';
+import { getCourseByKey, getAllCourses, Course } from '@/data/curriculum';
 
 export interface StudentCertificateResult {
   success: boolean;
@@ -303,3 +303,154 @@ export async function verifyCertificatePublicAction(
     };
   }
 }
+
+export interface CertificateListItem {
+  courseKey: string;
+  courseTitle: string;
+  courseTagline: string;
+  courseCategory: string;
+  thumbnail?: string;
+  badge?: string;
+  status: 'CLAIMED' | 'READY_TO_CLAIM' | 'IN_PROGRESS' | 'NOT_STARTED';
+  completedChaptersCount: number;
+  totalChaptersCount: number;
+  progressPercentage: number;
+  certificate?: {
+    id: string;
+    serialNumber: string;
+    finalScore: number;
+    issuedAt: string;
+    verificationUrl: string;
+  } | null;
+}
+
+export interface StudentCertificatesListResult {
+  success: boolean;
+  error?: string;
+  studentName?: string;
+  stats?: {
+    totalCertificates: number;
+    totalCourses: number;
+    averageScore: number;
+  };
+  items: CertificateListItem[];
+}
+
+/**
+ * Server action to get all courses with their certificate eligibility / status for the current student.
+ */
+export async function getStudentCertificatesListAction(): Promise<StudentCertificatesListResult> {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user || !session.user.id) {
+      return {
+        success: false,
+        error: 'Sesi belajar tidak ditemukan. Silakan masuk sebagai siswa.',
+        items: [],
+      };
+    }
+
+    const userId = session.user.id;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        student: true,
+        certificates: true,
+        progress: true,
+        quiz_scores: true,
+      },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        error: 'Data akun siswa tidak ditemukan.',
+        items: [],
+      };
+    }
+
+    const allCourses = getAllCourses();
+    const passedQuizKeys = new Set(
+      user.quiz_scores.filter((q) => q.is_passed).map((q) => q.quiz_key)
+    );
+    const progressMap = new Map(user.progress.map((p) => [p.chapter_key, p]));
+
+    const items: CertificateListItem[] = allCourses.map((course) => {
+      // Find matching certificate if already issued
+      const cert = user.certificates.find(
+        (c) =>
+          c.course_key === course.key ||
+          (course.key === 'course-beginner' && c.course_key === 'literasi-ai-dasar')
+      );
+
+      // Count completed chapters
+      let completedCount = 0;
+      course.chapters.forEach((ch) => {
+        const pRecord = progressMap.get(ch.key);
+        const isCompleted =
+          ch.hasQuiz && ch.quizKey ? passedQuizKeys.has(ch.quizKey) : !!pRecord?.is_completed;
+        if (isCompleted) completedCount++;
+      });
+
+      const totalChapters = course.chapters.length;
+      const progressPercentage =
+        totalChapters > 0 ? Math.min(100, Math.round((completedCount / totalChapters) * 100)) : 0;
+      const isAllCompleted = totalChapters > 0 && completedCount >= totalChapters;
+
+      let status: CertificateListItem['status'] = 'NOT_STARTED';
+      if (cert) {
+        status = 'CLAIMED';
+      } else if (isAllCompleted) {
+        status = 'READY_TO_CLAIM';
+      } else if (completedCount > 0) {
+        status = 'IN_PROGRESS';
+      }
+
+      return {
+        courseKey: course.key,
+        courseTitle: course.title,
+        courseTagline: course.tagline,
+        courseCategory: course.category,
+        thumbnail: course.thumbnail,
+        badge: course.badge,
+        status,
+        completedChaptersCount: completedCount,
+        totalChaptersCount: totalChapters,
+        progressPercentage,
+        certificate: cert
+          ? {
+              id: cert.id,
+              serialNumber: cert.serial_number,
+              finalScore: cert.final_score,
+              issuedAt: cert.issued_at.toISOString(),
+              verificationUrl: `/verify/${cert.serial_number}`,
+            }
+          : null,
+      };
+    });
+
+    const claimedCount = items.filter((i) => i.status === 'CLAIMED').length;
+    const scores = user.certificates.map((c) => c.final_score);
+    const averageScore =
+      scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+
+    return {
+      success: true,
+      studentName: user.student?.full_name || session.user.name || 'Siswa Pembelajar',
+      stats: {
+        totalCertificates: claimedCount,
+        totalCourses: allCourses.length,
+        averageScore,
+      },
+      items,
+    };
+  } catch (error) {
+    console.error('Error in getStudentCertificatesListAction:', error);
+    return {
+      success: false,
+      error: 'Terjadi kesalahan sistem saat memuat daftar sertifikat.',
+      items: [],
+    };
+  }
+}
+
