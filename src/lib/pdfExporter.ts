@@ -13,8 +13,9 @@ export interface ExportCertificateOptions {
 
 /**
  * Exports the certificate DOM frame into a clean, crisp A4 Landscape PDF.
- * Captures ONLY the certificate frame without any surrounding webpage UI,
- * confetti particles, buttons, or navigation headers.
+ * Uses a dedicated off-screen landscape sandbox (1024px) to ensure all text,
+ * student name, course title, and evaluation score render in exact desktop proportions
+ * without responsive layout collapse, text truncation, or overlapping.
  */
 export async function exportCertificateToPdf(
   options: ExportCertificateOptions = {}
@@ -34,25 +35,43 @@ export async function exportCertificateToPdf(
     return false;
   }
 
-  try {
-    // 1. Temporarily remove box-shadow & border radius for crisp bleed-to-edge print
-    const originalShadow = targetElement.style.boxShadow;
-    targetElement.style.boxShadow = 'none';
+  // 1. Create a dedicated off-screen landscape sandbox (1024px width)
+  const sandbox = document.createElement('div');
+  sandbox.style.position = 'fixed';
+  sandbox.style.left = '-99999px';
+  sandbox.style.top = '0';
+  sandbox.style.width = '1024px';
+  sandbox.style.zIndex = '-9999';
+  sandbox.style.backgroundColor = '#ffffff';
 
-    // 2. Render target element to high-res canvas (2.5x retina scaling)
-    const canvas = await html2canvas(targetElement, {
-      scale: 2.5,
+  const clone = targetElement.cloneNode(true) as HTMLElement;
+  clone.id = 'cloned-certificate-for-export';
+  clone.style.width = '1024px';
+  clone.style.maxWidth = '1024px';
+  clone.style.minWidth = '1024px';
+  clone.style.boxShadow = 'none';
+  clone.style.margin = '0 auto';
+
+  sandbox.appendChild(clone);
+  document.body.appendChild(sandbox);
+
+  // Wait 80ms for browser DOM layout & vector styles to settle
+  await new Promise((resolve) => setTimeout(resolve, 80));
+
+  try {
+    // 2. Render high-res canvas at 2x scale (2048px width -> 300 DPI equivalent)
+    const canvas = await html2canvas(clone, {
+      scale: 2,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
       logging: false,
-      scrollX: 0,
-      scrollY: 0,
-      windowWidth: document.documentElement.offsetWidth,
+      width: 1024,
+      windowWidth: 1200,
     });
 
-    // Restore styling
-    targetElement.style.boxShadow = originalShadow;
+    // Clean up sandbox from DOM
+    sandbox.remove();
 
     // 3. Initialize jsPDF in A4 Landscape (297mm x 210mm)
     const pdf = new jsPDF({
@@ -64,21 +83,20 @@ export async function exportCertificateToPdf(
 
     const pdfWidth = 297;
     const pdfHeight = 210;
+    const margin = 5; // 5mm margin for elegant frame framing
 
-    // Keep slight 4mm margin so the decorative frame border fits gracefully inside printable margins
-    const margin = 4;
     const availableWidth = pdfWidth - margin * 2;
     const availableHeight = pdfHeight - margin * 2;
 
     const canvasRatio = canvas.width / canvas.height;
-    const targetRatio = availableWidth / availableHeight;
+    const pageRatio = availableWidth / availableHeight;
 
     let renderWidth = availableWidth;
     let renderHeight = availableHeight;
     let offsetX = margin;
     let offsetY = margin;
 
-    if (canvasRatio > targetRatio) {
+    if (canvasRatio > pageRatio) {
       renderWidth = availableWidth;
       renderHeight = availableWidth / canvasRatio;
       offsetY = margin + (availableHeight - renderHeight) / 2;
@@ -91,7 +109,7 @@ export async function exportCertificateToPdf(
     const imgData = canvas.toDataURL('image/jpeg', 0.98);
     pdf.addImage(imgData, 'JPEG', offsetX, offsetY, renderWidth, renderHeight, undefined, 'FAST');
 
-    // 4. Sanitize file name: Sertifikat-Kelulusan-[Nama]-[NoSeri].pdf
+    // 4. Sanitize file name
     const cleanName = studentName
       .trim()
       .replace(/[^a-zA-Z0-9_\-\s]/g, '')
@@ -99,11 +117,13 @@ export async function exportCertificateToPdf(
     const cleanSerial = serialNumber.replace(/[^a-zA-Z0-9_\-]/g, '-');
     const fileName = `Sertifikat-Kelulusan-${cleanName || 'Siswa'}-${cleanSerial}.pdf`;
 
-    // 5. Trigger direct auto-download in user's browser
     pdf.save(fileName);
     return true;
   } catch (error) {
     console.error('Failed to export certificate PDF:', error);
+    if (document.body.contains(sandbox)) {
+      sandbox.remove();
+    }
     return false;
   }
 }

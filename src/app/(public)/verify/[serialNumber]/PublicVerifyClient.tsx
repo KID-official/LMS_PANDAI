@@ -345,7 +345,7 @@ export const PublicVerifyClient: React.FC<PublicVerifyClientProps> = ({
             className={
               showFullPreview
                 ? 'pt-4 border-t border-[#CAC3D8]/40 flex justify-center w-full'
-                : 'fixed -left-[99999px] top-0 pointer-events-none opacity-0 w-[900px] z-[-1]'
+                : 'fixed -left-[99999px] top-0 pointer-events-none w-[1024px] z-[-1]'
             }
             aria-hidden={!showFullPreview}
           >
