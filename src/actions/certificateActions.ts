@@ -429,7 +429,11 @@ export async function getStudentCertificatesListAction(): Promise<StudentCertifi
       };
     });
 
-    const claimedCount = items.filter((i) => i.status === 'CLAIMED').length;
+    const earnedItems = items.filter(
+      (item) => item.status === 'CLAIMED' || item.status === 'READY_TO_CLAIM'
+    );
+
+    const claimedCount = earnedItems.filter((i) => i.status === 'CLAIMED').length;
     const scores = user.certificates.map((c) => c.final_score);
     const averageScore =
       scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
@@ -442,7 +446,7 @@ export async function getStudentCertificatesListAction(): Promise<StudentCertifi
         totalCourses: allCourses.length,
         averageScore,
       },
-      items,
+      items: earnedItems,
     };
   } catch (error) {
     console.error('Error in getStudentCertificatesListAction:', error);
