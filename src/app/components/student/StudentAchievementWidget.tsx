@@ -45,9 +45,10 @@ export const StudentAchievementWidget: React.FC<StudentAchievementWidgetProps> =
       {/* Certificate Titles List (Scrollable Content Area) */}
       <div className="flex-1 overflow-y-auto my-3 pr-1 flex flex-col gap-2.5">
         {certificates.map((cert) => (
-          <div
+          <Link
             key={cert.id}
-            className="p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-between gap-3 group hover:border-[#7F54F8]/50 transition-colors"
+            href={`/student/courses/course-beginner/certificate`}
+            className="p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-between gap-3 group hover:border-[#7F54F8]/50 hover:bg-white/10 transition-all"
           >
             <div className="flex items-center gap-2.5 min-w-0">
               <Award className="w-4 h-4 text-[#89F5E7] shrink-0" />
@@ -57,17 +58,17 @@ export const StudentAchievementWidget: React.FC<StudentAchievementWidgetProps> =
             </div>
 
             <CheckCircle2 className="w-4 h-4 text-[#89F5E7] shrink-0" />
-          </div>
+          </Link>
         ))}
       </div>
 
       {/* Sticky Bottom Action CTA Button */}
       <div className="sticky bottom-0 pt-2 bg-gradient-to-t from-[#160E36] via-[#160E36]/90 to-transparent shrink-0">
         <Link
-          href="/student/certificates"
+          href="/student/courses/course-beginner/certificate"
           className="w-full py-2.5 px-4 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors shadow-md border border-white/10"
         >
-          <span>Buka E-Sertifikat</span>
+          <span>Buka E-Sertifikat Utama</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
