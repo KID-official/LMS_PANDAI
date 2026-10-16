@@ -5,7 +5,7 @@ import { jsPDF } from 'jspdf';
 
 export interface ExportCertificateOptions {
   elementId?: string;
-  element?: HTMLElement | null;
+  element?: HTMLElement;
   studentName?: string;
   serialNumber?: string;
   courseTitle?: string;
@@ -20,13 +20,11 @@ export interface ExportCertificateOptions {
 export async function exportCertificateToPdf(
   options: ExportCertificateOptions = {}
 ): Promise<boolean> {
-  if (typeof window === 'undefined') return false;
-
   const {
     elementId = 'printable-certificate-frame',
     element,
     studentName = 'Siswa',
-    serialNumber = 'CERTIFICATE',
+    serialNumber = 'AMOS-2026-CERT',
   } = options;
 
   const targetElement = element || document.getElementById(elementId);
@@ -35,13 +33,15 @@ export async function exportCertificateToPdf(
     return false;
   }
 
-  // 1. Create a dedicated off-screen landscape sandbox (1024px width)
+  // 1. Create a dedicated off-screen landscape sandbox (1024px width) at (0, 0)
+  // Positioned behind the viewport (z-index -99999) to avoid coordinate distortion
   const sandbox = document.createElement('div');
   sandbox.style.position = 'fixed';
-  sandbox.style.left = '-99999px';
   sandbox.style.top = '0';
+  sandbox.style.left = '0';
   sandbox.style.width = '1024px';
-  sandbox.style.zIndex = '-9999';
+  sandbox.style.zIndex = '-99999';
+  sandbox.style.pointerEvents = 'none';
   sandbox.style.backgroundColor = '#ffffff';
 
   const clone = targetElement.cloneNode(true) as HTMLElement;
@@ -55,8 +55,17 @@ export async function exportCertificateToPdf(
   sandbox.appendChild(clone);
   document.body.appendChild(sandbox);
 
-  // Wait 80ms for browser DOM layout & vector styles to settle
-  await new Promise((resolve) => setTimeout(resolve, 80));
+  // Ensure all web fonts and typography metrics are fully ready
+  if (typeof document !== 'undefined' && document.fonts) {
+    try {
+      await document.fonts.ready;
+    } catch {
+      // ignore
+    }
+  }
+
+  // Wait 150ms for browser DOM layout & vector styles to settle
+  await new Promise((resolve) => setTimeout(resolve, 150));
 
   try {
     // 2. Render high-res canvas at 2x scale (2048px width -> 300 DPI equivalent)
@@ -67,7 +76,11 @@ export async function exportCertificateToPdf(
       backgroundColor: '#ffffff',
       logging: false,
       width: 1024,
-      windowWidth: 1200,
+      windowWidth: 1024,
+      x: 0,
+      y: 0,
+      scrollX: 0,
+      scrollY: 0,
     });
 
     // Clean up sandbox from DOM
