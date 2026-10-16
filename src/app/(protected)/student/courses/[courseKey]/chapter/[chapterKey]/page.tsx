@@ -191,7 +191,7 @@ export default async function ChapterPlayerPage({ params }: ChapterPageProps) {
                 </div>
                 <div className="flex items-start gap-2.5 text-xs text-[#494455]">
                   <CheckCircle2 className="w-4 h-4 text-[#00685F] shrink-0 mt-0.5" />
-                  <span>Klik &quot;Tandai Bab Selesai&quot; atau selesaikan kuis evaluasi jika tersedia.</span>
+                  <span>Kerjakan &amp; lulus kuis evaluasi bab (skor minimal 75) untuk membuka bab ini secara otomatis.</span>
                 </div>
               </div>
             </div>
@@ -254,11 +254,13 @@ export default async function ChapterPlayerPage({ params }: ChapterPageProps) {
             {/* Video Player Container */}
             <div className="mt-3">
               <VideoPlayerContainer
+                courseKey={course.key}
                 chapterKey={chapter.key}
                 youtubeUrl={chapter.youtubeUrl}
                 title={chapter.title}
                 minWatchSeconds={chapter.minWatchSeconds}
                 isAlreadyCompleted={isAlreadyCompleted}
+                initialWatchSeconds={currentChapterStatus?.watchSeconds || 0}
               />
             </div>
 

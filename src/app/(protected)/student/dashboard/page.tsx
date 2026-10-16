@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import { getStudentDashboardData } from '@/actions/progressActions';
+import { getStudentCertificatesListAction } from '@/actions/certificateActions';
 import {
   StudentBannerHeader,
   StudentDateWidget,
@@ -22,7 +23,10 @@ export default async function StudentDashboardPage() {
     redirect(PUBLIC_ROUTES.LOGIN);
   }
 
-  const dashboardData = await getStudentDashboardData(session.user.id);
+  const [dashboardData, certificatesData] = await Promise.all([
+    getStudentDashboardData(session.user.id),
+    getStudentCertificatesListAction(),
+  ]);
   const { studentProfile, activeCourses } = dashboardData;
 
   // Determine last accessed course (or null if no active course)
@@ -30,6 +34,12 @@ export default async function StudentDashboardPage() {
 
   // Count fully completed courses for achievement stats
   const completedCoursesCount = activeCourses.filter((c) => c.isFullyCompleted).length;
+
+  // Real certificate items and count
+  const certificateItems = certificatesData.success ? certificatesData.items : [];
+  const claimedCertificatesCount =
+    certificatesData.stats?.totalCertificates ??
+    certificateItems.filter((c) => c.status === 'CLAIMED').length;
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col gap-6">
@@ -89,7 +99,8 @@ export default async function StudentDashboardPage() {
         <div className="lg:col-span-1 h-full min-h-0">
           <StudentAchievementWidget
             completedCoursesCount={completedCoursesCount}
-            totalCertificatesCount={completedCoursesCount}
+            totalCertificatesCount={claimedCertificatesCount}
+            certificates={certificateItems}
           />
         </div>
 

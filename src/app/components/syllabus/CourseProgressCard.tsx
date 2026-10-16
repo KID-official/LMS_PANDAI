@@ -5,6 +5,7 @@ import {
   Play,
   CheckCircle2,
   ArrowRight,
+  Award,
 } from 'lucide-react';
 
 export interface CourseProgressCardProps {
@@ -107,16 +108,26 @@ export const CourseProgressCard: React.FC<CourseProgressCardProps> = ({
       </div>
 
       {/* CTA Button */}
-      <div className="pt-1">
+      <div className="pt-1 flex flex-col gap-2">
         {isAllCompleted ? (
-          <Link
-            href={`/student/courses/${courseKey}/chapter/${targetChapterKey}`}
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#00685F] hover:bg-[#008378] text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-[0.98] group"
-          >
-            <CheckCircle2 className="w-4 h-4 text-[#89F5E7]" />
-            <span>Kursus Tuntas • Review Materi</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <>
+            <Link
+              href={`/student/courses/${courseKey}/certificate`}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-[#7F54F8] to-[#6636DE] hover:from-[#6636DE] hover:to-[#5010C8] text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-[0.98] group"
+            >
+              <Award className="w-4 h-4 text-[#89F5E7] group-hover:scale-110 transition-transform" />
+              <span>Lihat E-Sertifikat Resmi</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+
+            <Link
+              href={`/student/courses/${courseKey}/chapter/${targetChapterKey}`}
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-[#F0F3FF] hover:bg-[#E7EEFF] text-[#00685F] text-xs font-semibold border border-[#CAC3D8]/30 transition-all active:scale-[0.98]"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#00685F]" />
+              <span>Review Materi Modul</span>
+            </Link>
+          </>
         ) : (
           <Link
             href={ctaHref}
