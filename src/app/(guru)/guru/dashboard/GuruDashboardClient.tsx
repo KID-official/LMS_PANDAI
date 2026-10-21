@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   RotateCw,
   FileBarChart2,
-  Calendar,
 } from 'lucide-react';
 import type { GuruDashboardData } from '@/app/actions/guruDashboard';
 import {
@@ -25,24 +24,10 @@ interface GuruDashboardClientProps {
 export default function GuruDashboardClient({ initialData }: GuruDashboardClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [lastRefreshedAt, setLastRefreshedAt] = useState<string>(
-    new Date(initialData.meta.lastUpdated).toLocaleTimeString('id-ID', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    })
-  );
 
   const handleRefresh = () => {
     startTransition(() => {
       router.refresh();
-      setLastRefreshedAt(
-        new Date().toLocaleTimeString('id-ID', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        })
-      );
     });
   };
 
@@ -57,11 +42,6 @@ export default function GuruDashboardClient({ initialData }: GuruDashboardClient
             </span>
             <span className="text-[#94A3B8]">•</span>
             <span className="text-[#64748B]">Tahun Ajaran 2026/2027</span>
-            <span className="text-[#94A3B8]">•</span>
-            <span className="flex items-center gap-1 text-[#059669]">
-              <span className="h-2 w-2 rounded-full bg-[#10B981] animate-pulse" />
-              Sistem Aktif
-            </span>
           </div>
 
           <h1 className="text-[26px] md:text-[28px] font-bold text-[#061B38] tracking-tight">
@@ -87,18 +67,12 @@ export default function GuruDashboardClient({ initialData }: GuruDashboardClient
             <span>{isPending ? 'Memuat...' : 'Segarkan Data'}</span>
           </button>
 
-          {/* Quick Date Range Tag */}
-          <div className="hidden sm:flex h-9 items-center gap-1.5 rounded-xl border border-[#CAC3D8]/50 bg-white px-3 text-[12px] font-medium text-[#64748B] shadow-xs">
-            <Calendar className="h-3.5 w-3.5 text-[#6636DE]" />
-            <span>Pembaruan: {lastRefreshedAt} WIB</span>
-          </div>
-
-          {/* Export / Rekap CTA */}
+          {/* Export / Rekap CTA (White button matching Refresh) */}
           <Link
             href="/guru/progress"
-            className="flex h-9 items-center gap-1.5 rounded-xl bg-[#6636DE] px-3.5 text-[12px] font-semibold text-white shadow-xs transition-all hover:bg-[#5225c5] active:scale-[0.98]"
+            className="flex h-9 items-center gap-1.5 rounded-xl border border-[#CAC3D8]/50 bg-white px-3 text-[12px] font-semibold text-[#061B38] shadow-xs transition-all hover:bg-[#F9F9FF] hover:border-[#6636DE]/30"
           >
-            <FileBarChart2 className="h-4 w-4" />
+            <FileBarChart2 className="h-3.5 w-3.5 text-[#6636DE]" />
             <span>Rekap &amp; Audit Kuis</span>
           </Link>
         </div>

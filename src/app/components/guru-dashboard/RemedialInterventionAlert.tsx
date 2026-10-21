@@ -30,10 +30,10 @@ export default function RemedialInterventionAlert({
     <div className="rounded-2xl border border-[#CAC3D8]/40 bg-white p-5 md:p-6 shadow-xs flex flex-col justify-between">
       {/* ── HEADER ── */}
       <div>
-        <div className="flex items-center justify-between pb-3.5 border-b border-[#F1F5F9]">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between pb-3.5 border-b border-[#F1F5F9] gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div
-              className={`flex h-8 w-8 items-center justify-center rounded-xl ${
+              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
                 hasRemedial
                   ? 'bg-[#FDE8E8] text-[#BA1A1A]'
                   : 'bg-[#ECFDF5] text-[#059669]'
@@ -45,26 +45,27 @@ export default function RemedialInterventionAlert({
                 <CheckCircle2 className="h-4 w-4" />
               )}
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-[#061B38]">
-                  Pusat Intervensi &amp; Remedial
-                </h3>
-                <span className="rounded-full bg-[#EDE9FE] px-2 py-0.5 text-[10px] font-bold text-[#6636DE]">
-                  Topik 4
-                </span>
-              </div>
-              <p className="text-[12px] text-[#64748B]">
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold text-[#061B38] truncate">
+                Pusat Intervensi &amp; Remedial
+              </h3>
+              <p className="text-[12px] text-[#64748B] truncate">
                 Siswa butuh pendampingan guru atau remedial kuis
               </p>
             </div>
           </div>
 
-          {hasRemedial && (
-            <span className="rounded-full bg-[#FDE8E8] px-2.5 py-0.5 text-[11px] font-bold text-[#9B1C1C]">
-              {students.length} Siswa
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="rounded-md border border-[#CAC3D8]/50 bg-[#F0F3FF] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#6636DE]">
+              Topik 4
             </span>
-          )}
+            {hasRemedial && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#FECACA] bg-[#FDE8E8] px-2.5 py-0.5 text-[11px] font-bold text-[#9B1C1C]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#E11D48] animate-pulse" />
+                <span>{students.length} Siswa</span>
+              </span>
+            )}
+          </div>
         </div>
 
         {/* ── CONTENT ── */}

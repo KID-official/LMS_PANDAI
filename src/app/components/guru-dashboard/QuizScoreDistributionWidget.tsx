@@ -24,14 +24,9 @@ export default function QuizScoreDistributionWidget({
               <BarChart2 className="h-4 w-4" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-[#061B38]">
-                  Distribusi Capaian Skor Kuis &amp; Kelulusan
-                </h3>
-                <span className="rounded-full bg-[#EDE9FE] px-2 py-0.5 text-[10px] font-bold text-[#6636DE]">
-                  Topik 3
-                </span>
-              </div>
+              <h3 className="text-base font-bold text-[#061B38]">
+                Distribusi Capaian Skor Kuis &amp; Kelulusan
+              </h3>
               <p className="text-[12px] text-[#64748B]">
                 Sebaran pencapaian passing grade (KKM 75) dari {totalStudentsWithQuiz} siswa peserta kuis
               </p>

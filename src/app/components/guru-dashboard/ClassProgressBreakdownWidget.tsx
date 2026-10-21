@@ -30,8 +30,9 @@ export default function ClassProgressBreakdownWidget({
             </div>
           </div>
 
-          <span className="rounded-full bg-[#F1F5F9] px-2.5 py-0.5 text-[11px] font-bold text-[#475569]">
-            {classes.length} Rombel
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#CAC3D8]/50 bg-[#F0F3FF] px-2.5 py-0.5 text-[11px] font-bold text-[#3A4BD4] shadow-2xs">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#3A4BD4]" />
+            <span>{classes.length} Rombel</span>
           </span>
         </div>
 
