@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { UserRole } from '@prisma/client';
-import { getAllCourses, getTotalChaptersCount, getChapterByKey } from '@/data/curriculum';
+import { getAllCourses, getTotalChaptersCount } from '@/data/curriculum';
 
 export interface GuruKpiData {
   totalStudents: number;
