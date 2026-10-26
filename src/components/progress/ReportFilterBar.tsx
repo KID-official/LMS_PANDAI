@@ -89,8 +89,9 @@ export function ReportFilterBar({
                 onChange={(e) => onCourseChange(e.target.value)}
                 className="cursor-pointer bg-transparent font-bold text-[#7C3AED] focus:outline-none"
               >
-                <option value="literasi-ai-dasar">Literasi AI Dasar</option>
-                <option value="forensik-deepfake">Forensik & Deepfake</option>
+                <option value="ALL">Semua Kursus (7 Bab)</option>
+                <option value="course-beginner">Etika & Keamanan AI Siswa (4 Bab)</option>
+                <option value="course-intermediate">Forensik Visual & Deteksi Deepfake (3 Bab)</option>
               </select>
             </div>
           </div>

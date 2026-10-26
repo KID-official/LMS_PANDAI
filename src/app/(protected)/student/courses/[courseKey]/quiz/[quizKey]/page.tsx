@@ -76,9 +76,13 @@ export default async function StudentQuizPage({ params }: QuizPageProps) {
 
           <h2 className="text-xl font-bold text-[#061B38] mb-2">{quiz.title}</h2>
 
-          <p className="text-xs sm:text-sm text-[#494455] leading-relaxed mb-5">
-            Anda telah menggunakan seluruh kuota ({quiz.maxAttempts} kali) pengerjaan untuk kuis ini.
+          <p className="text-xs sm:text-sm text-[#494455] leading-relaxed mb-3">
+            Anda telah menggunakan kuota percobaan ({quiz.attemptCount}/{quiz.maxAttempts}) pengerjaan untuk kuis ini.
           </p>
+
+          <div className="p-3.5 rounded-xl bg-[#FEF3C7] border border-[#F59E0B]/30 text-center text-xs text-[#92400E] font-semibold mb-5">
+            Percobaan Anda telah mencapai batas, hubungi guru terkait untuk membuka masa percobaan tambahan.
+          </div>
 
           {/* Metric Summary Box */}
           <div className="bg-[#F0F3FF] rounded-2xl p-4 mb-6 border border-[#CAC3D8]/30 flex items-center justify-around">

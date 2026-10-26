@@ -227,8 +227,8 @@ export async function getGuruDashboardDataAction(): Promise<GuruDashboardData> {
     cEntry.total += 1;
     if (user.is_active) cEntry.active += 1;
 
-    // Progress calculation
-    const completedChapters = user.progress.filter((p) => p.is_completed).length;
+    // Progress calculation (exclude quiz unlock flags)
+    const completedChapters = user.progress.filter((p) => p.is_completed && !p.chapter_key.startsWith('quiz_unlock:')).length;
     const studentProgressPct = Math.min(
       100,
       parseFloat(((completedChapters / totalCurriculumChapters) * 100).toFixed(1))
@@ -270,14 +270,14 @@ export async function getGuruDashboardDataAction(): Promise<GuruDashboardData> {
           fullName: student?.full_name || user.identifier,
           className,
           imageUrl: student?.image_url,
-          issueType: latestQuiz.attempt_number >= 3 ? 'MAX_ATTEMPTS' : 'FAILED_QUIZ',
+          issueType: latestQuiz.attempt_number >= 2 ? 'MAX_ATTEMPTS' : 'FAILED_QUIZ',
           latestScore: latestQuiz.score,
           attemptNumber: latestQuiz.attempt_number,
-          maxAttempts: 3,
+          maxAttempts: 2,
           reason:
-            latestQuiz.attempt_number >= 3
-              ? `Skor ${latestQuiz.score}/100 • Kesempatan maksimal habis`
-              : `Skor ${latestQuiz.score}/100 • Belum memenuhi KKM 75 (Percobaan ${latestQuiz.attempt_number}/3)`,
+            latestQuiz.attempt_number >= 2
+              ? `Skor ${latestQuiz.score}/100 • Batas 2 percobaan habis`
+              : `Skor ${latestQuiz.score}/100 • Belum memenuhi KKM 75 (Percobaan ${latestQuiz.attempt_number}/2)`,
         });
       }
     } else {

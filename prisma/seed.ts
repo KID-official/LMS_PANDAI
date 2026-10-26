@@ -60,7 +60,7 @@ async function main() {
   });
   console.log('✓ Created/Updated Teacher 2:', teacher2.identifier);
 
-  // 3. Students (Sesuai referensi mockup dan kelas beragam)
+  // 3. Students (Sesuai kurikulum 2 kursus: 4 bab Pemula + 3 bab Menengah = Total 7 Bab)
   const studentsSeedData = [
     {
       nis: '20260101',
@@ -68,7 +68,7 @@ async function main() {
       className: 'X TKJ A',
       semester: 'Ganjil 2026/2027',
       isActive: true,
-      completedChapters: 8,
+      completedChapters: 7, // Lulus semua 7 bab
       quizScore: 95,
       quizAttempt: 1,
       quizPassed: true,
@@ -77,7 +77,8 @@ async function main() {
         { questionId: 'q2', selectedOption: 'A', isCorrect: true },
         { questionId: 'q3', selectedOption: 'D', isCorrect: false },
       ],
-      certificateSerial: 'AMOS-2026-0812',
+      certBeginner: 'AMOS-2026-0812-AI',
+      certIntermediate: 'AMOS-2026-0812-DF',
     },
     {
       nis: '20260102',
@@ -85,7 +86,7 @@ async function main() {
       className: 'X TKJ A',
       semester: 'Ganjil 2026/2027',
       isActive: true,
-      completedChapters: 8,
+      completedChapters: 7, // Lulus semua 7 bab
       quizScore: 100,
       quizAttempt: 1,
       quizPassed: true,
@@ -94,7 +95,8 @@ async function main() {
         { questionId: 'q2', selectedOption: 'A', isCorrect: true },
         { questionId: 'q3', selectedOption: 'C', isCorrect: true },
       ],
-      certificateSerial: 'AMOS-2026-0813',
+      certBeginner: 'AMOS-2026-0813-AI',
+      certIntermediate: 'AMOS-2026-0813-DF',
     },
     {
       nis: '20260105',
@@ -102,7 +104,7 @@ async function main() {
       className: 'X TKJ B',
       semester: 'Ganjil 2026/2027',
       isActive: true,
-      completedChapters: 6,
+      completedChapters: 3,
       quizScore: 68,
       quizAttempt: 2,
       quizPassed: false, // Perlu Remedial
@@ -111,7 +113,8 @@ async function main() {
         { questionId: 'q2', selectedOption: 'B', isCorrect: false },
         { questionId: 'q3', selectedOption: 'D', isCorrect: false },
       ],
-      certificateSerial: null,
+      certBeginner: null,
+      certIntermediate: null,
     },
     {
       nis: '20260109',
@@ -119,12 +122,13 @@ async function main() {
       className: 'XI RPL 1',
       semester: 'Ganjil 2026/2027',
       isActive: true,
-      completedChapters: 3,
+      completedChapters: 2,
       quizScore: null, // Belum kuis
       quizAttempt: 0,
       quizPassed: false,
       quizSnapshot: null,
-      certificateSerial: null,
+      certBeginner: null,
+      certIntermediate: null,
     },
     {
       nis: '20260110',
@@ -132,7 +136,7 @@ async function main() {
       className: 'X TKJ A',
       semester: 'Ganjil 2026/2027',
       isActive: true,
-      completedChapters: 8,
+      completedChapters: 7, // Lulus semua 7 bab
       quizScore: 85,
       quizAttempt: 1,
       quizPassed: true,
@@ -141,7 +145,8 @@ async function main() {
         { questionId: 'q2', selectedOption: 'A', isCorrect: true },
         { questionId: 'q3', selectedOption: 'D', isCorrect: false },
       ],
-      certificateSerial: 'AMOS-2026-0814',
+      certBeginner: 'AMOS-2026-0814-AI',
+      certIntermediate: 'AMOS-2026-0814-DF',
     },
     {
       nis: '20260112',
@@ -149,7 +154,7 @@ async function main() {
       className: 'X TKJ B',
       semester: 'Ganjil 2026/2027',
       isActive: true,
-      completedChapters: 5,
+      completedChapters: 2,
       quizScore: 65,
       quizAttempt: 1,
       quizPassed: false, // Perlu Remedial
@@ -158,7 +163,8 @@ async function main() {
         { questionId: 'q2', selectedOption: 'A', isCorrect: true },
         { questionId: 'q3', selectedOption: 'D', isCorrect: false },
       ],
-      certificateSerial: null,
+      certBeginner: null,
+      certIntermediate: null,
     },
     {
       nis: '20260115',
@@ -166,7 +172,7 @@ async function main() {
       className: 'XI RPL 1',
       semester: 'Ganjil 2026/2027',
       isActive: true,
-      completedChapters: 7,
+      completedChapters: 4,
       quizScore: 80,
       quizAttempt: 2,
       quizPassed: true,
@@ -175,7 +181,8 @@ async function main() {
         { questionId: 'q2', selectedOption: 'A', isCorrect: true },
         { questionId: 'q3', selectedOption: 'C', isCorrect: true },
       ],
-      certificateSerial: null,
+      certBeginner: null,
+      certIntermediate: null,
     },
     {
       nis: '20260120',
@@ -183,7 +190,7 @@ async function main() {
       className: 'XI RPL 2',
       semester: 'Ganjil 2026/2027',
       isActive: true,
-      completedChapters: 8,
+      completedChapters: 7, // Lulus semua 7 bab
       quizScore: 90,
       quizAttempt: 1,
       quizPassed: true,
@@ -192,7 +199,8 @@ async function main() {
         { questionId: 'q2', selectedOption: 'A', isCorrect: true },
         { questionId: 'q3', selectedOption: 'B', isCorrect: false },
       ],
-      certificateSerial: 'AMOS-2026-0815',
+      certBeginner: 'AMOS-2026-0815-AI',
+      certIntermediate: 'AMOS-2026-0815-DF',
     },
     {
       nis: '20260122',
@@ -200,12 +208,13 @@ async function main() {
       className: 'XI RPL 2',
       semester: 'Ganjil 2026/2027',
       isActive: true,
-      completedChapters: 4,
+      completedChapters: 2,
       quizScore: null,
       quizAttempt: 0,
       quizPassed: false,
       quizSnapshot: null,
-      certificateSerial: null,
+      certBeginner: null,
+      certIntermediate: null,
     },
     {
       nis: '20260125',
@@ -213,12 +222,13 @@ async function main() {
       className: 'X TKJ A',
       semester: 'Ganjil 2026/2027',
       isActive: true,
-      completedChapters: 2,
+      completedChapters: 1,
       quizScore: null,
       quizAttempt: 0,
       quizPassed: false,
       quizSnapshot: null,
-      certificateSerial: null,
+      certBeginner: null,
+      certIntermediate: null,
     },
     {
       nis: '20260130',
@@ -226,16 +236,26 @@ async function main() {
       className: 'X TKJ B',
       semester: 'Ganjil 2026/2027',
       isActive: false, // Akun nonaktif
-      completedChapters: 1,
+      completedChapters: 0,
       quizScore: null,
       quizAttempt: 0,
       quizPassed: false,
       quizSnapshot: null,
-      certificateSerial: null,
+      certBeginner: null,
+      certIntermediate: null,
     },
   ];
 
-  const courseKey = 'literasi-ai-dasar';
+  // 7 Bab Resmi Kurikulum (4 bab Pemula + 3 bab Menengah)
+  const ALL_CHAPTER_KEYS = [
+    'beginner-ch-1',
+    'beginner-ch-2',
+    'beginner-ch-3',
+    'beginner-ch-4',
+    'intermediate-ch-1',
+    'intermediate-ch-2',
+    'intermediate-ch-3',
+  ];
 
   for (const item of studentsSeedData) {
     const user = await prisma.user.upsert({
@@ -262,10 +282,10 @@ async function main() {
       },
     });
 
-    // Seed User Progress (Total 8 Bab)
-    for (let ch = 1; ch <= 8; ch++) {
-      const chapterKey = `beginner-ch-${ch}`;
-      const isCompleted = ch <= item.completedChapters;
+    // Seed User Progress untuk 7 Bab
+    for (let i = 0; i < ALL_CHAPTER_KEYS.length; i++) {
+      const chapterKey = ALL_CHAPTER_KEYS[i];
+      const isCompleted = i < item.completedChapters;
       await prisma.userProgress.upsert({
         where: {
           user_id_chapter_key: {
@@ -290,18 +310,17 @@ async function main() {
 
     // Seed Quiz Score jika sudah pernah kuis
     if (item.quizScore !== null) {
-      // Hapus data kuis lama untuk user ini agar bersih
       await prisma.userQuizScore.deleteMany({
         where: {
           user_id: user.id,
-          quiz_key: 'quiz-literasi-ai-dasar',
+          quiz_key: 'quiz-beginner-ch-1',
         },
       });
 
       await prisma.userQuizScore.create({
         data: {
           user_id: user.id,
-          quiz_key: 'quiz-literasi-ai-dasar',
+          quiz_key: 'quiz-beginner-ch-1',
           score: item.quizScore,
           attempt_number: item.quizAttempt,
           is_passed: item.quizPassed,
@@ -311,30 +330,53 @@ async function main() {
       });
     }
 
-    // Seed Certificate jika ada
-    if (item.certificateSerial) {
+    // Seed Sertifikat 1 (course-beginner) jika ada
+    if (item.certBeginner) {
       await prisma.certificate.upsert({
         where: {
           user_id_course_key: {
             user_id: user.id,
-            course_key: courseKey,
+            course_key: 'course-beginner',
           },
         },
         update: {
-          serial_number: item.certificateSerial,
+          serial_number: item.certBeginner,
           final_score: item.quizScore ?? 90,
         },
         create: {
           user_id: user.id,
-          course_key: courseKey,
-          serial_number: item.certificateSerial,
+          course_key: 'course-beginner',
+          serial_number: item.certBeginner,
           final_score: item.quizScore ?? 90,
           issued_at: new Date('2026-10-12T15:00:00.000Z'),
         },
       });
     }
 
-    console.log(`✓ Seeded Student ${item.fullName} (${item.nis}) - Progress: ${item.completedChapters}/8`);
+    // Seed Sertifikat 2 (course-intermediate) jika ada
+    if (item.certIntermediate) {
+      await prisma.certificate.upsert({
+        where: {
+          user_id_course_key: {
+            user_id: user.id,
+            course_key: 'course-intermediate',
+          },
+        },
+        update: {
+          serial_number: item.certIntermediate,
+          final_score: item.quizScore ?? 90,
+        },
+        create: {
+          user_id: user.id,
+          course_key: 'course-intermediate',
+          serial_number: item.certIntermediate,
+          final_score: item.quizScore ?? 90,
+          issued_at: new Date('2026-10-12T15:30:00.000Z'),
+        },
+      });
+    }
+
+    console.log(`✓ Seeded Student ${item.fullName} (${item.nis}) - Progress: ${item.completedChapters}/7`);
   }
 
   console.log('--- Seeding Database LMS Selesai dengan Sukses ---');

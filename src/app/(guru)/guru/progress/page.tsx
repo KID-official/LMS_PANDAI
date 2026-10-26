@@ -25,7 +25,7 @@ export default async function ProgressReportPage({
   const currentSearch = searchParams.search || '';
   const currentClassName = searchParams.className || 'ALL';
   const currentCertStatus = searchParams.certificateStatus || 'ALL';
-  const currentCourseKey = searchParams.courseKey || 'literasi-ai-dasar';
+  const currentCourseKey = searchParams.courseKey || 'ALL';
   const currentPage = parseInt(searchParams.page || '1', 10) || 1;
 
   // Fetch KPI data & Initial Paginated Report concurrently

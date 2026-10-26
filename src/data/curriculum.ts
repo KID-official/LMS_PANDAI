@@ -63,7 +63,7 @@ export const COURSES_DATA: Course[] = [
         title: 'Pengenalan Kecerdasan Artifisial & Etika Digital',
         description: 'Memahami cara kerja dasar AI generatif, model bahasa besar (LLM), dan batasan penggunaannya dalam pembelajaran.',
         durationMinutes: 15,
-        minWatchSeconds: 60,
+        minWatchSeconds: 5,
         youtubeUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
         textContent:
           'Kecerdasan Artifisial (AI) generatif adalah teknologi komputasi yang mampu menghasilkan teks, gambar, dan suara baru berdasarkan pola data latihan. Dalam ranah pendidikan, AI harus diposisikan sebagai alat bantu bernalar (thinking copilot), bukan sebagai pengganti pemikiran kritis siswa.',
@@ -76,7 +76,7 @@ export const COURSES_DATA: Course[] = [
         title: 'Mendeteksi Halusinasi & Misinformasi AI',
         description: 'Teknik mengenali jawaban sintetis yang tampak yakin namun secara faktual salah (hallucination).',
         durationMinutes: 20,
-        minWatchSeconds: 120,
+        minWatchSeconds: 5,
         youtubeUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
         textContent:
           'Model AI tidak memiliki pemahaman kesadaran nyata. AI memprediksi kata berikutnya berdasarkan statistik frekuensi kemunculan kata. Oleh karena itu, verifikasi fakta independen wajib dilakukan untuk setiap klaim akademis yang dihasilkan AI.',
@@ -89,7 +89,7 @@ export const COURSES_DATA: Course[] = [
         title: 'Privasi Data & Pelindungan Identitas Biometrik',
         description: 'Mencegah kebocoran foto wajah, nomor induk siswa, dan data sensitif sekolah ke platform AI publik.',
         durationMinutes: 18,
-        minWatchSeconds: 90,
+        minWatchSeconds: 5,
         youtubeUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
         textContent:
           'Jangan pernah mengunggah dokumen pribadi (KTP, kartu pelajar, foto wajah jelas) ke generator AI publik tanpa izin enkripsi. Data yang diunggah dapat disimpan secara permanen oleh penyedia platform untuk latihan model generasi berikutnya.',
@@ -102,7 +102,7 @@ export const COURSES_DATA: Course[] = [
         title: 'Integritas Akademik & Standar Sitasi Prompt',
         description: 'Pedoman mencantumkan klausa deklarasi penggunaan AI dalam tugas riset dan karya tulis sekolah.',
         durationMinutes: 25,
-        minWatchSeconds: 150,
+        minWatchSeconds: 5,
         youtubeUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
         textContent:
           'Gunakan format sitasi AI standar (seperti APA 7th Edition) yang mencantumkan nama model, versi, tanggal akses, serta sintaks prompt yang digunakan sebagai lampiran dokumen riset mandiri.',
@@ -132,7 +132,7 @@ export const COURSES_DATA: Course[] = [
         title: 'Prinsip Dasar Media Sintetis & Deepfake',
         description: 'Cara kerja model difusi citra dan sintesis suara kloning AI modern.',
         durationMinutes: 20,
-        minWatchSeconds: 100,
+        minWatchSeconds: 5,
         youtubeUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
         textContent:
           'Deepfake bekerja dengan memetakan atribut fitur wajah (landmarking) atau frekuensi akustik suara asli lalu mentransplantasikannya ke media target menggunakan Generative Adversarial Networks (GANs).',
@@ -145,7 +145,7 @@ export const COURSES_DATA: Course[] = [
         title: 'Analisis Artefak Visual & Metode SIFT',
         description: '4 Langkah verifikasi Stanford Edu: Stop, Investigate source, Find coverage, Trace claims.',
         durationMinutes: 25,
-        minWatchSeconds: 120,
+        minWatchSeconds: 5,
         youtubeUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
         textContent:
           'Periksa ketidaksesuaian sudut datang cahaya, inkonsistensi tekstur retina mata, serta ketidakseimbangan pencahayaan background versus subjek utama.',
@@ -158,7 +158,7 @@ export const COURSES_DATA: Course[] = [
         title: 'Inspeksi Enkripsi C2PA & Watermark SynthID',
         description: 'Membaca manifest kriptografi otentikasi konten yang tersemat pada file media.',
         durationMinutes: 30,
-        minWatchSeconds: 180,
+        minWatchSeconds: 5,
         youtubeUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
         textContent:
           'Manifest C2PA mencatat riwayat suntingan dan perangkat pembuatan media sejak pertama kali ditangkap oleh sensor kamera secara kriptografis.',

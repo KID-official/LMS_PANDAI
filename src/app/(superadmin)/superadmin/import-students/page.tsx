@@ -10,35 +10,66 @@ import {
   AlertTriangle,
   XCircle,
   ArrowRight,
-  RotateCcw,
   Loader2,
-  FileCheck,
+  HelpCircle,
+  ShieldCheck,
+  SlidersHorizontal,
+  X,
+  FileText,
 } from 'lucide-react';
+import { WizardStepper } from '@/components/import-wizard/WizardStepper';
 import {
-  validateStudentCsv,
-  executeStudentBulkImport,
-  StudentCsvValidationResult,
+  FixFieldModal,
+  FixStudentData,
+} from '@/components/import-wizard/FixFieldModal';
+import {
+  CredentialPrintView,
+  CredentialItem,
+} from '@/components/import-wizard/CredentialPrintView';
+import {
+  validateAndImportStudents,
+  fixAndImportStudent,
+  FailedStudentRow,
 } from '@/app/actions/bulkImport';
 
 export default function ImportStudentsPage() {
+  // Stepper state
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
+
+  // File upload state
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState('');
-  const [isValidating, setIsValidating] = useState(false);
-  const [isImporting, setIsImporting] = useState(false);
+  const [fileSizeStr, setFileSizeStr] = useState('');
+  const [detectedRowCount, setDetectedRowCount] = useState<number | null>(null);
 
-  const [validationResult, setValidationResult] = useState<StudentCsvValidationResult | null>(null);
-  const [importSummary, setImportSummary] = useState<{
-    successCount: number;
-    errorCount: number;
-  } | null>(null);
+  // Configuration options (Step 2)
+  const [selectedCourse, setSelectedCourse] = useState('Literasi AI Dasar (Level Beginner)');
+  const [autoGeneratePassword, setAutoGeneratePassword] = useState(true);
+  const [autoActivate, setAutoActivate] = useState(true);
+
+  // Execution states
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [headerError, setHeaderError] = useState<string | null>(null);
+
+  // Step 3 & 4 data states
+  const [totalRows, setTotalRows] = useState(0);
+  const [failedRows, setFailedRows] = useState<FailedStudentRow[]>([]);
+  const [credentials, setCredentials] = useState<CredentialItem[]>([]);
+
+  // Fix modal state
+  const [selectedFixRow, setSelectedFixRow] = useState<FixStudentData | null>(null);
+  const [isFixModalOpen, setIsFixModalOpen] = useState(false);
+
+  // CSV Guide modal state
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
 
   // Template CSV download
   const handleDownloadTemplate = () => {
     const templateContent =
       'NIS,Nama,Kelas,Semester,Password\n' +
-      '20260201,Ahmad Maulana,X TKJ A,Ganjil 2026/2027,siswa123\n' +
-      '20260202,Citra Kirana,X TKJ A,Ganjil 2026/2027,siswa123\n' +
-      '20260203,Eko Prasetyo,X TKJ B,Ganjil 2026/2027,siswa123\n';
+      '20260201,Ahmad Maulana,8-A,Ganjil 2026/2027,\n' +
+      '20260202,Citra Kirana,8-A,Ganjil 2026/2027,\n' +
+      '20260203,Eko Prasetyo,8-B,Ganjil 2026/2027,\n';
 
     const blob = new Blob([templateContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -50,155 +81,232 @@ export default function ImportStudentsPage() {
     document.body.removeChild(link);
   };
 
-  // Handle file select
+  // Handle file drop / change
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (!selectedFile) return;
+    const selected = e.target.files?.[0];
+    if (!selected) return;
+    processSelectedFile(selected);
+  };
 
-    setFile(selectedFile);
-    setFileName(selectedFile.name);
-    setImportSummary(null);
-    setIsValidating(true);
-
-    try {
-      const text = await selectedFile.text();
-      const result = await validateStudentCsv(text);
-      setValidationResult(result);
-    } catch (err) {
-      console.error(err);
-      alert('Gagal membaca berkas CSV.');
-    } finally {
-      setIsValidating(false);
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    const droppedFile = e.dataTransfer.files?.[0];
+    if (droppedFile) {
+      processSelectedFile(droppedFile);
     }
   };
 
-  // Handle execute import
-  const handleExecuteImport = async () => {
-    if (!validationResult || validationResult.validRows.length === 0) return;
+  const processSelectedFile = async (selected: File) => {
+    setFile(selected);
+    setFileName(selected.name);
+    setHeaderError(null);
 
-    setIsImporting(true);
+    // Human readable size
+    const kb = (selected.size / 1024).toFixed(0);
+    setFileSizeStr(`${kb} KB`);
+
+    // Quick estimation of lines
     try {
-      const res = await executeStudentBulkImport(
-        validationResult.validRows.map((r) => ({
-          nis: r.nis,
-          fullName: r.fullName,
-          className: r.className,
-          semester: r.semester,
-          password: r.password,
-        }))
-      );
-      setImportSummary(res);
-    } catch (err) {
-      console.error(err);
-      alert('Gagal mengeksekusi import massal.');
-    } finally {
-      setIsImporting(false);
+      const text = await selected.text();
+      const lines = text
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter((l) => l.length > 0);
+      const estRows = Math.max(0, lines.length - 1);
+      setDetectedRowCount(estRows);
+    } catch {
+      setDetectedRowCount(null);
     }
   };
 
-  // Reset form
-  const handleReset = () => {
+  // Reset file selection
+  const handleClearFile = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setFile(null);
     setFileName('');
-    setValidationResult(null);
-    setImportSummary(null);
+    setFileSizeStr('');
+    setDetectedRowCount(null);
+    setHeaderError(null);
+  };
+
+  // Execute Validation & Initial Import (Transition from Step 1&2 -> Step 3 or 4)
+  const handleValidateAndImport = async () => {
+    if (!file) {
+      alert('Silakan pilih berkas CSV terlebih dahulu.');
+      return;
+    }
+
+    setIsProcessing(true);
+    setHeaderError(null);
+
+    try {
+      const csvText = await file.text();
+      const result = await validateAndImportStudents(csvText, {
+        autoGeneratePassword,
+        autoEnrollCourseKey: selectedCourse,
+        defaultSemester: 'Ganjil 2026/2027',
+      });
+
+      if (!result.isValidHeader) {
+        setHeaderError(
+          result.headerErrorMessage ||
+            'Format kolom CSV tidak sesuai. Pastikan kolom NIS, Nama, dan Kelas tersedia.'
+        );
+        setIsProcessing(false);
+        return;
+      }
+
+      setTotalRows(result.summary.totalRows);
+      setFailedRows(result.failedRows);
+
+      const mappedCredentials: CredentialItem[] = result.successfulImports.map((c) => ({
+        ...c,
+        entity: 'student' as const,
+        targetCourse: selectedCourse,
+      }));
+      setCredentials(mappedCredentials);
+
+      if (result.failedRows.length > 0) {
+        setCurrentStep(3);
+      } else {
+        // If no errors, go straight to Step 4 (or Step 3 then Step 4)
+        setCurrentStep(4);
+      }
+    } catch (err: unknown) {
+      console.error(err);
+      setHeaderError(
+        err instanceof Error ? err.message : 'Terjadi kegagalan saat membaca berkas CSV.'
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Open Fix Modal for a specific failed row
+  const handleOpenFixModal = (row: FailedStudentRow) => {
+    setSelectedFixRow({
+      rowNumber: row.rowNumber,
+      nis: row.nis,
+      fullName: row.fullName,
+      className: row.className,
+      semester: row.semester || 'Ganjil 2026/2027',
+      errorType: row.errorType,
+      errorMessage: row.errorMessage,
+    });
+    setIsFixModalOpen(true);
+  };
+
+  // Save Fixed Row
+  const handleSaveFixedStudent = async (
+    updated: FixStudentData
+  ): Promise<{ success: boolean; error?: string }> => {
+    const res = await fixAndImportStudent({
+      nis: updated.nis,
+      fullName: updated.fullName,
+      className: updated.className,
+      semester: updated.semester,
+      password: updated.password,
+    });
+
+    if (res.success && res.credential) {
+      // Remove from failed rows
+      setFailedRows((prev) => prev.filter((r) => r.rowNumber !== updated.rowNumber));
+
+      // Append to credentials
+      setCredentials((prev) => [
+        ...prev,
+        {
+          ...res.credential!,
+          entity: 'student',
+          targetCourse: selectedCourse,
+        },
+      ]);
+
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: res.error || 'Gagal menyimpan dan memverifikasi data siswa.',
+    };
+  };
+
+  // Delete / Skip single failed row
+  const handleDeleteFailedRow = (rowNumber: number) => {
+    setFailedRows((prev) => prev.filter((r) => r.rowNumber !== rowNumber));
+  };
+
+  // Reset entire wizard
+  const handleResetWizard = () => {
+    handleClearFile();
+    setFailedRows([]);
+    setCredentials([]);
+    setTotalRows(0);
+    setCurrentStep(1);
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
-      {/* ── HEADER ── */}
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-[#7C3AED]">
-          <span>SUPER ADMIN</span>
-          <span className="text-[#94A3B8]">•</span>
-          <span className="text-[#64748B]">IMPOR MASSAL PENGGUNA</span>
-        </div>
-        <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F172A]">
-          Import Massal Siswa
-        </h1>
-        <p className="text-xs sm:text-sm text-[#64748B]">
-          Daftarkan banyak siswa sekaligus dengan mengunggah berkas CSV sesuai format template resmi.
-        </p>
-      </div>
-
-      {/* ── STEP 1: DOWNLOAD TEMPLATE & UPLOAD BOX ── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Step 1 Card: Unduh Template */}
-        <div className="rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm space-y-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F3E8FF] text-[#7E22CE]">
-            <Download className="h-5 w-5" />
+    <div className="w-full max-w-6xl mx-auto space-y-6 pb-12">
+      {/* ── BREADCRUMB & HEADER ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <Link
+              href="/guru/dashboard"
+              className="hover:text-[#7F54F8] transition"
+            >
+              Learning Management
+            </Link>
+            <span>&gt;</span>
+            <Link
+              href="/guru/students"
+              className="hover:text-[#7F54F8] transition"
+            >
+              Students
+            </Link>
+            <span>&gt;</span>
+            <span className="text-[#7F54F8]">CSV Import Wizard</span>
           </div>
-          <h2 className="text-sm font-bold text-[#0F172A]">1. Unduh Template CSV</h2>
-          <p className="text-xs text-[#64748B] leading-relaxed">
-            Format kolom wajib: <code className="bg-slate-100 px-1 py-0.5 rounded text-[#0F172A]">NIS, Nama, Kelas, Semester, Password</code>.
+
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#061B38]">
+            Import Siswa Massal via CSV
+          </h1>
+          <p className="text-xs sm:text-sm text-[#64748B]">
+            Daftarkan banyak akun siswa SMP sekaligus dan langsung enroll otomatis ke kursus literasi AI
           </p>
-          <button
-            onClick={handleDownloadTemplate}
-            className="w-full flex items-center justify-center gap-2 rounded-xl border border-[#7C3AED] bg-white py-2 text-xs font-bold text-[#7C3AED] hover:bg-[#F3E8FF] transition cursor-pointer"
-          >
-            <Download className="h-4 w-4" />
-            <span>Unduh Template CSV</span>
-          </button>
         </div>
 
-        {/* Step 2 Card: Upload CSV */}
-        <div className="md:col-span-2 rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-sm space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-[#0F172A]">2. Unggah & Validasi Berkas CSV</h2>
-            {file && (
-              <button
-                onClick={handleReset}
-                className="text-xs font-semibold text-[#DC2626] hover:underline flex items-center gap-1 cursor-pointer"
-              >
-                <RotateCcw className="h-3 w-3" />
-                <span>Ganti Berkas</span>
-              </button>
-            )}
-          </div>
-
-          <label
-            htmlFor="student-csv-upload"
-            className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#CBD5E1] p-6 hover:border-[#7C3AED] hover:bg-[#F8FAFC] transition cursor-pointer"
-          >
-            <input
-              id="student-csv-upload"
-              type="file"
-              accept=".csv"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ECFDF5] text-[#059669] mb-2">
-              <UploadCloud className="h-6 w-6" />
-            </div>
-            <div className="text-xs font-bold text-[#0F172A]">
-              {fileName ? fileName : 'Pilih atau Seret Berkas CSV ke sini'}
-            </div>
-            <p className="mt-1 text-[11px] text-[#94A3B8]">
-              Mendukung berkas CSV dengan pemisah koma (,).
-            </p>
-          </label>
-        </div>
+        {/* Panduan Format CSV button */}
+        <button
+          type="button"
+          onClick={() => setIsGuideOpen(true)}
+          className="inline-flex items-center gap-2 self-start sm:self-auto rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer shadow-2xs"
+        >
+          <HelpCircle className="h-4 w-4 text-[#7F54F8]" />
+          <span>Panduan Format CSV</span>
+        </button>
       </div>
 
-      {/* ── LOADING VALIDATION ── */}
-      {isValidating && (
-        <div className="rounded-2xl border border-[#E2E8F0] bg-white p-8 text-center shadow-sm flex flex-col items-center justify-center space-y-2">
-          <Loader2 className="h-8 w-8 animate-spin text-[#7C3AED]" />
-          <p className="text-xs font-semibold text-[#64748B]">Memvalidasi struktur kolom dan duplikasi NIS...</p>
-        </div>
-      )}
+      {/* ── STEPPER BAR ── */}
+      <WizardStepper
+        currentStep={currentStep}
+        hasErrors={failedRows.length > 0}
+        onStepClick={(step) => {
+          if (step <= currentStep) setCurrentStep(step);
+        }}
+      />
 
-      {/* ── ERROR HEADER TIDAK SESUAI ── */}
-      {validationResult && !validationResult.isValidHeader && (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5 shadow-sm space-y-2">
-          <div className="flex items-center gap-2 text-rose-800 font-bold text-sm">
-            <XCircle className="h-5 w-5 text-rose-600" />
+      {/* ── HEADER FORMAT ERROR BANNER ── */}
+      {headerError && (
+        <div className="rounded-2xl border border-rose-200 bg-rose-50/70 p-5 shadow-xs space-y-2 animate-in fade-in">
+          <div className="flex items-center gap-2.5 text-rose-800 font-bold text-sm">
+            <XCircle className="h-5 w-5 text-rose-600 shrink-0" />
             <span>Format Kolom Berkas Tidak Sesuai</span>
           </div>
-          <p className="text-xs text-rose-700 leading-relaxed">
-            {validationResult.headerErrorMessage}
+          <p className="text-xs text-rose-700 leading-relaxed pl-7.5">
+            {headerError}
           </p>
-          <div className="pt-2">
+          <div className="pl-7.5 pt-2">
             <button
               onClick={handleDownloadTemplate}
               className="rounded-xl bg-rose-700 px-4 py-2 text-xs font-bold text-white hover:bg-rose-800 transition cursor-pointer"
@@ -209,58 +317,355 @@ export default function ImportStudentsPage() {
         </div>
       )}
 
-      {/* ── VALIDATION SUMMARY & PREVIEW ── */}
-      {validationResult && validationResult.isValidHeader && !importSummary && (
-        <div className="rounded-2xl border border-[#E2E8F0] bg-white p-6 shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[#E2E8F0] pb-4">
-            <div>
-              <h2 className="text-base font-bold text-[#0F172A]">
-                Hasil Validasi Pra-Impor
-              </h2>
-              <p className="text-xs text-[#64748B]">
-                Periksa baris yang valid dan baris yang mengalami error/duplikasi sebelum dieksekusi.
-              </p>
+      {/* ══════════════════════════════════════════════════════════════
+          STEPS 1 & 2: UNDUH TEMPLATE, UPLOAD CSV & KONFIGURASI ENROLL
+          ══════════════════════════════════════════════════════════════ */}
+      {(currentStep === 1 || currentStep === 2) && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Card 1: Download Template */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-4">
+            <div className="flex items-start gap-3.5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F0EEFE] text-[#7F54F8]">
+                <FileSpreadsheet className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm sm:text-base font-bold text-[#061B38]">
+                  Download Template CSV
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Struktur data akun siswa resmi Disdik &amp; UNAIR
+                </p>
+              </div>
             </div>
 
-            {/* Badges */}
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-lg bg-[#ECFDF5] px-2.5 py-1 text-xs font-bold text-[#059669] border border-[#A7F3D0]">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>{validationResult.validRows.length} Baris Valid</span>
+            <p className="text-xs text-[#64748B] leading-relaxed">
+              Gunakan format file CSV/Excel standar sistem agar data terbaca sempurna tanpa kegagalan parsing header.
+            </p>
+
+            <button
+              type="button"
+              onClick={handleDownloadTemplate}
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#F0F3FF] border border-[#DDD6FE]/60 py-2.5 text-xs font-bold text-[#7F54F8] hover:bg-[#E5ECFF] transition cursor-pointer"
+            >
+              <Download className="h-4 w-4" />
+              <span>Unduh Template CSV (.csv)</span>
+            </button>
+          </div>
+
+          {/* Card 2: Upload File Berkas */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm sm:text-base font-bold text-[#061B38]">
+                Upload File Berkas
+              </h3>
+              <span className="rounded-full bg-[#F0EEFE] px-2.5 py-0.5 text-[11px] font-bold text-[#7F54F8]">
+                Wajib
               </span>
-              {validationResult.invalidRows.length > 0 && (
-                <span className="inline-flex items-center gap-1 rounded-lg bg-[#FEF2F2] px-2.5 py-1 text-xs font-bold text-[#DC2626] border border-[#FECACA]">
-                  <AlertTriangle className="h-3.5 w-3.5" />
-                  <span>{validationResult.invalidRows.length} Error / Duplikat</span>
-                </span>
-              )}
+            </div>
+
+            {/* Dropzone */}
+            <label
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={handleDrop}
+              className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#CBD5E1] bg-[#F8FAFF] p-8 hover:border-[#7F54F8] hover:bg-[#F3F4FE] transition cursor-pointer group"
+            >
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EDE9FE] text-[#7F54F8] mb-3 group-hover:scale-105 transition-transform">
+                <UploadCloud className="h-6 w-6" />
+              </div>
+              <p className="text-xs sm:text-sm font-bold text-[#061B38]">
+                Tarik file CSV ke sini atau klik Telusuri
+              </p>
+              <p className="mt-1 text-[11px] text-[#94A3B8]">
+                Maksimal 5MB, format berkas .csv (UTF-8)
+              </p>
+            </label>
+
+            {/* Selected File Pill */}
+            {file && (
+              <div className="flex items-center justify-between rounded-xl bg-[#F0EEFE]/80 border border-[#DDD6FE] p-3.5 animate-in fade-in">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#7F54F8] text-white">
+                    <FileText className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-bold text-[#061B38]">
+                      {fileName}
+                    </p>
+                    <p className="text-[11px] text-[#64748B]">
+                      {fileSizeStr} • {detectedRowCount !== null ? `${detectedRowCount} Baris Siswa Terdeteksi` : 'Berkas Siap Diproses'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0 pl-2">
+                  <button
+                    type="button"
+                    onClick={handleClearFile}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                    title="Hapus Berkas"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Section: Konfigurasi Kursus Otomatis (Enrollment) */}
+            <div className="pt-3 border-t border-slate-100 space-y-4">
+              <h4 className="text-xs sm:text-sm font-bold text-[#061B38]">
+                Konfigurasi Kursus Otomatis (Enrollment)
+              </h4>
+
+              {/* Course Selector */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-700">
+                  Pilih Kursus Sasaran
+                </label>
+                <select
+                  value={selectedCourse}
+                  onChange={(e) => setSelectedCourse(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm font-medium text-[#061B38] focus:outline-none focus:border-[#7F54F8] focus:ring-2 focus:ring-[#7F54F8]/20 transition"
+                >
+                  <option value="Literasi AI Dasar (Level Beginner)">
+                    Literasi AI Dasar (Level Beginner)
+                  </option>
+                  <option value="Literasi AI Lanjutan (Level Intermediate)">
+                    Literasi AI Lanjutan (Level Intermediate)
+                  </option>
+                  <option value="Etika & Keamanan AI (Level All)">
+                    Etika &amp; Keamanan AI (Level All)
+                  </option>
+                </select>
+              </div>
+
+              {/* Checkboxes */}
+              <div className="space-y-3 pt-1">
+                <label className="flex items-start gap-3 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={autoGeneratePassword}
+                    onChange={(e) => setAutoGeneratePassword(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#7F54F8] focus:ring-[#7F54F8] accent-[#7F54F8]"
+                  />
+                  <div>
+                    <span className="text-xs font-bold text-[#061B38]">
+                      Buat password acak jika kolom password kosong
+                    </span>
+                    <p className="text-[11px] text-[#64748B]">
+                      Kombinasi 6 digit alfanumerik acak unik per siswa
+                    </p>
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-3 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={autoActivate}
+                    onChange={(e) => setAutoActivate(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#7F54F8] focus:ring-[#7F54F8] accent-[#7F54F8]"
+                  />
+                  <div>
+                    <span className="text-xs font-bold text-[#061B38]">
+                      Aktifkan akun siswa secara otomatis
+                    </span>
+                    <p className="text-[11px] text-[#64748B]">
+                      Siswa dapat langsung login melalui portal LMS UNAIR
+                    </p>
+                  </div>
+                </label>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col-reverse sm:flex-row items-center gap-3 pt-3">
+                <button
+                  type="button"
+                  onClick={handleClearFile}
+                  disabled={isProcessing}
+                  className="w-full sm:w-auto rounded-xl border border-slate-200 px-5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer disabled:opacity-50"
+                >
+                  Batal
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleValidateAndImport}
+                  disabled={!file || isProcessing}
+                  className="w-full sm:flex-1 flex items-center justify-center gap-2 rounded-xl bg-[#7F54F8] py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#6D3DF5] transition shadow-md shadow-[#7F54F8]/20 cursor-pointer disabled:opacity-50"
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Menganalisis &amp; Memverifikasi Baris Data...</span>
+                    </>
+                  ) : (
+                    <span>Periksa &amp; Validasi Baris Data</span>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════
+          STEP 3: VALIDASI & ERROR CHECKING (UI-11 (1).png)
+          ══════════════════════════════════════════════════════════════ */}
+      {currentStep === 3 && (
+        <div className="space-y-5 animate-in fade-in duration-200">
+          {/* Partial Error Alert Banner */}
+          {failedRows.length > 0 && (
+            <div className="rounded-2xl border border-rose-200 bg-rose-50/70 p-4 sm:p-5 shadow-xs flex items-start gap-3.5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-bold text-rose-800">
+                  Validasi Parsial: Ditemukan {failedRows.length} Baris Tidak Sesuai
+                </h3>
+                <p className="mt-1 text-xs text-rose-700 leading-relaxed">
+                  Terdapat {failedRows.length} data siswa bermasalah dari total {totalRows} baris file CSV. Anda dapat mengabaikan baris gagal dan melanjutkan pendaftaran {credentials.length} siswa lainnya.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* 3 KPI Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* KPI 1: TOTAL BARIS */}
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  TOTAL BARIS
+                </p>
+                <h3 className="mt-1 text-3xl font-extrabold text-[#061B38]">
+                  {totalRows}
+                </h3>
+                <p className="mt-0.5 text-xs text-slate-500">Record diunggah</p>
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+                <FileSpreadsheet className="h-5 w-5" />
+              </div>
+            </div>
+
+            {/* KPI 2: VALID & SUDAH MASUK DB */}
+            <div className="rounded-2xl border border-emerald-200/80 bg-white p-5 shadow-xs flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">
+                  VALID &amp; SUDAH MASUK DB
+                </p>
+                <h3 className="mt-1 text-3xl font-extrabold text-[#061B38]">
+                  {credentials.length}
+                </h3>
+                <p className="mt-0.5 text-xs text-emerald-600 font-semibold">
+                  {totalRows > 0 ? `${Math.round((credentials.length / totalRows) * 100)}% Siap Didaftarkan` : '100%'}
+                </p>
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
+                <CheckCircle2 className="h-5 w-5" />
+              </div>
+            </div>
+
+            {/* KPI 3: GAGAL / ERROR */}
+            <div className="rounded-2xl border border-rose-200/80 bg-white p-5 shadow-xs flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-rose-600">
+                  GAGAL / ERROR
+                </p>
+                <h3 className="mt-1 text-3xl font-extrabold text-[#061B38]">
+                  {failedRows.length}
+                </h3>
+                <p className="mt-0.5 text-xs text-rose-600 font-semibold">
+                  {failedRows.length > 0 ? 'Perlu Perhatian' : 'Semua Baris Valid'}
+                </p>
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-rose-100 text-rose-600">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
             </div>
           </div>
 
-          {/* Invalid Rows Table if Any */}
-          {validationResult.invalidRows.length > 0 && (
-            <div className="space-y-2">
-              <div className="text-xs font-bold text-[#DC2626] flex items-center gap-1">
-                <AlertTriangle className="h-3.5 w-3.5" />
-                <span>Daftar Baris Bermasalah (Akan dilewati jika Anda memilih Skip Error):</span>
+          {/* Table: Detail Audit Baris Berkas (if errors exist) */}
+          {failedRows.length > 0 && (
+            <div className="rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden">
+              <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="h-4 w-4 text-[#7F54F8]" />
+                  <h3 className="text-sm font-bold text-[#061B38]">
+                    Detail Audit Baris Berkas
+                  </h3>
+                </div>
+                <span className="rounded-full bg-[#F0EEFE] px-2.5 py-0.5 text-[11px] font-bold text-[#7F54F8]">
+                  Tampilan {failedRows.length} Masalah
+                </span>
               </div>
-              <div className="overflow-x-auto rounded-xl border border-rose-200 bg-rose-50/50">
+
+              <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-rose-200 text-[#991B1B] font-bold">
-                      <th className="py-2.5 px-3">Baris</th>
-                      <th className="py-2.5 px-3">NIS</th>
-                      <th className="py-2.5 px-3">Nama Siswa</th>
-                      <th className="py-2.5 px-3">Penyebab Masalah</th>
+                    <tr className="border-b border-slate-100 bg-[#F8FAFC] text-slate-500 font-bold uppercase tracking-wider text-[11px]">
+                      <th className="py-3 px-4">Baris</th>
+                      <th className="py-3 px-4">NIS</th>
+                      <th className="py-3 px-4">Nama Lengkap</th>
+                      <th className="py-3 px-4">Kelas</th>
+                      <th className="py-3 px-4">Status Isian</th>
+                      <th className="py-3 px-4">Jenis Error</th>
+                      <th className="py-3 px-4 text-center">Tindakan</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-rose-100 text-[#7F1D1D]">
-                    {validationResult.invalidRows.map((r) => (
-                      <tr key={r.rowNumber}>
-                        <td className="py-2 px-3 font-mono font-bold">Baris {r.rowNumber}</td>
-                        <td className="py-2 px-3 font-mono">{r.nis || '-'}</td>
-                        <td className="py-2 px-3">{r.fullName || '-'}</td>
-                        <td className="py-2 px-3 font-medium text-rose-700">{r.errorMessage}</td>
+                  <tbody className="divide-y divide-slate-100 text-slate-700">
+                    {failedRows.map((row) => (
+                      <tr key={row.rowNumber} className="hover:bg-rose-50/30 transition-colors">
+                        <td className="py-3 px-4 font-bold text-rose-600">
+                          #{row.rowNumber}
+                        </td>
+                        <td className="py-3 px-4 font-mono font-medium text-slate-700">
+                          {row.nis || '—'}
+                        </td>
+                        <td className="py-3 px-4 font-semibold text-[#061B38]">
+                          {row.fullName ? (
+                            row.fullName
+                          ) : (
+                            <span className="italic text-slate-400">— (Kosong)</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">
+                          <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700">
+                            {row.className || '—'}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-2.5 py-0.5 text-[10px] font-bold text-rose-700">
+                            <span className="h-1.5 w-1.5 rounded-full bg-rose-600" />
+                            <span>Error</span>
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 font-medium text-rose-600 max-w-xs">
+                          {row.errorMessage}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteFailedRow(row.rowNumber)}
+                              className="rounded-lg bg-[#EFF6FF] px-2.5 py-1.5 text-xs font-semibold text-[#3B82F6] hover:bg-[#DBEAFE] transition cursor-pointer"
+                            >
+                              Lewati (Delete)
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenFixModal(row)}
+                              className="rounded-lg bg-[#F3E8FF] px-2.5 py-1.5 text-xs font-bold text-[#7F54F8] hover:bg-[#E9D5FF] transition cursor-pointer"
+                            >
+                              Perbaiki Data
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -269,113 +674,151 @@ export default function ImportStudentsPage() {
             </div>
           )}
 
-          {/* Valid Rows Preview Table */}
-          <div className="space-y-2">
-            <div className="text-xs font-bold text-[#0F172A] flex items-center gap-1">
-              <FileCheck className="h-3.5 w-3.5 text-[#059669]" />
-              <span>Daftar Siswa yang Siap Diimpor:</span>
-            </div>
-            <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] font-bold">
-                    <th className="py-2.5 px-3">No</th>
-                    <th className="py-2.5 px-3">NIS</th>
-                    <th className="py-2.5 px-3">Nama Lengkap</th>
-                    <th className="py-2.5 px-3">Kelas</th>
-                    <th className="py-2.5 px-3">Semester</th>
-                    <th className="py-2.5 px-3 text-center">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#F1F5F9] text-[#0F172A]">
-                  {validationResult.validRows.slice(0, 10).map((r, i) => (
-                    <tr key={r.rowNumber} className="hover:bg-[#F8FAFC]">
-                      <td className="py-2 px-3 font-mono text-[#64748B]">{i + 1}</td>
-                      <td className="py-2 px-3 font-mono font-bold">{r.nis}</td>
-                      <td className="py-2 px-3 font-semibold">{r.fullName}</td>
-                      <td className="py-2 px-3">{r.className}</td>
-                      <td className="py-2 px-3 text-[#64748B]">{r.semester}</td>
-                      <td className="py-2 px-3 text-center">
-                        <span className="inline-flex rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
-                          VALID
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {validationResult.validRows.length > 10 && (
-              <p className="text-[11px] text-[#64748B] italic">
-                Menampilkan 10 dari {validationResult.validRows.length} baris valid.
-              </p>
-            )}
+          {/* Green verification banner */}
+          <div className="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50/70 p-3.5 text-xs text-emerald-800">
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+            <p>
+              <strong>{credentials.length} Siswa lainnya</strong> lolos verifikasi dan otomatis terdaftar ke database LMS.
+            </p>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#E2E8F0]">
-            <button
-              onClick={handleReset}
-              className="rounded-xl border border-[#CBD5E1] px-4 py-2 text-xs font-semibold text-[#475569] hover:bg-[#F8FAFC] cursor-pointer"
-            >
-              Batalkan Impor
-            </button>
+          {/* Card: Langkah Eksekusi Impor */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-[#061B38]">
+                Langkah Eksekusi Impor
+              </h3>
+              <p className="text-xs text-slate-500">
+                Sistem siap membuat {credentials.length} akun siswa aktif dan menautkannya ke modul Literasi AI.
+              </p>
+            </div>
 
-            <button
-              onClick={handleExecuteImport}
-              disabled={isImporting || validationResult.validRows.length === 0}
-              className="flex items-center gap-2 rounded-xl bg-[#059669] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#047857] shadow-sm disabled:opacity-60 cursor-pointer"
-            >
-              {isImporting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Memproses Impor...</span>
-                </>
-              ) : (
-                <>
-                  <FileSpreadsheet className="h-4 w-4" />
-                  <span>
-                    {validationResult.invalidRows.length > 0
-                      ? `Lanjutkan & Skip Error (${validationResult.validRows.length} Siswa)`
-                      : `Eksekusi Impor (${validationResult.validRows.length} Siswa)`}
-                  </span>
-                </>
-              )}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleResetWizard}
+                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+              >
+                Batalkan Impor Data Siswa
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCurrentStep(4)}
+                disabled={credentials.length === 0}
+                className="flex items-center gap-2 rounded-xl bg-[#7F54F8] px-5 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#6D3DF5] transition shadow-md shadow-[#7F54F8]/20 cursor-pointer disabled:opacity-50"
+              >
+                <span>Lanjut ke Hasil &amp; Cetak Kredensial</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Security & Credentials Callout */}
+          <div className="flex items-start gap-3 rounded-2xl border border-[#DDD6FE]/60 bg-[#F0F5FF] p-4 text-xs text-slate-700">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#E0E7FF] text-[#7F54F8]">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="font-bold text-[#061B38]">
+                Catatan Keamanan &amp; Kredensial Siswa
+              </p>
+              <p className="mt-0.5 text-[#64748B] leading-relaxed">
+                Password yang dibuat otomatis di-hash dengan standar <strong>bcrypt</strong> di server dan siap dicetak/dibagikan ke wali kelas begitu langkah 4 selesai.
+              </p>
+            </div>
           </div>
         </div>
       )}
 
-      {/* ── SUCCESS RESULT SUMMARY ── */}
-      {importSummary && (
-        <div className="rounded-2xl border border-emerald-200 bg-white p-8 text-center shadow-sm space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#ECFDF5] text-[#059669]">
-            <CheckCircle2 className="h-8 w-8" />
+      {/* ══════════════════════════════════════════════════════════════
+          STEP 4: HASIL & CETAK KREDENSIAL
+          ══════════════════════════════════════════════════════════════ */}
+      {currentStep === 4 && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Success Hero Alert */}
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-6 sm:p-7 text-center shadow-xs space-y-2">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ECFDF5] text-emerald-600">
+              <CheckCircle2 className="h-7 w-7" />
+            </div>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-[#061B38]">
+              Pendaftaran Massal Berhasil! {credentials.length} Akun Siswa Telah Dibuat
+            </h2>
+            <p className="text-xs sm:text-sm text-[#64748B] max-w-xl mx-auto">
+              Seluruh akun siswa telah aktif di database sistem dan otomatis terdaftar ke modul kursus <strong>{selectedCourse}</strong>.
+            </p>
           </div>
-          <h2 className="text-xl font-extrabold text-[#0F172A]">
-            Import Massal Siswa Berhasil!
-          </h2>
-          <p className="text-xs text-[#64748B] max-w-md mx-auto leading-relaxed">
-            Sebanyak <strong className="text-[#059669]">{importSummary.successCount} siswa baru</strong> berhasil
-            didaftarkan ke dalam pangkalan data sistem LMS.
-            {importSummary.errorCount > 0 && ` (${importSummary.errorCount} baris gagal/dilewati)`}
-          </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <button
-              onClick={handleReset}
-              className="rounded-xl border border-[#CBD5E1] px-4 py-2 text-xs font-semibold text-[#475569] hover:bg-[#F8FAFC] cursor-pointer"
-            >
-              Impor Berkas Lainnya
-            </button>
+          {/* Credential Print View Component */}
+          <CredentialPrintView
+            credentials={credentials}
+            title="Daftar Kredensial Akun Siswa Baru"
+            finishHref="/guru/students"
+            finishLabel="Lihat di Manajemen Siswa"
+            onResetWizard={handleResetWizard}
+          />
+        </div>
+      )}
 
-            <Link
-              href="/guru/students"
-              className="flex items-center gap-1.5 rounded-xl bg-[#7C3AED] px-4 py-2 text-xs font-bold text-white hover:bg-[#6D28D9] transition shadow-sm"
-            >
-              <span>Lihat di Manajemen Siswa</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+      {/* ── MODAL PERBAIKI DATA (NIS / NAMA) ── */}
+      <FixFieldModal
+        isOpen={isFixModalOpen}
+        onClose={() => setIsFixModalOpen(false)}
+        entityType="student"
+        studentData={selectedFixRow}
+        onSaveStudent={handleSaveFixedStudent}
+      />
+
+      {/* ── MODAL PANDUAN FORMAT CSV ── */}
+      {isGuideOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 animate-in fade-in">
+          <div className="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-7 shadow-2xl border border-slate-100">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2 text-[#7F54F8] font-bold text-sm">
+                <HelpCircle className="h-5 w-5" />
+                <span>Panduan Format CSV Siswa</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsGuideOpen(false)}
+                className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-3 text-xs text-slate-600 leading-relaxed">
+              <p>
+                Pastikan berkas CSV Anda memiliki susunan header di baris pertama sebagai berikut:
+              </p>
+              <div className="rounded-xl bg-slate-900 p-3 font-mono text-xs text-emerald-400 overflow-x-auto">
+                NIS,Nama,Kelas,Semester,Password
+              </div>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>NIS:</strong> Nomor Induk Siswa unik, tidak boleh duplikat dengan siswa yang sudah ada.</li>
+                <li><strong>Nama:</strong> Nama lengkap siswa resmi sekolah.</li>
+                <li><strong>Kelas:</strong> Rombongan belajar, contoh: <code>8-A</code>, <code>7-B</code>.</li>
+                <li><strong>Semester:</strong> Opsional, default <code>Ganjil 2026/2027</code>.</li>
+                <li><strong>Password:</strong> Opsional, jika kosong sistem akan menghasilkan kata sandi 6 digit acak.</li>
+              </ul>
+            </div>
+
+            <div className="mt-6 flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={handleDownloadTemplate}
+                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-[#7F54F8] hover:bg-[#F0EEFE] cursor-pointer"
+              >
+                Unduh Template CSV
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsGuideOpen(false)}
+                className="rounded-xl bg-[#7F54F8] px-4 py-2 text-xs font-bold text-white hover:bg-[#6D3DF5] cursor-pointer"
+              >
+                Mengerti
+              </button>
+            </div>
           </div>
         </div>
       )}

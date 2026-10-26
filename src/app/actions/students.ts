@@ -1,10 +1,11 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { PrismaClient, UserRole } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
+import { UserRole } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
-const prisma = new PrismaClient();
+const TOTAL_CHAPTERS = 7;
 
 export async function getStudents(search = '', status = '', page = 1, limit = 10) {
   const skip = (page - 1) * limit;
@@ -15,8 +16,9 @@ export async function getStudents(search = '', status = '', page = 1, limit = 10
 
   if (search) {
     whereCondition.OR = [
-      { identifier: { contains: search } },
+      { identifier: { contains: search, mode: 'insensitive' } },
       { student: { full_name: { contains: search, mode: 'insensitive' } } },
+      { student: { nis: { contains: search, mode: 'insensitive' } } },
     ];
   }
 
@@ -26,11 +28,20 @@ export async function getStudents(search = '', status = '', page = 1, limit = 10
     whereCondition.is_active = false;
   }
 
-  const [users, total, totalAllStudents, totalActiveStudents, studentsWithProgress] = await Promise.all([
+  const [rawUsers, total, totalAllStudents, totalActiveStudents, allStudentsProgress] = await Promise.all([
     prisma.user.findMany({
       where: whereCondition,
       include: {
         student: true,
+        progress: {
+          where: {
+            is_completed: true,
+            NOT: { chapter_key: { startsWith: 'quiz_unlock:' } },
+          },
+        },
+        quiz_scores: {
+          orderBy: { taken_at: 'desc' },
+        },
       },
       skip,
       take: limit,
@@ -43,30 +54,67 @@ export async function getStudents(search = '', status = '', page = 1, limit = 10
       where: { role: UserRole.SISWA },
       select: {
         id: true,
+        is_active: true,
         progress: {
-          select: { is_completed: true },
+          where: {
+            is_completed: true,
+            NOT: { chapter_key: { startsWith: 'quiz_unlock:' } },
+          },
+          select: { id: true },
+        },
+        quiz_scores: {
+          orderBy: { taken_at: 'desc' },
+          take: 1,
+          select: { is_passed: true, score: true },
         },
       },
     }),
   ]);
+
+  // Transform raw users to include progress calculations
+  const users = rawUsers.map((user) => {
+    const completedChaptersCount = user.progress.length;
+    const progressPercentage = Math.min(100, Math.round((completedChaptersCount / TOTAL_CHAPTERS) * 100));
+
+    return {
+      id: user.id,
+      identifier: user.identifier,
+      is_active: user.is_active,
+      student: user.student,
+      completedChaptersCount,
+      totalChapters: TOTAL_CHAPTERS,
+      progressPercentage,
+    };
+  });
 
   // Persentase jumlah akun aktif dari total semua akun terdaftar
   const activePercentage = totalAllStudents > 0
     ? `${((totalActiveStudents / totalAllStudents) * 100).toFixed(1)}%`
     : '0%';
 
-  // Rata-rata progress belajar siswa (standard kurikulum: 5 modul)
-  const TOTAL_MODULES = 5;
+  // Total modul tuntas dikerjakan seluruh siswa
+  let totalCompletedModules = 0;
   let totalProgressSum = 0;
-  if (studentsWithProgress.length > 0) {
-    for (const s of studentsWithProgress) {
-      const completed = s.progress.filter((p) => p.is_completed).length;
-      const percent = Math.min(100, (completed / TOTAL_MODULES) * 100);
-      totalProgressSum += percent;
+  let remedialCount = 0;
+
+  for (const s of allStudentsProgress) {
+    const validCount = s.progress.length;
+    totalCompletedModules += validCount;
+    const percent = Math.min(100, Math.round((validCount / TOTAL_CHAPTERS) * 100));
+    totalProgressSum += percent;
+
+    // Remedial condition: siswa aktif dengan progress < 20% ATAU kuis terakhir belum lulus
+    if (s.is_active) {
+      const latestQuiz = s.quiz_scores[0];
+      const hasFailedQuiz = latestQuiz ? !latestQuiz.is_passed : false;
+      if (percent < 20 || hasFailedQuiz) {
+        remedialCount++;
+      }
     }
   }
-  const averageProgress = studentsWithProgress.length > 0
-    ? `${(totalProgressSum / studentsWithProgress.length).toFixed(1)}%`
+
+  const averageProgress = allStudentsProgress.length > 0
+    ? `${(totalProgressSum / allStudentsProgress.length).toFixed(1)}%`
     : '0%';
 
   return {
@@ -77,6 +125,8 @@ export async function getStudents(search = '', status = '', page = 1, limit = 10
       totalActiveStudents,
       activePercentage,
       averageProgress,
+      totalCompletedModules,
+      remedialCount,
     },
   };
 }

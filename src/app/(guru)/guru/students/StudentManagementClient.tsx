@@ -20,6 +20,9 @@ type StudentUser = {
     semester: string;
     image_url?: string | null;
   } | null;
+  progressPercentage?: number;
+  completedChaptersCount?: number;
+  totalChapters?: number;
 };
 
 export function StudentManagementClient({ 
@@ -36,6 +39,8 @@ export function StudentManagementClient({
     totalActiveStudents: number;
     activePercentage: string;
     averageProgress: string;
+    totalCompletedModules?: number;
+    remedialCount?: number;
   };
 }) {
   const router = useRouter();
@@ -127,7 +132,9 @@ export function StudentManagementClient({
           <div className="flex flex-col gap-1">
             <span className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">TOTAL SISWA</span>
             <span className="text-[24px] font-bold text-heading">{stats?.totalAllStudents ?? total}</span>
-            <span className="text-[11px] font-semibold text-success">+14 semester ini</span>
+            <span className="text-[11px] font-semibold text-success">
+              {stats?.totalActiveStudents ?? 0} aktif dari {stats?.totalAllStudents ?? total} siswa
+            </span>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary-strong">
             <GraduationCap className="h-6 w-6" />
@@ -151,7 +158,7 @@ export function StudentManagementClient({
           <div className="flex flex-col gap-1">
             <span className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">RATA-RATA PROGRESS</span>
             <span className="text-[24px] font-bold text-heading">{stats?.averageProgress ?? '0%'}</span>
-            <span className="text-[11px] font-semibold text-primary">112 modul tuntas</span>
+            <span className="text-[11px] font-semibold text-primary">{stats?.totalCompletedModules ?? 0} modul tuntas</span>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-blue text-info">
             <TrendingUp className="h-6 w-6" />
@@ -161,8 +168,8 @@ export function StudentManagementClient({
         <div className="flex items-center justify-between rounded-xl bg-white p-5 shadow-subtle border border-outline/30">
           <div className="flex flex-col gap-1">
             <span className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">PERLU BIMBINGAN</span>
-            <span className="text-[24px] font-bold text-heading">12</span>
-            <span className="text-[11px] font-semibold text-danger">Progress &lt; 20%</span>
+            <span className="text-[24px] font-bold text-heading">{stats?.remedialCount ?? 0}</span>
+            <span className="text-[11px] font-semibold text-danger">Perlu remedial kuis / progress rendah</span>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-danger-soft text-danger">
             <Flag className="h-6 w-6" />
@@ -269,11 +276,16 @@ export function StudentManagementClient({
                   <td className="p-4">
                     <div className="flex flex-col gap-1.5 w-32">
                       <div className="flex items-center justify-between text-[11px] font-bold text-heading">
-                        <span className="text-primary">80%</span>
-                        <span className="text-muted-foreground font-medium">4/5 Modul</span>
+                        <span className="text-primary">{user.progressPercentage ?? 0}%</span>
+                        <span className="text-muted-foreground font-medium">
+                          {user.completedChaptersCount ?? 0}/{user.totalChapters ?? 8} Modul
+                        </span>
                       </div>
                       <div className="h-1.5 w-full rounded-full bg-surface-soft overflow-hidden">
-                        <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: '80%' }}></div>
+                        <div
+                          className="h-full bg-primary rounded-full transition-all duration-500"
+                          style={{ width: `${user.progressPercentage ?? 0}%` }}
+                        />
                       </div>
                     </div>
                   </td>

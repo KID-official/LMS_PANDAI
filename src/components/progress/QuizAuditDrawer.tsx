@@ -11,8 +11,10 @@ import {
   AlertCircle,
   HelpCircle,
   Loader2,
+  Unlock,
+  Plus,
 } from 'lucide-react';
-import { QuizAuditDetail, getQuizAuditDetail } from '@/app/actions/progressReport';
+import { QuizAuditDetail, getQuizAuditDetail, unlockStudentQuizAction } from '@/app/actions/progressReport';
 
 interface Props {
   isOpen: boolean;
@@ -26,6 +28,30 @@ export function QuizAuditDrawer({ isOpen, userId, quizKey, onClose }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isValidated, setIsValidated] = useState(false);
+  const [isUnlocking, setIsUnlocking] = useState(false);
+  const [unlockSuccessMessage, setUnlockSuccessMessage] = useState<string | null>(null);
+
+  // Handle unlock quiz for student
+  const handleUnlockQuiz = async () => {
+    if (!detail) return;
+    try {
+      setIsUnlocking(true);
+      setUnlockSuccessMessage(null);
+      const res = await unlockStudentQuizAction(detail.student.userId, detail.quizMetadata.quizKey);
+      if (res.success) {
+        setUnlockSuccessMessage(res.message);
+        // Refresh audit detail to reflect unlocked status
+        const updated = await getQuizAuditDetail(detail.student.userId, detail.quizMetadata.quizKey);
+        if (updated) {
+          setDetail(updated);
+        }
+      }
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Gagal membuka kunci kuis siswa.');
+    } finally {
+      setIsUnlocking(false);
+    }
+  };
 
   // Fetch quiz detail when opened
   useEffect(() => {
@@ -97,17 +123,23 @@ export function QuizAuditDrawer({ isOpen, userId, quizKey, onClose }: Props) {
           <div className="bg-white border-b border-[#E2E8F0] p-6 shrink-0">
             <div className="flex items-center justify-between">
               {/* Badges */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="inline-flex items-center gap-1 rounded-lg bg-[#ECFDF5] px-2.5 py-1 text-xs font-bold text-[#059669] border border-[#A7F3D0]">
                   <Check className="h-3.5 w-3.5" />
                   <span>
-                    Attempt {detail?.quizMetadata.attemptNumber || 1} •{' '}
+                    Percobaan {detail?.quizMetadata.attemptNumber || 1}/2 •{' '}
                     {detail?.quizMetadata.isPassed ? 'LULUS' : 'REMEDIAL'}
                   </span>
                 </span>
                 <span className="inline-flex items-center rounded-lg bg-[#F5F3FF] px-2.5 py-1 text-xs font-bold text-[#7C3AED] border border-[#DDD6FE]">
                   Skor {detail?.quizMetadata.score || 0} / {detail?.quizMetadata.maxScore || 100}
                 </span>
+                {detail?.quizMetadata.isUnlocked && (
+                  <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-800 border border-emerald-300">
+                    <Unlock className="h-3.5 w-3.5" />
+                    <span>Akses Terbuka</span>
+                  </span>
+                )}
               </div>
 
               {/* Close Button */}
@@ -197,6 +229,68 @@ export function QuizAuditDrawer({ isOpen, userId, quizKey, onClose }: Props) {
                     </div>
                   </div>
                 </div>
+
+                {/* ── STATUS AKSES KUIS & INTERVENSI BUKA KUNCI ── */}
+                {detail.quizMetadata.isUnlocked ? (
+                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50/90 p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+                        <Unlock className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-emerald-950">
+                          Akses Kuis Terbuka
+                        </div>
+                        <p className="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
+                          Siswa diberikan kesempatan untuk mengerjakan kuis kembali. Batas kuota percobaan tambahan aktif.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleUnlockQuiz}
+                      disabled={isUnlocking}
+                      className="shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-300 bg-white px-3.5 py-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50 transition shadow-2xs cursor-pointer disabled:opacity-60"
+                    >
+                      {isUnlocking ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
+                      <span>Beri Kesempatan Lagi</span>
+                    </button>
+                  </div>
+                ) : (detail.quizMetadata.isLocked || (!detail.quizMetadata.isPassed && detail.quizMetadata.attemptNumber >= 2)) ? (
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50/90 p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800 mt-0.5">
+                        <AlertCircle className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-amber-950">
+                          Kuis Terkunci (Batas Percobaan Habis: {detail.quizMetadata.attemptNumber}/2)
+                        </div>
+                        <p className="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
+                          Siswa telah mencapai batas percobaan maksimal dan belum lulus. Berikan izin konsultasi dan buka akses pengerjaan ulang kuis untuk siswa ini.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleUnlockQuiz}
+                      disabled={isUnlocking}
+                      className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-[#7C3AED] hover:bg-[#6D28D9] px-4 py-2.5 text-xs font-bold text-white shadow-sm transition active:scale-95 disabled:opacity-60 cursor-pointer"
+                    >
+                      {isUnlocking ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Unlock className="h-4 w-4" />
+                      )}
+                      <span>Buka Kunci Kuis</span>
+                    </button>
+                  </div>
+                ) : null}
+
+                {unlockSuccessMessage && (
+                  <div className="rounded-xl border border-emerald-300 bg-emerald-100/90 p-3 text-xs font-semibold text-emerald-900 flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-700 shrink-0" />
+                    <span>{unlockSuccessMessage}</span>
+                  </div>
+                )}
 
                 {/* ── QUESTIONS LIST ── */}
                 <div className="space-y-4">
@@ -335,7 +429,18 @@ export function QuizAuditDrawer({ isOpen, userId, quizKey, onClose }: Props) {
               Tutup Snapshot
             </button>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              {(detail?.quizMetadata.isLocked || (!detail?.quizMetadata.isPassed && (detail?.quizMetadata.attemptNumber || 0) >= 2)) && !detail?.quizMetadata.isUnlocked && (
+                <button
+                  onClick={handleUnlockQuiz}
+                  disabled={isUnlocking}
+                  className="flex items-center gap-1.5 rounded-xl bg-[#7C3AED] hover:bg-[#6D28D9] px-4 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-sm transition cursor-pointer disabled:opacity-60"
+                >
+                  {isUnlocking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Unlock className="h-4 w-4" />}
+                  <span>Buka Kunci Kuis</span>
+                </button>
+              )}
+
               <button
                 onClick={handlePrint}
                 className="flex items-center gap-1.5 rounded-xl border border-[#CBD5E1] bg-white px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-[#0F172A] hover:bg-[#F8FAFC] transition cursor-pointer"

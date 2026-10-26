@@ -104,8 +104,13 @@ export const ResultActionButtons: React.FC<ResultActionButtonsProps> = ({
           ) : (
             /* Batas Percobaan Habis */
             <>
-              <div className="p-3 rounded-xl bg-[#FEF3C7] border border-[#F59E0B]/30 text-center text-xs text-[#92400E]">
-                Batas maksimal {maxAttempts} kali percobaan telah tercapai. Nilai evaluasi terbaikmu telah disimpan dalam catatan akademik.
+              <div className="p-3.5 rounded-xl bg-[#FEF3C7] border border-[#F59E0B]/30 text-center text-xs text-[#92400E] space-y-1">
+                <p>
+                  Batas maksimal {maxAttempts} kali percobaan telah tercapai. Nilai evaluasi terbaikmu telah disimpan dalam catatan akademik.
+                </p>
+                <p className="font-bold text-[#B45309]">
+                  Percobaan Anda telah mencapai batas, hubungi guru terkait untuk membuka masa percobaan tambahan.
+                </p>
               </div>
 
               {currentChapterKey && (

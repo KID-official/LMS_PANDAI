@@ -2,13 +2,19 @@
 
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { PrismaClient, UserRole } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
+import { UserRole } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 import { getStaticQuiz } from '@/constants/quizzes';
 
-const prisma = new PrismaClient();
 
-const TOTAL_CHAPTERS = 8;
-const DEFAULT_COURSE_KEY = 'literasi-ai-dasar';
+
+const TOTAL_CHAPTERS = 7;
+const DEFAULT_COURSE_KEY = 'ALL';
+
+const BEGINNER_CHAPTERS = ['beginner-ch-1', 'beginner-ch-2', 'beginner-ch-3', 'beginner-ch-4'];
+const INTERMEDIATE_CHAPTERS = ['intermediate-ch-1', 'intermediate-ch-2', 'intermediate-ch-3'];
+const ALL_CHAPTERS = [...BEGINNER_CHAPTERS, ...INTERMEDIATE_CHAPTERS];
 
 /**
  * 1. Authorization Guard
@@ -104,8 +110,19 @@ export async function getStudentAnalyticsKPIs(courseKey: string = DEFAULT_COURSE
     : 0;
 
   // c. Total row di tabel certificates
+  const certWhere: Record<string, unknown> = {};
+  if (courseKey && courseKey !== 'ALL') {
+    if (courseKey === 'course-beginner' || courseKey === 'literasi-ai-dasar') {
+      certWhere.course_key = { in: ['course-beginner', 'literasi-ai-dasar'] };
+    } else if (courseKey === 'course-intermediate' || courseKey === 'forensik-deepfake') {
+      certWhere.course_key = { in: ['course-intermediate', 'forensik-deepfake'] };
+    } else {
+      certWhere.course_key = courseKey;
+    }
+  }
+
   const issuedCertificatesCount = await prisma.certificate.count({
-    where: courseKey ? { course_key: courseKey } : undefined,
+    where: certWhere,
   });
 
   return {
@@ -206,14 +223,15 @@ export async function getStudentProgressReport(
       user: {
         include: {
           progress: {
-            where: { is_completed: true },
+            where: {
+              is_completed: true,
+              NOT: { chapter_key: { startsWith: 'quiz_unlock:' } },
+            },
           },
           quiz_scores: {
             orderBy: { taken_at: 'desc' },
           },
-          certificates: {
-            where: { course_key: courseKey },
-          },
+          certificates: true,
         },
       },
     },
@@ -225,15 +243,48 @@ export async function getStudentProgressReport(
   // Transform ke baris laporan
   const rows: StudentReportRow[] = students.map((student) => {
     const user = student.user;
-    const completedChapters = user?.progress?.length || 0;
-    const progressPercentage = Math.min(100, Math.round((completedChapters / TOTAL_CHAPTERS) * 100));
 
-    // Kuis terbaru
-    const latestQuiz = user?.quiz_scores?.[0];
+    // Tentukan konfigurasi kursus berdasarkan filter courseKey
+    let targetTotalChapters = TOTAL_CHAPTERS;
+    let targetCourseName = 'Semua Kursus (Kurikulum Lengkap)';
+    let targetCourseLevel = 'Pemula & Menengah (7 Bab)';
+    let validChapters: string[] = ALL_CHAPTERS;
+    let certKeys: string[] = ['course-beginner', 'course-intermediate', 'literasi-ai-dasar', 'forensik-deepfake'];
+
+    if (courseKey === 'course-beginner' || courseKey === 'literasi-ai-dasar') {
+      targetTotalChapters = 4;
+      targetCourseName = 'Etika & Keamanan AI Siswa';
+      targetCourseLevel = 'Pemula (4 Bab)';
+      validChapters = BEGINNER_CHAPTERS;
+      certKeys = ['course-beginner', 'literasi-ai-dasar'];
+    } else if (courseKey === 'course-intermediate' || courseKey === 'forensik-deepfake') {
+      targetTotalChapters = 3;
+      targetCourseName = 'Forensik Visual & Deteksi Deepfake';
+      targetCourseLevel = 'Menengah (3 Bab)';
+      validChapters = INTERMEDIATE_CHAPTERS;
+      certKeys = ['course-intermediate', 'forensik-deepfake'];
+    }
+
+    const completedChapters = user?.progress?.filter(
+      (p) => validChapters.includes(p.chapter_key) && p.is_completed
+    ).length || 0;
+    const progressPercentage = Math.min(
+      100,
+      Math.round((completedChapters / targetTotalChapters) * 100)
+    );
+
+    // Kuis terbaru (sesuai filter kursus jika ada)
+    let userQuizzes = user?.quiz_scores || [];
+    if (courseKey === 'course-beginner' || courseKey === 'literasi-ai-dasar') {
+      userQuizzes = userQuizzes.filter((q) => q.quiz_key.includes('beginner') || q.quiz_key.includes('literasi'));
+    } else if (courseKey === 'course-intermediate' || courseKey === 'forensik-deepfake') {
+      userQuizzes = userQuizzes.filter((q) => q.quiz_key.includes('intermediate') || q.quiz_key.includes('deepfake'));
+    }
+    const latestQuiz = userQuizzes[0] || user?.quiz_scores?.[0];
     const hasQuiz = !!latestQuiz;
     const latestScore = latestQuiz ? latestQuiz.score : null;
     const attemptNumber = latestQuiz ? latestQuiz.attempt_number : 0;
-    const attemptText = latestQuiz ? `Attempt ${attemptNumber}/3` : '-';
+    const attemptText = latestQuiz ? `${attemptNumber}/2` : '-';
 
     let scoreStatusText: 'Sempurna' | 'Sangat Baik' | 'Baik' | 'Kuis Ulang' | 'Belum Kuis' = 'Belum Kuis';
     let scoreStatusColor: 'emerald' | 'violet' | 'amber' | 'rose' | 'slate' = 'slate';
@@ -254,11 +305,13 @@ export async function getStudentProgressReport(
       }
     }
 
-    // Sertifikat
-    const cert = user?.certificates?.[0];
-    const isIssued = !!cert;
+    // Sertifikat sesuai filter
+    const matchingCerts = user?.certificates?.filter((c) => certKeys.includes(c.course_key)) || [];
+    const isIssued = matchingCerts.length > 0;
     const certStatus: 'ISSUED' | 'NOT_ELIGIBLE' = isIssued ? 'ISSUED' : 'NOT_ELIGIBLE';
-    const certificateSerialNumber = cert ? cert.serial_number : null;
+    const certificateSerialNumber = isIssued
+      ? matchingCerts.map((c) => c.serial_number).join(', ')
+      : null;
 
     return {
       userId: user.id,
@@ -268,10 +321,10 @@ export async function getStudentProgressReport(
       className: student.class_name,
       imageUrl: student.image_url,
       courseKey,
-      courseName: 'Literasi AI & Etika Digital',
-      courseLevel: 'Level Dasar',
+      courseName: targetCourseName,
+      courseLevel: targetCourseLevel,
       completedChapters,
-      totalChapters: TOTAL_CHAPTERS,
+      totalChapters: targetTotalChapters,
       progressPercentage,
       latestScore,
       scoreStatusText,
@@ -281,7 +334,7 @@ export async function getStudentProgressReport(
       certificateStatus: certStatus,
       certificateSerialNumber,
       hasQuiz,
-      latestQuizKey: latestQuiz?.quiz_key || 'quiz-literasi-ai-dasar',
+      latestQuizKey: latestQuiz?.quiz_key || (courseKey.includes('intermediate') ? 'quiz-intermediate-ch-1' : 'quiz-beginner-ch-1'),
     };
   });
 
@@ -340,6 +393,8 @@ export interface QuizAuditDetail {
     isPassed: boolean;
     attemptNumber: number;
     maxAttempts: number;
+    isLocked: boolean;
+    isUnlocked: boolean;
     takenAtFormatted: string;
     durationFormatted: string;
     correctCount: number;
@@ -451,6 +506,26 @@ export async function getQuizAuditDetail(userId: string, quizKey: string): Promi
   });
   const takenAtFormatted = `${formatter.format(takenDate)} WIB`;
 
+  // Cek jumlah attempt dan status unlock
+  const attemptCount = await prisma.userQuizScore.count({
+    where: {
+      user_id: userId,
+      quiz_key: latestQuizScore.quiz_key,
+    },
+  });
+
+  const unlockRecord = await prisma.userProgress.findUnique({
+    where: {
+      user_id_chapter_key: {
+        user_id: userId,
+        chapter_key: `quiz_unlock:${latestQuizScore.quiz_key}`,
+      },
+    },
+  });
+
+  const isUnlocked = !!(unlockRecord && unlockRecord.is_completed && (unlockRecord.watch_seconds > attemptCount));
+  const isLocked = !latestQuizScore.is_passed && attemptCount >= 2 && !isUnlocked;
+
   return {
     student: {
       userId,
@@ -466,7 +541,9 @@ export async function getQuizAuditDetail(userId: string, quizKey: string): Promi
       maxScore: maxScoreSum || 100,
       isPassed: latestQuizScore.is_passed,
       attemptNumber: latestQuizScore.attempt_number,
-      maxAttempts: 3,
+      maxAttempts: 2,
+      isLocked,
+      isUnlocked,
       takenAtFormatted,
       durationFormatted: '18m 42s', // Sesuai mockup
       correctCount,
@@ -520,4 +597,64 @@ export async function exportStudentReportData(
     certificateStatus: row.certificateStatus === 'ISSUED' ? 'Diterbitkan' : 'Belum Berhak',
     certificateSerialNumber: row.certificateSerialNumber || '-',
   }));
+}
+
+/**
+ * 6. Server Action: unlockStudentQuizAction
+ * Guru atau Super Admin membuka kunci kuis siswa yang telah mencapai batas percobaan maksimal.
+ * Status disimpan pada tabel user_progress dengan chapter_key 'quiz_unlock:<quizKey>'.
+ */
+export async function unlockStudentQuizAction(userId: string, quizKey: string) {
+  await requireGuruOrAdmin();
+
+  if (!userId || !quizKey) {
+    throw new Error('User ID dan Quiz Key diperlukan');
+  }
+
+  // Hitung jumlah attempt saat ini
+  const attemptCount = await prisma.userQuizScore.count({
+    where: {
+      user_id: userId,
+      quiz_key: quizKey,
+    },
+  });
+
+  // Izinkan percobaan berikutnya (misal attemptCount 2 -> nextAllowed 3)
+  const nextAllowed = Math.max(attemptCount + 1, 3);
+
+  await prisma.userProgress.upsert({
+    where: {
+      user_id_chapter_key: {
+        user_id: userId,
+        chapter_key: `quiz_unlock:${quizKey}`,
+      },
+    },
+    update: {
+      is_completed: true,
+      watch_seconds: nextAllowed,
+      completed_at: new Date(),
+    },
+    create: {
+      user_id: userId,
+      chapter_key: `quiz_unlock:${quizKey}`,
+      is_completed: true,
+      watch_seconds: nextAllowed,
+      completed_at: new Date(),
+    },
+  });
+
+  try {
+    revalidatePath('/guru/progress');
+    revalidatePath('/superadmin/progress');
+    revalidatePath('/student/dashboard');
+    revalidatePath('/student/courses');
+  } catch {
+    // Ignore outside request cycle
+  }
+
+  return {
+    success: true,
+    message: `Kuis berhasil dibuka untuk kesempatan percobaan ke-${nextAllowed}`,
+    allowedAttempts: nextAllowed,
+  };
 }

@@ -157,7 +157,10 @@ export async function getSuperadminDashboardDataAction(): Promise<SuperadminDash
             id: true,
             is_active: true,
             progress: {
-              where: { is_completed: true },
+              where: {
+                is_completed: true,
+                NOT: { chapter_key: { startsWith: 'quiz_unlock:' } },
+              },
               select: { id: true },
             },
             certificates: {

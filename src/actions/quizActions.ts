@@ -102,8 +102,20 @@ export async function getQuizDataAction(
     const isPassed = existingScores.some((s) => s.is_passed);
     const lastScore = attemptCount > 0 ? existingScores[attemptCount - 1].score : null;
     const maxAttempts = 2;
-    const attemptNumber = Math.min(attemptCount + 1, maxAttempts);
-    const canAttempt = attemptCount < maxAttempts;
+
+    // Cek apakah kuis telah dibuka kuncinya oleh Guru/Super Admin
+    const unlockRecord = await prisma.userProgress.findUnique({
+      where: {
+        user_id_chapter_key: {
+          user_id: userId,
+          chapter_key: `quiz_unlock:${staticQuiz.quizKey}`,
+        },
+      },
+    });
+
+    const isUnlocked = !!(unlockRecord && unlockRecord.is_completed && (unlockRecord.watch_seconds > attemptCount));
+    const canAttempt = !isPassed && (attemptCount < maxAttempts || isUnlocked);
+    const attemptNumber = attemptCount + 1;
 
     // Validasi Prasyarat: Cari chapter untuk kuis ini dan periksa kelayakan akses
     let matchedChapter: (typeof COURSES_DATA)[0]['chapters'][0] | null = null;
@@ -233,10 +245,23 @@ export async function submitQuizAction(input: SubmitQuizInput): Promise<SubmitQu
     });
 
     const maxAttempts = 2;
-    if (existingScores.length >= maxAttempts) {
+
+    // Cek apakah guru membuka kunci kuis
+    const unlockRecord = await prisma.userProgress.findUnique({
+      where: {
+        user_id_chapter_key: {
+          user_id: userId,
+          chapter_key: `quiz_unlock:${staticQuiz.quizKey}`,
+        },
+      },
+    });
+
+    const isUnlocked = !!(unlockRecord && unlockRecord.is_completed && (unlockRecord.watch_seconds > existingScores.length));
+
+    if (existingScores.length >= maxAttempts && !isUnlocked) {
       return {
         success: false,
-        error: `Batas maksimal ${maxAttempts} kali percobaan telah tercapai untuk kuis ini.`,
+        error: 'Percobaan Anda telah mencapai batas, hubungi guru terkait untuk membuka masa percobaan tambahan.',
       };
     }
 
@@ -328,6 +353,23 @@ export async function submitQuizAction(input: SubmitQuizInput): Promise<SubmitQu
           watch_seconds: Math.max(timeSpentSeconds || 60, 60),
         },
       });
+    }
+
+    // Jika menggunakan kuota unlock, konsumsi status unlock
+    if (isUnlocked && unlockRecord) {
+      if (nextAttemptNumber >= unlockRecord.watch_seconds) {
+        await prisma.userProgress.update({
+          where: {
+            user_id_chapter_key: {
+              user_id: userId,
+              chapter_key: `quiz_unlock:${staticQuiz.quizKey}`,
+            },
+          },
+          data: {
+            is_completed: false,
+          },
+        });
+      }
     }
 
     // Revalidate rute halaman terkait agar cache Next.js terbarui
@@ -591,7 +633,18 @@ export async function getQuizResultDetailsAction(
 
     const maxAttempts = 2;
     const attemptNumber = latestScore.attempt_number || 1;
-    const remainingAttempts = Math.max(0, maxAttempts - attemptNumber);
+
+    // Cek apakah guru membuka kunci kuis tambahan
+    const unlockRecord = await prisma.userProgress.findUnique({
+      where: {
+        user_id_chapter_key: {
+          user_id: userId,
+          chapter_key: `quiz_unlock:${staticQuiz.quizKey}`,
+        },
+      },
+    });
+    const isUnlocked = !!(unlockRecord && unlockRecord.is_completed && (unlockRecord.watch_seconds > attemptNumber));
+    const remainingAttempts = isUnlocked ? 1 : Math.max(0, maxAttempts - attemptNumber);
 
     // Cari bab terkait dan modul berikutnya
     const activeCourse =
