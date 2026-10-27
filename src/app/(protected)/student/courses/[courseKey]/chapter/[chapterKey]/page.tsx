@@ -268,7 +268,7 @@ export default async function ChapterPlayerPage({ params }: ChapterPageProps) {
             <SequencerTimerAlert />
 
             {/* Chapter Content Reader */}
-            <ChapterContentReader textContent={chapter.textContent} />
+            <ChapterContentReader textContent={chapter.textContent} summaryCards={chapter.summaryCards} />
 
             {/* Action Bar (Inline on Desktop, Fixed on Mobile) */}
             <ChapterFooterAction
