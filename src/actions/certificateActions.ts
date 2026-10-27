@@ -380,7 +380,7 @@ export async function getStudentCertificatesListAction(): Promise<StudentCertifi
       const cert = user.certificates.find(
         (c) =>
           c.course_key === course.key ||
-          (course.key === 'course-beginner' && c.course_key === 'literasi-ai-dasar')
+          ((course.key === 'course-level-1' || course.key === 'course-beginner') && (c.course_key === 'literasi-ai-dasar' || c.course_key === 'course-beginner')) || (course.key === 'course-level-2' && c.course_key === 'course-intermediate')
       );
 
       // Count completed chapters
