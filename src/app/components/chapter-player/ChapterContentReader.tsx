@@ -96,16 +96,16 @@ export function ChapterContentReader({ textContent, summaryCards }: ChapterConte
 
             {/* Gambar Ilustrasi / Diagram Poin Bab */}
             {card.imageUrl && (
-              <div className="w-full h-40 sm:h-52 rounded-xl overflow-hidden relative bg-[#E7EEFF] border border-[#CAC3D8]/30">
+              <div className="w-full h-48 sm:h-64 rounded-xl overflow-hidden relative bg-[#F8FAFC] border border-[#CAC3D8]/30 flex items-center justify-center p-1">
                 <Image
                   src={card.imageUrl}
                   alt={card.imageAlt || card.title}
                   fill
                   unoptimized
-                  className="object-cover"
+                  className="object-contain"
                 />
                 {card.imageBadge && (
-                  <span className="absolute bottom-2.5 left-2.5 px-3 py-1 rounded-lg bg-black/70 text-white font-semibold text-[11px] backdrop-blur-md">
+                  <span className="absolute bottom-2.5 left-2.5 px-3 py-1 rounded-lg bg-black/75 text-white font-semibold text-[11px] backdrop-blur-md shadow-xs">
                     {card.imageBadge}
                   </span>
                 )}

@@ -10,8 +10,7 @@
     "db:push": "npx prisma db push",
     "db:migrate": "npx prisma migrate dev",
     "db:seed": "npx prisma db seed",
-    "db:studio": "npx prisma studio",
-    "db:clean-history": "npx tsx scripts/clear-dummy-history.ts"
+    "db:studio": "npx prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

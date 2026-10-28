@@ -46,36 +46,35 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
       {/* Case Study Visual Media Container (if question has an image) */}
       {question.imageUrl && (
-        <div className="rounded-xl overflow-hidden bg-[#F0F3FF] mb-4 shadow-inner relative group border border-[#CAC3D8]/40">
-          <div className="relative w-full h-48 sm:h-64 overflow-hidden bg-black/5">
+        <div className="rounded-xl overflow-hidden bg-[#F8FAFC] mb-5 shadow-xs relative group border border-[#CAC3D8]/40 flex flex-col">
+          {/* Top Info Bar */}
+          <div className="px-3.5 py-2 bg-[#F0F3FF] border-b border-[#CAC3D8]/30 flex items-center justify-between text-[#061B38]">
+            <div className="flex items-center gap-1.5 truncate pr-2">
+              <FileSearch className="w-4 h-4 text-[#7F54F8] shrink-0" />
+              <span className="text-xs font-bold truncate">
+                {question.caseBadge || 'Studi Kasus Visual'}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-[10px] bg-[#E8DEFF] text-[#20005F] px-2 py-0.5 rounded-full font-mono font-bold">
+                {question.caseResolution || '1080p HD'}
+              </span>
+              <div className="hidden sm:flex items-center gap-1 text-[11px] text-[#7A7486] font-medium ml-1">
+                <ZoomIn className="w-3.5 h-3.5 text-[#7F54F8]" />
+                <span>Asli</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Media Viewport - using object-contain and padded ambient container so vertical diagrams are never cropped */}
+          <div className="relative w-full h-64 sm:h-80 md:h-96 overflow-hidden bg-[#0A1128]/5 flex items-center justify-center p-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={question.imageUrl}
               alt={question.imageAlt || 'Kasus Studi Visual AI'}
-              className="w-full h-full object-cover rounded-lg group-hover:scale-102 transition-transform duration-300"
+              className="w-full h-full object-contain rounded-lg group-hover:scale-[1.01] transition-transform duration-300"
               loading="lazy"
             />
-            {/* Gradient shadow overlay at bottom */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#061B38]/90 via-[#061B38]/20 to-transparent pointer-events-none" />
-
-            {/* Top Right Zoom / Inspection Badge */}
-            <div className="absolute top-2.5 right-2.5 bg-[#061B38]/70 backdrop-blur-md rounded-full px-2.5 py-1 flex items-center gap-1 text-white text-[11px] font-medium shadow-xs">
-              <ZoomIn className="w-3 h-3 text-[#E8DEFF]" />
-              <span>Resolusi Tinggi</span>
-            </div>
-
-            {/* Bottom Media Metadata Bar */}
-            <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white">
-              <div className="flex items-center gap-1.5 truncate pr-2">
-                <FileSearch className="w-3.5 h-3.5 text-[#89F5E7] shrink-0" />
-                <span className="text-xs font-semibold truncate">
-                  {question.caseBadge || 'Kasus: Anomali Visual & Glare Mata'}
-                </span>
-              </div>
-              <span className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full text-white font-mono shrink-0">
-                {question.caseResolution || '1080p'}
-              </span>
-            </div>
           </div>
         </div>
       )}
@@ -85,6 +84,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         <div className="bg-[#F0F3FF] rounded-xl p-3 sm:p-3.5 flex items-start gap-2.5 mb-5 border border-[#CAC3D8]/30">
           <Lightbulb className="w-4 h-4 text-[#7F54F8] shrink-0 mt-0.5" />
           <p className="text-xs sm:text-[13px] text-[#494455] leading-relaxed">
+            <strong className="text-[#061B38] font-bold">Petunjuk Forensik: </strong>
             {question.insightTip}
           </p>
         </div>
