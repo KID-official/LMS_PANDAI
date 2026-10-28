@@ -1,12 +1,13 @@
 /**
  * Global Constants & Keys for Curriculum System
- * Updated with Multi-Level AI & Computational Thinking Curriculum
+ * Updated with Multi-Level (4 Levels) AI & Computational Thinking Curriculum
  */
 
 export const COURSE_KEYS = {
   LEVEL_1: "course-level-1",
   LEVEL_2: "course-level-2",
   LEVEL_3: "course-level-3",
+  LEVEL_4: "course-level-4",
   // Backwards compatibility aliases
   BEGINNER: "course-level-1",
   INTERMEDIATE: "course-level-2",
@@ -15,121 +16,183 @@ export const COURSE_KEYS = {
 export const CHAPTER_KEYS = {
   LEVEL1_CH1: "level1-ch-1",
   LEVEL1_CH2: "level1-ch-2",
+  LEVEL1_CH3: "level1-ch-3",
   LEVEL2_CH1: "level2-ch-1",
   LEVEL2_CH2: "level2-ch-2",
   LEVEL2_CH3: "level2-ch-3",
   LEVEL3_CH1: "level3-ch-1",
   LEVEL3_CH2: "level3-ch-2",
+  LEVEL3_CH3: "level3-ch-3",
+  LEVEL4_CH1: "level4-ch-1",
+  LEVEL4_CH2: "level4-ch-2",
+  LEVEL4_CH3: "level4-ch-3",
   // Backwards compatibility aliases
   BEGINNER_CH1: "level1-ch-1",
   BEGINNER_CH2: "level1-ch-2",
-  BEGINNER_CH3: "level2-ch-1",
-  BEGINNER_CH4: "level2-ch-2",
-  INTERMEDIATE_CH1: "level2-ch-3",
-  INTERMEDIATE_CH2: "level3-ch-1",
-  INTERMEDIATE_CH3: "level3-ch-2",
+  BEGINNER_CH3: "level1-ch-3",
+  BEGINNER_CH4: "level2-ch-1",
+  INTERMEDIATE_CH1: "level2-ch-2",
+  INTERMEDIATE_CH2: "level2-ch-3",
+  INTERMEDIATE_CH3: "level3-ch-1",
 } as const;
 
 export const QUIZ_KEYS = {
   QUIZ_LEVEL1_CH1: "quiz-level1-ch-1",
   QUIZ_LEVEL1_CH2: "quiz-level1-ch-2",
+  QUIZ_LEVEL1_CH3: "quiz-level1-ch-3",
   QUIZ_LEVEL2_CH1: "quiz-level2-ch-1",
   QUIZ_LEVEL2_CH2: "quiz-level2-ch-2",
   QUIZ_LEVEL2_CH3: "quiz-level2-ch-3",
   QUIZ_LEVEL3_CH1: "quiz-level3-ch-1",
   QUIZ_LEVEL3_CH2: "quiz-level3-ch-2",
+  QUIZ_LEVEL3_CH3: "quiz-level3-ch-3",
+  QUIZ_LEVEL4_CH1: "quiz-level4-ch-1",
+  QUIZ_LEVEL4_CH2: "quiz-level4-ch-2",
+  QUIZ_LEVEL4_CH3: "quiz-level4-ch-3",
   // Backwards compatibility aliases
   QUIZ_BEGINNER_CH1: "quiz-level1-ch-1",
   QUIZ_BEGINNER_CH2: "quiz-level1-ch-2",
-  QUIZ_BEGINNER_CH3: "quiz-level2-ch-1",
-  QUIZ_BEGINNER_CH4: "quiz-level2-ch-2",
-  QUIZ_INTERMEDIATE_CH1: "quiz-level2-ch-3",
-  QUIZ_INTERMEDIATE_CH2: "quiz-level3-ch-1",
-  QUIZ_INTERMEDIATE_CH3: "quiz-level3-ch-2",
+  QUIZ_BEGINNER_CH3: "quiz-level1-ch-3",
+  QUIZ_BEGINNER_CH4: "quiz-level2-ch-1",
+  QUIZ_INTERMEDIATE_CH1: "quiz-level2-ch-2",
+  QUIZ_INTERMEDIATE_CH2: "quiz-level2-ch-3",
+  QUIZ_INTERMEDIATE_CH3: "quiz-level3-ch-1",
 } as const;
 
 export const CURRICULUM = [
   {
     key: "course-level-1",
-    title: "Level 1: Dasar Kecerdasan Buatan & Dekomposisi Komputasional",
-    description: "Mempelajari esensi kecerdasan buatan, perbedaannya dengan program komputer konvensional, cara mesin belajar dari data, serta teknik dekomposisi masalah untuk menyederhanakan tugas-tugas rumit menjadi sub-tugas yang terstruktur.",
+    title: "Level 1: Dasar Kecerdasan Buatan & Robotika Cerdas",
+    description: "Kursus pengantar yang mengeksplorasi hakikat kecerdasan buatan, perbedaannya dengan program komputer konvensional, pemrosesan sensorik pada robot pintar, sejarah perkembangan AI sejak Alan Turing, hingga pemanfaatannya dalam kehidupan sehari-hari.",
     chapters: [
       {
         key: "level1-ch-1",
-        title: "Mengenal Kecerdasan Buatan (Artificial Intelligence)",
-        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Mengenal Kecerdasan Buatan (Artificial Intelligence)
+        title: "Hakikat Kecerdasan Buatan & Cara Mesin Belajar",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Hakikat Kecerdasan Buatan & Cara Mesin Belajar
         youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        content_text: "Kecerdasan Buatan (Artificial Intelligence/AI) adalah cabang ilmu komputer yang berfokus pada penciptaan mesin atau sistem perangkat lunak yang mampu meniru kemampuan kognitif manusia, seperti belajar dari pengalaman, memahami bahasa alami, mengenali pola visual, dan mengambil keputusan secara adaptif. Konsep ini pertama kali diinisiasi secara teoritis oleh Alan Turing pada tahun 1950 melalui pertanyaan monumental 'Bisakah mesin berpikir?', sebelum istilah Artificial Intelligence diresmikan dalam konferensi ilmiah pada tahun 1956.  Perbedaan mendasar antara program komputer biasa dan kecerdasan buatan terletak pada fleksibilitas serta kemampuannya mengolah data. Program biasa, seperti kalkulator elektronik, bekerja secara deterministik berdasarkan instruksi baris kode kaku tanpa kemampuan berkembang; kalkulator tidak akan belajar dari kesalahan hitung pengguna. Sebaliknya, sistem AI memanfaatkan data historis dan algoritma pembelajaran mesin untuk mengenali pola laten, beradaptasi terhadap masukan baru, serta meningkatkan akurasi kinerjanya dari waktu ke waktu layaknya aplikasi Google Translate atau model asisten suara.  Dalam ekosistem modern, AI telah bertransformasi menjadi penolong manusia di berbagai sektor strategis. Pada bidang medis, AI memproses citra radiologi untuk membantu dokter mendiagnosis anomali jaringan lebih cepat dan presisi. Di sektor transportasi, algoritma penglihatan komputer mengendalikan kendaraan otonom untuk memindai rambu lalu lintas dan mencegah kecelakaan. Dengan memahami esensi AI, siswa diajak tidak hanya menjadi konsumen teknologi yang pasif, melainkan penjelajah digital yang kritis terhadap cara kerja mesin pintar.",
+        content_text: "Kecerdasan Buatan atau Artificial Intelligence (AI) adalah bidang ilmu komputer yang berfokus pada pengembangan sistem cerdas yang mampu meniru cara berpikir, belajar, dan beradaptasi layaknya manusia[cite: 33, 34]. Sistem AI dirancang untuk memproses data masukan, mengenali karakteristik pola yang terkandung di dalamnya, dan mengambil keputusan secara mandiri[cite: 34]. Kemampuan adaptif inilah yang membedakan AI dengan teknologi komputasi terdahulu[cite: 34].  Perbedaan utama antara program komputer biasa dan sistem AI terletak pada fleksibilitas operasionalnya[cite: 34]. Program biasa, seperti kalkulator elektronik, bekerja secara statis mengikuti deretan instruksi kaku tanpa memahami arti data yang diproses; kalkulator tidak akan pernah belajar dari kesalahan[cite: 34]. Sebaliknya, aplikasi berbasis AI seperti Google Translate terus belajar dari ribuan sampel teks multibahasa untuk memperbaiki kualitas dan keakuratan terjemahan dari waktu ke waktu[cite: 34, 37].  Melalui kemampuan belajar dari data (machine learning), AI mampu memecahkan masalah non-linear yang tidak bisa diselesaikan dengan logika pemrograman biasa[cite: 34]. Komputer dengan AI dapat dilatih untuk mengenali wajah teman, memahami percakapan suara secara kontekstual, hingga mendeteksi anomali informasi digital secara otomatis[cite: 34]. Hal ini membuka babak baru di mana komputer tidak lagi hanya menjadi alat hitung, melainkan mitra berpikir manusia[cite: 34, 35].",
         min_watch_seconds: 90,
         quiz_key: "quiz-level1-ch-1",
       },
       {
         key: "level1-ch-2",
-        title: "Berpikir Komputasional: Decomposition (Mengurai Masalah)",
-        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Berpikir Komputasional: Decomposition (Mengurai Masalah)
+        title: "AI Penolong Manusia & Ragam Penerapan Sektoral",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: AI Penolong Manusia & Ragam Penerapan Sektoral
         youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        content_text: "Berpikir Komputasional (Computational Thinking) merupakan metodologi pemecahan masalah sistematis yang diadopsi dari cara kerja ilmuwan komputer. Pilar fundamental pertamanya adalah Dekomposisi (Decomposition), yaitu teknik mental untuk memecah masalah besar, rumit, atau abstrak menjadi bagian-bagian kecil, terisolasi, dan terdefinisi dengan jelas sehingga jauh lebih mudah dianalisis, dirancang solusinya, dan diselesaikan secara bertahap.  Dalam realitas kehidupan sehari-hari, manusia kerap merasa kewalahan ketika berhadapan dengan target yang masif, seperti membersihkan seluruh rumah atau membuat sebuah aplikasi gim. Pendekatan dekomposisi mengajarkan analogi 'memotong pizza': sebuah pizza utuh mustahil ditelan sekaligus, namun dengan membaginya menjadi potongan-potongan terukur, kita dapat menikmatinya satu per satu tanpa hambatan. Ketika merancang proyek gim, dekomposisi membedah proyek tersebut menjadi perancangan antarmuka, penyusunan mekanik aturan, logika penilaian poin, integrasi efek audio, dan pengujian kesalahan teknis.  Selain menyederhanakan beban kognitif individu, dekomposisi menjadi prasyarat mutlak dalam kolaborasi tim profesional. Ketika sebuah masalah telah terurai menjadi modul-modul independen, anggota tim dapat berbagi tugas secara paralel sesuai keahlian masing-masing. Koki kepala di restoran mewah, manajer proyek perangkat lunak, hingga arsitek bangunan bertingkat mengandalkan dekomposisi untuk mengorkestrasi pekerjaan besar menjadi eksekusi harian yang terukur dan bebas stres.",
+        content_text: "Kecerdasan Buatan telah bertransformasi dari eksperimen laboratorium menjadi penolong nyata yang mempermudah berbagai sektor kehidupan manusia[cite: 35]. Di dunia kesehatan, AI membantu dokter menganalisis citra medis seperti rontgen untuk mendeteksi penyakit lebih cepat dan akurat[cite: 35, 37]. Di bidang transportasi publik dan logistik, algoritma AI mengendalikan mobil tanpa sopir untuk memindai kondisi jalan raya serta menghindari potensi tabrakan secara waktu-nyata[cite: 35, 37].  Di lingkungan pendidikan dan rumah pintar, AI beroperasi melalui asisten virtual seperti Siri, Alexa, atau Google Assistant[cite: 35, 37]. Sistem ini mendengarkan perintah suara melalui mikrofon, mengonversi gelombang suara analog menjadi format data digital, lalu menganalisis kata kerja aksi dan objek yang dituju[cite: 36]. Contohnya, pada robot pintar Ribo, perintah 'nyalakan lampu' diterjemahkan menjadi sinyal elektrik untuk mengaktifkan saklar ruangan[cite: 35, 36].  AI dalam pendidikan juga bertindak sebagai asisten belajar mandiri yang mampu memahami ritme serta kebutuhan unik setiap peserta didik[cite: 35, 38]. Melalui pemanfaatan yang tepat, AI mempercepat pekerjaan, meminimalkan risiko human error, dan meningkatkan kualitas hidup masyarakat secara luas[cite: 35]. Namun, keberhasilan teknologi ini tetap bertumpu pada peran manusia yang mengarahkan dan mengendalikannya secara bijaksana[cite: 35, 105].",
         min_watch_seconds: 90,
         quiz_key: "quiz-level1-ch-2",
+      },
+      {
+        key: "level1-ch-3",
+        title: "Sejarah, Tokoh Pelopor, & Detektif AI di Lingkungan",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Sejarah, Tokoh Pelopor, & Detektif AI di Lingkungan
+        youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        content_text: "Gagasan mengenai mesin yang mampu berpikir telah dirintis jauh sebelum komputer elektronik modern diciptakan[cite: 39]. Pada tahun 1495, ilmuwan jenius Leonardo da Vinci merancang robot mekanik berkostum ksatria yang mampu duduk, berdiri, dan menggerakkan tangannya menggunakan sistem katrol mekanik[cite: 39]. Namun, fondasi teoritis AI modern baru dicetuskan pada dekade 1950-an ketika Alan Turing mengajukan pertanyaan legendaris: 'Bisakah mesin berpikir?'[cite: 39].  Istilah 'Artificial Intelligence' secara resmi diikrarkan dalam konferensi Dartmouth College pada tahun 1956[cite: 39]. Sejak saat itu, AI berkembang pesat melintasi berbagai era: dari superkomputer Deep Blue milik IBM yang mengalahkan grandmaster catur dunia pada 1997, kehadiran robot humanoid Sophia yang mampu berdialog ekspresif, hingga ledakan model bahasa besar (LLM) seperti ChatGPT di era kontemporer[cite: 39].  Untuk mengasah kepekaan teknologi, siswa diajak menjadi 'Detektif AI' dengan mengamati perangkat sehari-hari[cite: 40, 45]. Fitur filter kamera yang melacak kontur wajah, algoritma rekomendasi lagu pada aplikasi pemutar musik, serta kalkulasi rute tercepat pada Google Maps merupakan wujud nyata AI yang bekerja di sekitar kita tanpa kita sadari[cite: 40, 45]. Memahami sejarah dan manifestasi AI membangun kesadaran kritis bahwa teknologi selalu berevolusi mengikuti kebutuhan manusia[cite: 39, 45].",
+        min_watch_seconds: 90,
+        quiz_key: "quiz-level1-ch-3",
       },
     ],
   },
   {
     key: "course-level-2",
-    title: "Level 2: Pola, Abstraksi, dan Desain Algoritma Komputasional",
-    description: "Mengintegrasikan tiga pilar komputasional tingkat menengah: mengenali pola dan keteraturan data (pattern recognition), menyaring esensi informasi dengan membuang detail tak relevan (abstraction), serta merancang prosedur solusi logis bertahap melalui flowchart dan pseudocode (algorithm design).",
+    title: "Level 2: Berpikir Komputasional: Dekomposisi & Pengenalan Pola",
+    description: "Mempelajari dua pilar fundamental computational thinking: teknik dekomposisi untuk membedah tantangan besar menjadi unit terukur, visualisasi peta pikiran (mind mapping), serta pengenalan pola (pattern recognition) sebagai basis inferensi AI.",
     chapters: [
       {
         key: "level2-ch-1",
-        title: "Pattern Recognition (Pengenalan Pola)",
-        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Pattern Recognition (Pengenalan Pola)
+        title: "Dekomposisi: Mengurai Kompleksitas Masalah",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Dekomposisi: Mengurai Kompleksitas Masalah
         youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        content_text: "Pengenalan Pola (Pattern Recognition) adalah kemampuan kognitif dan algoritmik untuk mengidentifikasi kesamaan, keteraturan berulang, atau tren tren tertentu di dalam kumpulan data yang terlihat acak. Pola dapat berwujud barisan aritmatika dalam matematika, keselarasan ritme dalam melodi musik, pengulangan siklus cuaca harian, hingga kemiripan struktur wajah biologis. Ketika manusia mampu membaca pola, proses pengambilan keputusan menjadi jauh lebih cepat dan akurat.  Dalam arsitektur komputasi modern, pattern recognition bertindak sebagai fondasi utama di balik kecerdasan buatan dan machine learning. Komputer tidak dapat 'berpikir' secara filosofis, melainkan melakukan kalkulasi matematis terhadap jutaan sampel data untuk menemukan pola keteraturan. Misalnya, fitur pengenal wajah pada ponsel pintar mengidentifikasi pola jarak matematis antara mata, hidung, dan bibir pengguna untuk membuka kunci layar secara aman.  Keterampilan mengenali pola memberikan keunggulan prediktif yang luar biasa. Dokter menganalisis pola kemunculan gejala klinis untuk mendiagnosis penyakit langka tanpa harus melakukan uji coba acak, sementara detektif forensik memeriksa kesamaan modus operandi untuk memecahkan kasus investigasi. Dengan melatih ketelitian pola, peserta didik mengasah insting analitis dalam melihat keteraturan tersembunyi di balik fenomena dunia digital dan alam semesta.",
+        content_text: "Dekomposisi (Decomposition) adalah keterampilan kognitif dalam computational thinking yang berfungsi untuk memecah masalah besar, rumit, atau membingungkan menjadi bagian-bagian kecil yang lebih mudah dipahami dan dikelola[cite: 47, 48]. Ketika dihadapkan pada target masif—seperti membuat aplikasi gim atau merapikan seluruh isi rumah—manusia cenderung merasa cemas jika melihat persoalan tersebut secara utuh sekaligus[cite: 47, 48].  Teknik dekomposisi dapat dianalogikan dengan cara kita menikmati pizza[cite: 48, 53]. Kita mustahil menelan loyang pizza berukuran besar dalam satu gigitan; kita memotongnya menjadi beberapa irisan terukur agar mudah disantap satu per satu[cite: 53]. Dalam pembuatan gim edukasi, dekomposisi menguraikan proyek menjadi lima sub-tugas konkret: mendesain tampilan antarmuka, menyusun aturan skor, merancang tingkat kesulitan, menambahkan efek audio, dan melakukan pengujian program[cite: 48].  Selain menyederhanakan masalah individu, dekomposisi merupakan kunci utama kolaborasi dalam tim[cite: 48]. Dengan membagi persoalan menjadi sub-tugas terpisah, setiap anggota kelompok dapat bekerja secara mandiri dan paralel sesuai keahliannya[cite: 48]. Koki profesional, insinyur jembatan, dan perancang perangkat lunak kelas dunia senantiasa memanfaatkan dekomposisi untuk mengeksekusi proyek besar secara terorganisir dan bebas stres[cite: 48, 52].",
         min_watch_seconds: 90,
         quiz_key: "quiz-level2-ch-1",
       },
       {
         key: "level2-ch-2",
-        title: "Abstraction (Abstraksi)",
-        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Abstraction (Abstraksi)
+        title: "Visualisasi Masalah & Pemodelan Mind Mapping",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Visualisasi Masalah & Pemodelan Mind Mapping
         youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        content_text: "Abstraksi (Abstraction) adalah proses mental menyederhanakan suatu masalah atau sistem yang kompleks dengan berfokus secara eksklusif pada informasi esensial dan mengabaikan rincian atau detail teknis yang tidak relevan dengan tujuan pemecahan masalah. Kemampuan ini mencegah otak manusia maupun memori komputer dari 'kelebihan beban kognitif' akibat memproses data periferal yang tidak berdampak langsung terhadap hasil akhir.  Contoh paling elegan dari penerapan abstraksi adalah peta navigasi digital seperti Google Maps. Peta navigasi tidak menampilkan bentuk genteng setiap rumah, warna cat pagar, atau jumlah daun pada pepohonan di tepi jalan, melainkan hanya menampilkan garis jalan utama, arah belokan, nama kawasan, dan indikator kepadatan lalu lintas. Jika semua detail fisik digambarkan secara utuh, peta tersebut justru menjadi sangat rumit, lambat dimuat, dan membingungkan pengguna jalan.  Dalam rekayasa sistem perangkat lunak, abstraksi memungkinkan pembuatan antarmuka (interface) yang ramah pengguna. Pengemudi mobil cukup mengoperasikan pedal gas, rem, dan roda kemudi tanpa harus mengerti reaksi termodinamika di ruang bakar mesin silinder. Demikian pula siswa yang menguasai abstraksi akan mampu meringkas esensi cerita, menyusun daftar kebutuhan inti kegiatan, dan merumuskan model solusi matematika yang dapat digeneralisasi untuk berbagai permasalahan serupa.",
+        content_text: "Peta Pikiran (Mind Mapping) adalah sarana visual yang sangat ampuh untuk mengorganisasikan hasil dekomposisi masalah[cite: 52]. Otak manusia bekerja lebih optimal ketika menangkap keterkaitan grafis berbentuk percabangan dibandingkan membaca teks daftar yang panjang[cite: 52]. Dalam sebuah mind map, tujuan atau masalah utama diposisikan di lingkaran tengah, sementara langkah-langkah persiapan, eksekusi, dan evaluasi ditarik keluar menjadi cabang-cabang turunan yang terstruktur[cite: 52].  Sebagai ilustrasi, proses memasak mi instan dapat divisualisasikan menjadi lima simpul cabang utama: menyiapkan mi dan bumbu, merebus air, memasukkan mi, meniriskan kuah, dan mencampurkan bumbu penyedap[cite: 53]. Begitu pula dalam merencanakan kegiatan kompleks seperti pentas seni sekolah atau liburan keluarga, mind mapping memastikan tidak ada perlengkapan krusial yang terlewatkan[cite: 50, 55].  Selain mengurai dari depan, siswa juga melatih logika komputasional melalui metode 'puzzle terbalik'[cite: 54]. Dengan membayangkan produk akhir yang sudah jadi lalu menelusuri mundur komponen pembentuknya, siswa melatih kepekaan logika kausalitas (sebab-akibat)[cite: 54]. Keterampilan visualisasi ini menjadi fondasi penting sebelum melangkah ke tahap penulisan logika algoritma formal[cite: 52, 90].",
         min_watch_seconds: 90,
         quiz_key: "quiz-level2-ch-2",
       },
       {
         key: "level2-ch-3",
-        title: "Algorithm Design (Desain Algoritma)",
-        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Algorithm Design (Desain Algoritma)
+        title: "Pattern Recognition: Keteraturan Data & Pondasi AI",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Pattern Recognition: Keteraturan Data & Pondasi AI
         youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        content_text: "Desain Algoritma (Algorithm Design) adalah fase perumusan solusi konkret berupa urutan instruksi langkah demi langkah yang logis, terstruktur, dan teratur untuk menyelesaikan suatu masalah atau menghasilkan luaran yang diinginkan. Istilah algoritma berakar dari nama ilmuwan matematika dan astronomi Muslim legendaris abad ke-9, Muhammad ibn Musa al-Khwarizmi. Dalam dunia logika komputer, urutan eksekusi langkah adalah segalanya; pembalikan urutan langkah akan membatalkan validitas hasil akhir secara fatal.  Sebuah algoritma yang bermutu wajib memenuhi tiga karakteristik esensial: Jelas (unambiguous), di mana setiap instruksi memiliki interpretasi tunggal dan tidak menimbulkan multi-tafsir; Terbatas (finite), yang memastikan bahwa algoritma memiliki kondisi berhenti pasti dan tidak terjebak dalam perulangan tanpa henti (infinite loop); serta Efektif (effective), di mana seluruh operasi yang diperintahkan benar-benar dapat dieksekusi secara rasional dan memberikan solusi tepat sasaran.  Dalam mendokumentasikan algoritma, terdapat dua instrumen utama yang lazim digunakan secara profesional. Flowchart (diagram alur) memanfaatkan simbol-simbol grafis terstandardisasi seperti terminator oval untuk status awal/akhir, balok persegi panjang untuk proses kalkulasi, dan belah ketupat untuk titik pengambilan keputusan bersyarat (decision branching). Sementara itu, Pseudocode menyajikan logika algoritma menggunakan bahasa manusia terstruktur yang menyerupai sintaks kode pemrograman tingkat tinggi tanpa terikat pada aturan gramatikal bahasa pemrograman tertentu.",
-        min_watch_seconds: 100,
+        content_text: "Pengenalan Pola (Pattern Recognition) adalah kemampuan untuk menemukan keteraturan, kesamaan karakteristik, atau tren berulang yang tersembunyi di dalam sekumpulan data[cite: 60, 61]. Tanpa disadari, otak manusia senantiasa mengenali pola setiap saat: menebak buah berikutnya pada barisan 'apel, jeruk, pisang', menikmati keselarasan rima dalam bait lagu, atau bersiap membawa payung saat mengamati pola langit mendung di sore hari[cite: 60, 61, 62].  Dalam sains komputasi dan kecerdasan buatan, pattern recognition merupakan mesin penggerak utama di balik kemampuan adaptif komputer[cite: 61]. Komputer tidak memiliki kesadaran emosional; ia belajar memahami dunia dengan mengidentifikasi pola data biner[cite: 34, 61]. Sebagai contoh, sistem pembuka kunci wajah (Face Recognition) bekerja dengan memetakan pola jarak matematis antara mata, hidung, dan garis rahang pengguna untuk dicocokkan dengan profil pemilik[cite: 62].  Kemampuan mengenali pola memberikan keunggulan prediktif yang sangat berharga[cite: 61]. Detektif kepolisian mencari pola waktu dan lokasi kejahatan untuk mengungkap pelaku kriminal, sementara dokter memeriksa pola gejala klinis untuk menegakkan diagnosis medis yang akurat[cite: 65]. Menguasai pengenalan pola melatih siswa berpikir logis, cepat menggeneralisasi aturan, dan memecahkan masalah berulang secara efisien[cite: 61].",
+        min_watch_seconds: 90,
         quiz_key: "quiz-level2-ch-3",
       },
     ],
   },
   {
     key: "course-level-3",
-    title: "Level 3: Etika Kecerdasan Buatan & Ekosistem Digital Indonesia",
-    description: "Menganalisis prinsip-prinsip etika kecerdasan buatan—mencakup tanggung jawab, privasi data, bias algoritma, transparansi keputusan, dan mitigasi kejahatan manipulasi informasi—serta menelaah tata kelola internet nasional melalui struktur domain resmi .id dan peran kelembagaan PANDI.",
+    title: "Level 3: Berpikir Komputasional: Abstraksi & Desain Algoritma",
+    description: "Mendalami teknik abstraksi untuk menyaring esensi data dan mengeliminasi detail periferal, serta merumuskan urutan solusi logis, terbatas, dan efektif menggunakan representasi flowchart dan pseudocode.",
     chapters: [
       {
         key: "level3-ch-1",
-        title: "Etika AI untuk Siswa: Tanggung Jawab, Privasi, dan Keadilan Algoritma",
-        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Etika AI untuk Siswa: Tanggung Jawab, Privasi, dan Keadilan Algoritma
+        title: "Abstraksi: Menyaring Esensi & Eliminasi Detail",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Abstraksi: Menyaring Esensi & Eliminasi Detail
         youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        content_text: "Seiring pesatnya adopsi kecerdasan buatan dalam ranah sosial dan akademik, pemahaman mengenai Etika AI (AI Ethics) menjadi kompetensi krusial yang mutlak dimiliki generasi muda. Etika AI adalah seperangkat norma, nilai filosofis, dan prinsip moral yang mengatur bagaimana sistem kecerdasan buatan dirancang, dilatih, dioperasikan, dan diawasi agar tetap selaras dengan harkat kemanusiaan, berkeadilan sosial, aman, serta tidak mendatangkan kerugian bagi individu maupun peradaban.  Kerangka etika kecerdasan buatan bertumpu pada lima pilar fundamental: Tanggung Jawab (Responsibility), yang menegaskan bahwa tanggung jawab moral dan hukum tetap berada di tangan pengembang dan pengguna manusia, bukan pada entitas mesin; Privasi Data (Data Privacy), yaitu keharusan melindungi data pribadi dan biometrik dari eksploitasi tanpa izin; Keadilan Bebas Bias (Fairness & Bias), yang menuntut dataset pelatihan bebas dari prasangka diskriminatif; Transparansi (Transparency), yaitu hak pengguna untuk memahami logika di balik keputusan sistem; serta Keamanan (Security), perlindungan terhadap manipulasi destruktif seperti konten palsu deepfake.  Dalam konteks interaksi pelajar, etika AI menuntut integritas dan kesadaran kritis. Penggunaan model bahasa besar seperti ChatGPT untuk menyelesaikan tugas sekolah wajib diposisikan sebagai mitra bertukar pikiran konseptual, bukan alat otomatisasi plagiasi yang menumpulkan kemampuan berpikir kritis. Siswa juga harus mewaspadai efek ruang gema (echo chamber) dan manipulasi citra tubuh akibat penggunaan filter wajah berlebihan di media sosial demi menjaga kesehatan mental dan etika digital yang sehat.",
-        min_watch_seconds: 100,
+        content_text: "Abstraksi (Abstraction) adalah pilar computational thinking yang berfokus pada pemilahan informasi: mengambil fakta dan data yang benar-benar esensial, serta mengabaikan detail periferal yang tidak relevan dengan tujuan pemecahan masalah[cite: 74, 75]. Dalam kehidupan sehari-hari, kita kerap terdistraksi oleh terlalu banyak rincian kecil yang mengaburkan gambaran besar (big picture) dari suatu persoalan[cite: 75].  Prinsip abstraksi dapat diibaratkan seperti mengupas buah apel[cite: 79, 80]. Kita membuang kulit luar dan bijinya yang keras untuk mengambil bagian daging buahnya yang bermanfaat untuk dikonsumsi[cite: 79, 80]. Saat kita melihat peta kota atau peta rute navigasi Google Maps, kita tidak disajikan gambar setiap tiang listrik, warna cat genteng rumah, atau helai daun pohon di pinggir jalan; peta hanya menampilkan jalan utama, persimpangan, dan nama tempat penting agar pengguna dapat membaca arah dalam sekejap[cite: 75, 79].  Dalam rekayasa sistem perangkat lunak, abstraksi memungkinkan penyusunan antarmuka pengguna yang bersih dan mudah digunakan[cite: 75]. Pengguna aplikasi transportasi online cukup memilih titik jemput dan tujuan tanpa perlu dipusingkan oleh kerumitan baris kode sistem navigasi satelit di latar belakang[cite: 75]. Siswa yang menguasai abstraksi mampu meringkas materi bacaan panjang, merancang denah ruang fungsional, dan merumuskan model solusi yang efisien[cite: 75, 80, 81].",
+        min_watch_seconds: 90,
         quiz_key: "quiz-level3-ch-1",
       },
       {
         key: "level3-ch-2",
-        title: "Mengenal Identitas Digital & Tata Kelola Domain .id",
-        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Mengenal Identitas Digital & Tata Kelola Domain .id
+        title: "Desain Algoritma: Karakteristik Solusi Runtut & Logis",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Desain Algoritma: Karakteristik Solusi Runtut & Logis
         youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        content_text: "Internet global beroperasi menggunakan sistem pengalamatan berbasis deretan angka biner unik yang dikenal sebagai Internet Protocol (IP) Address. Namun, karena keterbatasan memori kognitif manusia dalam menghafal kombinasi numerik rumit, Domain Name System (DNS) hadir untuk memetakan IP address ke dalam Nama Domain tekstual yang intuitif dan bermakna. Nama domain berfungsi layaknya alamat domisili resmi sebuah entitas atau individu pada jaringan internet global.  Dalam hierarki sistem domain, ekstensi '.id' merupakan Country Code Top-Level Domain (ccTLD) yang merepresentasikan kedaulatan, identitas kultural, dan reputasi hukum Negara Kesatuan Republik Indonesia. Memanfaatkan domain .id memberikan kredibilitas tinggi bagi institusi pendidikan, korporasi, maupun portofolio personal pelajar karena terikat langsung dengan verifikasi identitas resmi. Hingga akhir tahun 2024, domain .id telah tumbuh menjadi pengelola domain terbesar di kawasan Asia Tenggara dengan menembus lebih dari 1,2 juta nama domain terdaftar.  Tata kelola nama domain nasional dioperasikan secara profesional oleh Pengelola Nama Domain Internet Indonesia (PANDI), sebuah perkumpulan multipemangku kepentingan yang menerima mandat redelegasi dari Internet Assigned Numbers Authority (IANA) sejak tahun 2013. PANDI memastikan kestabilan ekosistem digital nasional melalui pengoperasian 44 server DNS Anycast berkecepatan tinggi yang tersebar di dalam dan luar negeri, menegakkan kepatuhan terhadap regulasi perundang-undangan nasional, serta aktif mengawal forum tata kelola internet internasional seperti ICANN dan APTLD.",
+        content_text: "Desain Algoritma (Algorithm Design) adalah keterampilan menyusun serangkaian langkah operasional yang terurut, logis, dan terencana untuk menyelesaikan masalah atau mencapai tujuan tertentu[cite: 88, 89]. Kata 'algoritma' berakar dari nama ilmuwan matematika Muslim legendaris abad ke-9, Muhammad ibn Musa al-Khwarizmi, penemu aljabar yang mengenalkan metode hitung sistematis[cite: 95]. Resep masakan, petunjuk perakitan mainan, dan rute belokan di Google Maps adalah wujud konkret algoritma dalam dunia nyata[cite: 90, 95].  Dalam dunia komputasi dan logika, urutan langkah adalah segalanya[cite: 89]. Jika langkah-langkah diacak atau dieksekusi di luar urutan rasional, hasil akhirnya pasti salah atau bahkan memicu masalah baru[cite: 89]. Sebagai ilustrasi, membuat nasi goreng menuntut kita menyalakan kompor dan memanaskan minyak sebelum menaruh bumbu; bila kita memasukkan nasi dan kecap ke atas wajan dingin tanpa menyalakan api kompor, nasi goreng tidak akan pernah matang[cite: 88, 89].  Sebuah algoritma yang baik wajib memenuhi tiga karakteristik esensial: Jelas (setiap instruksi mudah dipahami dan bermakna tunggal), Terbatas (memiliki titik akhir yang pasti dan tidak berputar tanpa batas), serta Efektif (mampu menyelesaikan persoalan dengan benar dan tepat sasaran)[cite: 89, 90]. Mempelajari desain algoritma membentuk pola pikir terstruktur yang esensial bagi pemrogram maupun pemecah masalah profesional[cite: 91, 98].",
         min_watch_seconds: 90,
         quiz_key: "quiz-level3-ch-2",
+      },
+      {
+        key: "level3-ch-3",
+        title: "Representasi Algoritma: Flowchart & Pseudocode",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Representasi Algoritma: Flowchart & Pseudocode
+        youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        content_text: "Untuk mengomunikasikan logika algoritma kepada sesama manusia maupun sebelum diterjemahkan menjadi kode program komputer, terdapat dua format representasi standar yang digunakan: Flowchart (Diagram Alur) dan Pseudocode (Kode Semu)[cite: 90]. Masing-masing memiliki keunggulan fungsional dalam mendokumentasikan alur berpikir secara transparan dan terstandarisasi[cite: 90].  Flowchart menyajikan alur instruksi melalui simbol-simbol grafis baku yang dihubungkan dengan garis panah[cite: 90, 96]. Simbol oval (terminator) digunakan untuk menandai titik Mulai dan Selesai; simbol persegi panjang melambangkan proses aksi atau eksekusi operasional; sedangkan simbol belah ketupat (decision) digunakan untuk evaluasi keputusan bersyarat yang menghasilkan cabang 'Ya' atau 'Tidak'[cite: 94, 96]. Sebagai contoh, dalam flowchart memasak mi instan, belah ketupat mengevaluasi: 'Apakah air sudah mendidih?'; jika belum, alur panah berputar kembali merebus air[cite: 94, 97].  Pseudocode adalah penyajian algoritma menggunakan kalimat terstruktur menyerupai bahasa pemrograman komputer, namun tetap menggunakan bahasa manusia yang sederhana dan mudah dipahami[cite: 90]. Pseudocode tidak terikat pada aturan sintaks bahasa pemrograman tertentu (seperti Python atau C++), sehingga sangat efektif digunakan untuk merancang kerangka logika pemecahan masalah sebelum tahap pengodean yang sesungguhnya dimulai[cite: 90, 94].",
+        min_watch_seconds: 100,
+        quiz_key: "quiz-level3-ch-3",
+      },
+    ],
+  },
+  {
+    key: "course-level-4",
+    title: "Level 4: Etika AI & Kedaulatan Digital Indonesia",
+    description: "Menganalisis prinsip pertanggungjawaban dalam pemanfaatan AI, mitigasi ancaman manipulasi visual (deepfake), pencegahan bias algoritma, menjaga integritas akademik, serta menelaah tata kelola internet nasional melalui domain resmi .id dan peran kelembagaan PANDI.",
+    chapters: [
+      {
+        key: "level4-ch-1",
+        title: "Lima Pilar Etika Kecerdasan Buatan",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Lima Pilar Etika Kecerdasan Buatan
+        youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        content_text: "Perkembangan kecerdasan buatan yang eksponensial menuntut landasan moral dan hukum yang kokoh agar teknologi tetap bermanfaat bagi peradaban manusia[cite: 104, 105]. Etika AI (AI Ethics) adalah seperangkat nilai, norma, dan prinsip yang memandu perancangan serta pengoperasian sistem cerdas agar adil, aman, dan dapat dipertanggungjawabkan[cite: 104, 105]. Tanpa kerangka etika, AI yang sangat canggih berpotensi menciptakan ketidakadilan sistemik dan mengancam hak-hak asasi individu[cite: 105].  Etika AI bertumpu pada lima pilar fundamental: Tanggung Jawab (Responsibility), di mana manusia pembuat dan pengguna tetap menjadi pihak yang wajib bertanggung jawab secara moral dan hukum saat terjadi kesalahan[cite: 105]; Privasi Data (Data Privacy), kewajiban menjaga kerahasiaan data personal dan biometrik dari eksploitasi tanpa persetujuan[cite: 105]; Bebas dari Bias (Fairness), keharusan memastikan data latih AI bersifat inklusif agar tidak mendiskriminasi kelompok tertentu[cite: 105]; Transparansi (Transparency), hak manusia untuk mengetahui dan memahami alasan di balik keputusan yang diambil sistem[cite: 105]; serta Keamanan (Security), proteksi sistem dari penyalahgunaan kejahatan siber[cite: 105].  Isu bias algoritma menjadi salah satu tantangan paling krusial[cite: 105]. Jika data latih yang diberikan tidak seimbang—misalnya sistem pengenal wajah yang hanya dilatih menggunakan sampel wajah orang berkulit terang—AI akan mengalami bias dan menghasilkan tingkat kesalahan tinggi saat mengidentifikasi individu dari ras lain[cite: 105]. Memahami kelima pilar ini membimbing siswa menjadi pengguna teknologi yang kritis, bertanggung jawab, dan berintegritas[cite: 106, 112].",
+        min_watch_seconds: 90,
+        quiz_key: "quiz-level4-ch-1",
+      },
+      {
+        key: "level4-ch-2",
+        title: "Integritas Digital: Deepfake, Echo Chamber, & Plagiasi",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Integritas Digital: Deepfake, Echo Chamber, & Plagiasi
+        youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        content_text: "Pemanfaatan AI dalam ekosistem digital media sosial membawa dampak psikologis dan sosial yang nyata bagi generasi muda[cite: 106, 107]. Penggunaan filter wajah berbasis AI yang mengubah bentuk mata, hidung, dan tekstur kulit dapat memicu distorsi persepsi diri bila siswa merasa tidak percaya diri dengan penampilan alaminya[cite: 106]. Lebih berbahaya lagi, teknologi AI kini dapat disalahgunakan untuk menciptakan rekayasa manipulasi citra dan suara realistis yang dikenal sebagai deepfake untuk menyebarkan fitnah dan hoaks publik[cite: 105, 112].  Di sisi lain, algoritma kurasi konten pada platform video dan musik dapat memicu fenomena ruang gema (echo chamber)[cite: 107, 108, 114]. Ketika algoritma hanya menyajikan materi yang disukai pengguna secara terus-menerus, pandangan seseorang menjadi sempit dan terisolasi dari sudut pandang baru yang beragam[cite: 107, 108, 114]. Siswa perlu secara sadar melatih rasa ingin tahu terhadap berbagai sudut pandang agar tidak terjebak dalam gelembung informasi algoritma[cite: 107, 108].  Dalam kehidupan sekolah, kehadiran generative AI seperti ChatGPT menuntut komitmen integritas akademik yang tinggi[cite: 106, 109]. Menggunakan AI untuk mengerjakan seluruh tugas tanpa membaca, memahami, atau memikirkan isinya adalah tindakan plagiasi yang menumpulkan kemampuan berpikir kritis siswa[cite: 106, 109]. AI seharusnya difungsikan sebagai mitra diskusi konseptual dan teman bertukar pikiran, bukan alat untuk memalsukan proses belajar[cite: 106, 109].",
+        min_watch_seconds: 90,
+        quiz_key: "quiz-level4-ch-2",
+      },
+      {
+        key: "level4-ch-3",
+        title: "Identitas Digital & Tata Kelola Domain .id",
+        // [MEDIA CONTEXT - VIDEO]: Video pembelajaran YouTube | Tema: Identitas Digital & Tata Kelola Domain .id
+        youtube_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        content_text: "Jaringan internet menghubungkan miliaran perangkat di dunia menggunakan deretan angka biner unik yang disebut Internet Protocol (IP) Address[cite: 119]. Namun, karena memori manusia sulit mengingat kombinasi angka rumit, diciptakanlah Domain Name System (DNS) yang berfungsi menerjemahkan deretan alamat IP menjadi nama domain tekstual yang mudah diingat, layaknya nama kontak di ponsel[cite: 119]. Nama domain bertindak sebagai alamat domisili resmi sebuah situs web maupun surat elektronik (email)[cite: 119].  Ekstensi '.id' merupakan Country Code Top-Level Domain (ccTLD) yang menunjukkan identitas dan kedaulatan digital Indonesia di mata dunia[cite: 119]. Menggunakan domain .id mencerminkan kebanggaan nasional, memberikan rasa aman serta tingkat kepercayaan tinggi bagi pengguna, dan terikat dengan kepatuhan hukum Republik Indonesia[cite: 119]. Hingga akhir tahun 2024, domain .id telah tumbuh menjadi pengelola domain terbesar di Asia Tenggara dengan menembus 1,2 juta nama domain terdaftar[cite: 121].  Pengelolaan dan pemeliharaan domain .id diamanahkan kepada PANDI (Pengelola Nama Domain Internet Indonesia), organisasi multipemangku kepentingan yang menerima mandat redelegasi dari IANA sejak 2013[cite: 120, 121]. PANDI menjamin kestabilan dan keamanan ekosistem siber dengan mengoperasikan 44 server DNS Anycast yang tersebar di kota-kota besar Indonesia serta pusat internet mancanegara, sekaligus aktif mengawal forum tata kelola internet global seperti ICANN dan APTLD[cite: 120, 121, 122].",
+        min_watch_seconds: 90,
+        quiz_key: "quiz-level4-ch-3",
       },
     ],
   },
