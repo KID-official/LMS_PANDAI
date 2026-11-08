@@ -60,10 +60,10 @@ export default function LoginPage() {
     }
   };
 
-  const handleDemoFill = () => {
-    setIdentifier('admin@amos.com');
-    setPassword('password123');
-  };
+  // const handleDemoFill = () => {
+  //   setIdentifier('admin@amos.com');
+  //   setPassword('password123');
+  // };
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col lg:flex-row lg:items-start lg:gap-12 px-6 py-8 lg:py-12">
@@ -259,7 +259,7 @@ export default function LoginPage() {
             </button>
 
             {/* Demo Section (Based on Reference) */}
-            <div className="mt-4 flex flex-col gap-3 rounded-xl bg-surface-soft p-4 border border-outline/30">
+            {/* <div className="mt-4 flex flex-col gap-3 rounded-xl bg-surface-soft p-4 border border-outline/30">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-[12px] font-bold text-heading">
                   <Lock className="h-3.5 w-3.5 text-primary" />
@@ -277,7 +277,7 @@ export default function LoginPage() {
                  <span>ID: <strong className="text-body">admin@amos.com</strong></span>
                  <span>Sandi: <strong className="text-body">password123</strong></span>
               </div>
-            </div>
+            </div> */}
 
           </form>
         </div>
