@@ -1,26 +1,13 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 /**
- * Storage Service (Local Storage)
+ * Storage Service (Neon Object Storage / S3-compatible + Local Disk Fallback)
  * 
- * Modul penyimpanan file avatar secara lokal di folder `public/uploads/avatars`.
- * 
- * ─────────────────────────────────────────────────────────────────────────────
- * PANDUAN MENGALIHKAN KE SUPABASE STORAGE SAAT DEPLOYMENT:
- * 1. Install package Supabase:
- *    npm install @supabase/supabase-js
- * 
- * 2. Pasang variabel environment di .env:
- *    NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
- *    SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
- *    SUPABASE_AVATARS_BUCKET="avatars"
- * 
- * 3. Anda cukup menambahkan upload ke Supabase Client di fungsi uploadAvatar:
- *    import { createClient } from '@supabase/supabase-js';
- *    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
- *    await supabase.storage.from('avatars').upload(filename, buffer, { contentType: file.type });
- * ─────────────────────────────────────────────────────────────────────────────
+ * Terintegrasi penuh dengan Neon Object Storage di region ap-southeast-1 (Singapura).
+ * Menggunakan kredensial AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, dan AWS_ENDPOINT_URL_S3
+ * yang secara otomatis disediakan oleh Neon CLI ('neon deploy').
  */
 
 export interface UploadResult {
@@ -30,8 +17,32 @@ export interface UploadResult {
 
 const LOCAL_UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads', 'avatars');
 
+function getS3Client(): { s3: S3Client; endpoint: string; bucket: string } | null {
+  const endpoint = process.env.AWS_ENDPOINT_URL_S3;
+  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  const region = process.env.AWS_REGION || 'ap-southeast-1';
+  const bucket = process.env.NEON_STORAGE_BUCKET || 'pandai-learning';
+
+  if (!endpoint || !accessKeyId || !secretAccessKey) {
+    return null;
+  }
+
+  const s3 = new S3Client({
+    endpoint,
+    region,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
+    forcePathStyle: true, // Wajib true untuk Neon Object Storage (path-style addressing)
+  });
+
+  return { s3, endpoint, bucket };
+}
+
 export async function uploadAvatar(file: File, prefix = 'avatar'): Promise<UploadResult> {
-  // 1. Validasi Ukuran (Maksimal 2MB sesuai ketentuan)
+  // 1. Validasi Ukuran (Maksimal 2MB sesuai ketentuan LMS)
   const MAX_SIZE = 2 * 1024 * 1024;
   if (file.size > MAX_SIZE) {
     throw new Error('Ukuran file maksimal 2MB.');
@@ -48,17 +59,35 @@ export async function uploadAvatar(file: File, prefix = 'avatar'): Promise<Uploa
   const randomStr = Math.random().toString(36).substring(2, 8);
   const filename = `${prefix}-${timestamp}-${randomStr}.${extension}`;
 
-  // 3. Simpan ke Direktori Lokal public/uploads/avatars
-  await fs.mkdir(LOCAL_UPLOAD_DIR, { recursive: true });
-
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
-  const filePath = path.join(LOCAL_UPLOAD_DIR, filename);
 
+  // 3. Simpan ke Neon Object Storage (Bucket Public Read) jika konfigurasi tersedia
+  const s3Config = getS3Client();
+  if (s3Config) {
+    const key = `avatars/${filename}`;
+    await s3Config.s3.send(
+      new PutObjectCommand({
+        Bucket: s3Config.bucket,
+        Key: key,
+        Body: buffer,
+        ContentType: file.type,
+      })
+    );
+
+    const publicUrl = `${s3Config.endpoint.replace(/\/$/, '')}/${s3Config.bucket}/${key}`;
+    return {
+      url: publicUrl,
+      filename,
+    };
+  }
+
+  // Fallback: Simpan ke Direktori Lokal public/uploads/avatars (Development Offline)
+  await fs.mkdir(LOCAL_UPLOAD_DIR, { recursive: true });
+  const filePath = path.join(LOCAL_UPLOAD_DIR, filename);
   await fs.writeFile(filePath, buffer);
 
   const publicUrl = `/uploads/avatars/${filename}`;
-
   return {
     url: publicUrl,
     filename,

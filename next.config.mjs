@@ -10,6 +10,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'nextjs.org',
       },
+      {
+        protocol: 'https',
+        hostname: '*.neon.tech',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.storage.*.neon.tech',
+      },
     ],
   },
 };

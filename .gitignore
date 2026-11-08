@@ -43,3 +43,4 @@ __pycache__/
 
 # local scripts (excluded from git tracking)
 scripts/
+.neon
