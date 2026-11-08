@@ -1,12 +1,11 @@
 'use server';
 
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { getAllCourses, getTotalChaptersCount, getCourseByKey, Course, Chapter } from '@/data/curriculum';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 
-const prisma = new PrismaClient();
 
 export interface StudentDashboardSummary {
   studentProfile: {

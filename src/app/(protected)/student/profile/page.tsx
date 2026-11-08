@@ -1,10 +1,10 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { PrismaClient, UserRole } from '@prisma/client';
+import { UserRole } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { StudentProfileClient } from './StudentProfileClient';
 
-const prisma = new PrismaClient();
 
 export default async function StudentProfilePage() {
   const session = await getServerSession(authOptions);

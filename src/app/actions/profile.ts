@@ -2,11 +2,11 @@
 
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { PrismaClient, UserRole } from '@prisma/client';
+import { UserRole } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 import { revalidatePath } from 'next/cache';
 
-const prisma = new PrismaClient();
 
 // ── 1. GURU / TEACHER PROFILE ACTION ──────────────────────────
 export async function updateTeacherProfile(data: {
