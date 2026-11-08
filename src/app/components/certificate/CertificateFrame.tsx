@@ -82,7 +82,7 @@ export const CertificateFrame: React.FC<CertificateFrameProps> = ({
             </svg>
           </div>
 
-          {/* ── 1. Insignia Institusi (UNAIR x AmosProduction SFA Learn) ── */}
+          {/* ── 1. Insignia Institusi (UNAIR x AmosProduction PANDAI LEARNING) ── */}
           <header className="relative z-10 text-center flex flex-col items-center">
             <div className="flex items-center justify-center gap-3 sm:gap-4 mb-2">
               {/* UNAIR Badge */}
@@ -115,7 +115,7 @@ export const CertificateFrame: React.FC<CertificateFrameProps> = ({
               {/* Vertical Hairline Divider */}
               <div className="h-6 w-px" style={{ backgroundColor: '#CBD5E1' }} />
 
-              {/* Amos SFA Learn Badge */}
+              {/* Amos PANDAI LEARNING Badge */}
               <div
                 className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border"
                 style={{ backgroundColor: '#F0F3FF', borderColor: '#E2E8F0' }}
@@ -131,7 +131,7 @@ export const CertificateFrame: React.FC<CertificateFrameProps> = ({
                     className="text-[10px] font-extrabold uppercase tracking-wide leading-none"
                     style={{ color: '#7F54F8' }}
                   >
-                    SFA Learn
+                    PANDAI LEARNING
                   </span>
                   <span
                     className="text-[8px] font-medium leading-none mt-0.5"
@@ -154,7 +154,7 @@ export const CertificateFrame: React.FC<CertificateFrameProps> = ({
               className="text-xs sm:text-sm font-bold tracking-widest uppercase mt-0.5"
               style={{ color: '#7F54F8' }}
             >
-              PROGRAM PENGMAS UNIVERSITAS AIRLANGGA &amp; SFA LEARN
+              PROGRAM PENGMAS UNIVERSITAS AIRLANGGA &amp; PANDAI LEARNING
             </p>
 
             {/* Decorative Ribbon Divider */}

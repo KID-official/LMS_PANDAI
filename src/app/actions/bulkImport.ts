@@ -104,15 +104,12 @@ function getChapterKeysForCourse(courseKey?: string): string[] {
 export interface ImportStudentConfig {
   autoGeneratePassword?: boolean;
   defaultPassword?: string;
-  defaultSemester?: string;
   autoEnrollCourseKey?: string;
 }
 
 export interface ImportedStudentCredential {
   nis: string;
   fullName: string;
-  className: string;
-  semester: string;
   plainPassword: string;
 }
 
@@ -120,10 +117,8 @@ export interface FailedStudentRow {
   rowNumber: number;
   nis: string;
   fullName: string;
-  className: string;
-  semester: string;
   password?: string;
-  errorType: 'MISSING_NIS' | 'MISSING_NAME' | 'MISSING_CLASS' | 'DUPLICATE_NIS' | 'DUPLICATE_IN_CSV' | 'OTHER';
+  errorType: 'MISSING_NIS' | 'MISSING_NAME' | 'DUPLICATE_NIS' | 'DUPLICATE_IN_CSV' | 'OTHER';
   errorMessage: string;
 }
 
@@ -171,20 +166,18 @@ export async function validateAndImportStudents(
   const delimiter = detectDelimiter(rawLines[headerLineIndex]);
   const headers = parseCsvLine(rawLines[headerLineIndex], delimiter).map((h) => h.toLowerCase());
 
-  // Verifikasi kolom wajib: NIS, Nama / Full Name, Kelas / Class
+  // Verifikasi kolom wajib: NIS, Nama / Full Name
   const nisIdx = headers.findIndex((h) => h.includes('nis'));
   const nameIdx = headers.findIndex((h) => h.includes('nama') || h.includes('name'));
-  const classIdx = headers.findIndex((h) => h.includes('kelas') || h.includes('class'));
-  const semesterIdx = headers.findIndex((h) => h.includes('semester'));
   const passwordIdx = headers.findIndex(
     (h) => h.includes('password') || h.includes('sandi') || h.includes('pass')
   );
 
-  if (nisIdx === -1 || nameIdx === -1 || classIdx === -1) {
+  if (nisIdx === -1 || nameIdx === -1) {
     return {
       isValidHeader: false,
       headerErrorMessage:
-        'Format kolom tidak sesuai. Kolom wajib: NIS, Nama (atau Full Name), dan Kelas (atau Class).',
+        'Format kolom tidak sesuai. Kolom wajib: NIS dan Nama (atau Full Name). Opsional: Password.',
       successfulImports: [],
       failedRows: [],
       summary: { totalRows: 0, successCount: 0, failedCount: 0 },
@@ -196,8 +189,6 @@ export async function validateAndImportStudents(
     rowNumber: number;
     nis: string;
     fullName: string;
-    className: string;
-    semester: string;
     password?: string;
   }
 
@@ -214,9 +205,6 @@ export async function validateAndImportStudents(
     const rowNumber = i + 1;
     const nis = (cols[nisIdx] || '').trim();
     const fullName = (cols[nameIdx] || '').trim();
-    const className = (cols[classIdx] || '').trim();
-    const rawSemester = semesterIdx !== -1 ? (cols[semesterIdx] || '').trim() : '';
-    const semester = rawSemester || config.defaultSemester?.trim() || 'Ganjil 2026/2027';
     const password = passwordIdx !== -1 ? (cols[passwordIdx] || '').trim() : undefined;
 
     if (nis) {
@@ -227,8 +215,6 @@ export async function validateAndImportStudents(
       rowNumber,
       nis,
       fullName,
-      className,
-      semester,
       password: password || undefined,
     });
   }
@@ -266,7 +252,7 @@ export async function validateAndImportStudents(
   const failedRows: FailedStudentRow[] = [];
 
   for (const row of rows) {
-    const { rowNumber, nis, fullName, className, semester, password } = row;
+    const { rowNumber, nis, fullName, password } = row;
 
     // 1. Validasi Kolom Kosong
     if (!nis) {
@@ -274,8 +260,6 @@ export async function validateAndImportStudents(
         rowNumber,
         nis,
         fullName,
-        className,
-        semester,
         password,
         errorType: 'MISSING_NIS',
         errorMessage: 'NIS tidak boleh kosong',
@@ -288,25 +272,9 @@ export async function validateAndImportStudents(
         rowNumber,
         nis,
         fullName,
-        className,
-        semester,
         password,
         errorType: 'MISSING_NAME',
         errorMessage: 'Nama lengkap siswa tidak boleh kosong',
-      });
-      continue;
-    }
-
-    if (!className) {
-      failedRows.push({
-        rowNumber,
-        nis,
-        fullName,
-        className,
-        semester,
-        password,
-        errorType: 'MISSING_CLASS',
-        errorMessage: 'Kelas siswa tidak boleh kosong',
       });
       continue;
     }
@@ -317,8 +285,6 @@ export async function validateAndImportStudents(
         rowNumber,
         nis,
         fullName,
-        className,
-        semester,
         password,
         errorType: 'DUPLICATE_IN_CSV',
         errorMessage: `NIS ${nis} duplikat di dalam berkas CSV`,
@@ -333,8 +299,6 @@ export async function validateAndImportStudents(
         rowNumber,
         nis,
         fullName,
-        className,
-        semester,
         password,
         errorType: 'DUPLICATE_NIS',
         errorMessage: `NIS ${nis} sudah terdaftar di database`,
@@ -368,8 +332,6 @@ export async function validateAndImportStudents(
             create: {
               nis,
               full_name: fullName,
-              class_name: className,
-              semester,
             },
           },
           ...(chapterKeys.length > 0
@@ -390,8 +352,6 @@ export async function validateAndImportStudents(
       successfulImports.push({
         nis,
         fullName,
-        className,
-        semester,
         plainPassword,
       });
     } catch (err: unknown) {
@@ -400,8 +360,6 @@ export async function validateAndImportStudents(
         rowNumber,
         nis,
         fullName,
-        className,
-        semester,
         password,
         errorType: 'OTHER',
         errorMessage: errMsg,
@@ -430,8 +388,6 @@ export async function validateAndImportStudents(
 export async function fixAndImportStudent(row: {
   nis: string;
   fullName: string;
-  className: string;
-  semester?: string;
   password?: string;
 }): Promise<{
   success: boolean;
@@ -442,8 +398,6 @@ export async function fixAndImportStudent(row: {
 
   const nis = (row.nis || '').trim();
   const fullName = (row.fullName || '').trim();
-  const className = (row.className || '').trim();
-  const semester = (row.semester || '').trim() || 'Ganjil 2026/2027';
   let plainPassword = (row.password || '').trim();
 
   if (!nis) {
@@ -451,9 +405,6 @@ export async function fixAndImportStudent(row: {
   }
   if (!fullName) {
     return { success: false, error: 'Nama siswa tidak boleh kosong' };
-  }
-  if (!className) {
-    return { success: false, error: 'Kelas siswa tidak boleh kosong' };
   }
 
   // Cek duplikasi di DB
@@ -483,8 +434,6 @@ export async function fixAndImportStudent(row: {
           create: {
             nis,
             full_name: fullName,
-            class_name: className,
-            semester,
           },
         },
       },
@@ -498,8 +447,6 @@ export async function fixAndImportStudent(row: {
       credential: {
         nis,
         fullName,
-        className,
-        semester,
         plainPassword,
       },
     };
@@ -514,16 +461,12 @@ export async function fixAndImportStudent(row: {
 export interface ImportTeacherConfig {
   autoGeneratePassword?: boolean;
   defaultPassword?: string;
-  defaultInstitution?: string;
-  defaultFunctionalPosition?: string;
 }
 
 export interface ImportedTeacherCredential {
   nipNidn: string;
   fullNameWithTitle: string;
   officialEmail: string;
-  functionalPosition?: string;
-  institution?: string;
   plainPassword: string;
 }
 
@@ -532,9 +475,6 @@ export interface FailedTeacherRow {
   nipNidn: string;
   fullNameWithTitle: string;
   officialEmail: string;
-  functionalPosition?: string;
-  institution?: string;
-  whatsappContact?: string;
   password?: string;
   errorType:
     | 'MISSING_NIP'
@@ -592,30 +532,10 @@ export async function validateAndImportTeachers(
   const delimiter = detectDelimiter(rawLines[headerLineIndex]);
   const headers = parseCsvLine(rawLines[headerLineIndex], delimiter).map((h) => h.toLowerCase());
 
-  // Kolom wajib: NIP/NIDN, Nama, Email.
-  // Kolom opsional: Jabatan, Institusi, WA, Password.
+  // Kolom wajib: NIP/NIDN, Nama, Email. Opsional: Password.
   const nipIdx = headers.findIndex((h) => h.includes('nip') || h.includes('nidn'));
   const nameIdx = headers.findIndex((h) => h.includes('nama') || h.includes('name'));
   const emailIdx = headers.findIndex((h) => h.includes('email') || h.includes('surel'));
-  const positionIdx = headers.findIndex(
-    (h) => h.includes('jabatan') || h.includes('position') || h.includes('functional')
-  );
-  const institutionIdx = headers.findIndex(
-    (h) =>
-      h.includes('institusi') ||
-      h.includes('institution') ||
-      h.includes('instansi') ||
-      h.includes('sekolah')
-  );
-  const waIdx = headers.findIndex(
-    (h) =>
-      h.includes('wa') ||
-      h.includes('whatsapp') ||
-      h.includes('telepon') ||
-      h.includes('phone') ||
-      h.includes('kontak') ||
-      h.includes('contact')
-  );
   const passwordIdx = headers.findIndex(
     (h) => h.includes('password') || h.includes('sandi') || h.includes('pass')
   );
@@ -624,7 +544,7 @@ export async function validateAndImportTeachers(
     return {
       isValidHeader: false,
       headerErrorMessage:
-        'Format kolom tidak sesuai. Kolom wajib: NIP/NIDN, Nama, dan Email. (Opsional: Jabatan, Institusi, WA, Password).',
+        'Format kolom tidak sesuai. Kolom wajib: NIP/NIDN, Nama, dan Email. (Opsional: Password).',
       successfulImports: [],
       failedRows: [],
       summary: { totalRows: 0, successCount: 0, failedCount: 0 },
@@ -636,9 +556,6 @@ export async function validateAndImportTeachers(
     nipNidn: string;
     fullNameWithTitle: string;
     officialEmail: string;
-    functionalPosition?: string;
-    institution?: string;
-    whatsappContact?: string;
     password?: string;
   }
 
@@ -657,11 +574,6 @@ export async function validateAndImportTeachers(
     const nipNidn = (cols[nipIdx] || '').trim();
     const fullNameWithTitle = (cols[nameIdx] || '').trim();
     const officialEmail = (cols[emailIdx] || '').trim().toLowerCase();
-    const rawPosition = positionIdx !== -1 ? (cols[positionIdx] || '').trim() : '';
-    const functionalPosition = rawPosition || config.defaultFunctionalPosition?.trim() || undefined;
-    const rawInstitution = institutionIdx !== -1 ? (cols[institutionIdx] || '').trim() : '';
-    const institution = rawInstitution || config.defaultInstitution?.trim() || undefined;
-    const whatsappContact = waIdx !== -1 ? (cols[waIdx] || '').trim() || undefined : undefined;
     const password = passwordIdx !== -1 ? (cols[passwordIdx] || '').trim() || undefined : undefined;
 
     if (nipNidn) nipCandidateSet.add(nipNidn);
@@ -672,9 +584,6 @@ export async function validateAndImportTeachers(
       nipNidn,
       fullNameWithTitle,
       officialEmail,
-      functionalPosition,
-      institution,
-      whatsappContact,
       password,
     });
   }
@@ -726,9 +635,6 @@ export async function validateAndImportTeachers(
       nipNidn,
       fullNameWithTitle,
       officialEmail,
-      functionalPosition,
-      institution,
-      whatsappContact,
       password,
     } = row;
 
@@ -739,9 +645,6 @@ export async function validateAndImportTeachers(
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
-        whatsappContact,
         password,
         errorType: 'MISSING_NIP',
         errorMessage: 'NIP/NIDN tidak boleh kosong',
@@ -755,9 +658,6 @@ export async function validateAndImportTeachers(
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
-        whatsappContact,
         password,
         errorType: 'MISSING_NAME',
         errorMessage: 'Nama pengajar dan gelar tidak boleh kosong',
@@ -771,9 +671,6 @@ export async function validateAndImportTeachers(
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
-        whatsappContact,
         password,
         errorType: 'MISSING_EMAIL',
         errorMessage: 'Email resmi tidak boleh kosong',
@@ -788,9 +685,6 @@ export async function validateAndImportTeachers(
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
-        whatsappContact,
         password,
         errorType: 'INVALID_EMAIL',
         errorMessage: `Format email '${officialEmail}' tidak valid`,
@@ -805,9 +699,6 @@ export async function validateAndImportTeachers(
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
-        whatsappContact,
         password,
         errorType: 'DUPLICATE_IN_CSV',
         errorMessage: `NIP/NIDN ${nipNidn} duplikat di dalam berkas CSV`,
@@ -821,9 +712,6 @@ export async function validateAndImportTeachers(
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
-        whatsappContact,
         password,
         errorType: 'DUPLICATE_IN_CSV',
         errorMessage: `Email ${officialEmail} duplikat di dalam berkas CSV`,
@@ -841,9 +729,6 @@ export async function validateAndImportTeachers(
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
-        whatsappContact,
         password,
         errorType: 'DUPLICATE_NIP',
         errorMessage: `NIP/NIDN ${nipNidn} sudah terdaftar di database`,
@@ -857,9 +742,6 @@ export async function validateAndImportTeachers(
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
-        whatsappContact,
         password,
         errorType: 'DUPLICATE_EMAIL',
         errorMessage: `Email ${officialEmail} sudah terdaftar di database`,
@@ -894,9 +776,6 @@ export async function validateAndImportTeachers(
               nip_nidn: nipNidn,
               full_name_with_title: fullNameWithTitle,
               official_email: officialEmail,
-              functional_position: functionalPosition || null,
-              institution: institution || null,
-              whatsapp_contact: whatsappContact || null,
             },
           },
         },
@@ -909,8 +788,6 @@ export async function validateAndImportTeachers(
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
         plainPassword,
       });
     } catch (err: unknown) {
@@ -920,9 +797,6 @@ export async function validateAndImportTeachers(
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
-        whatsappContact,
         password,
         errorType: 'OTHER',
         errorMessage: errMsg,
@@ -952,9 +826,6 @@ export async function fixAndImportTeacher(row: {
   nipNidn: string;
   fullNameWithTitle: string;
   officialEmail: string;
-  functionalPosition?: string;
-  institution?: string;
-  whatsappContact?: string;
   password?: string;
 }): Promise<{
   success: boolean;
@@ -966,9 +837,6 @@ export async function fixAndImportTeacher(row: {
   const nipNidn = (row.nipNidn || '').trim();
   const fullNameWithTitle = (row.fullNameWithTitle || '').trim();
   const officialEmail = (row.officialEmail || '').trim().toLowerCase();
-  const functionalPosition = row.functionalPosition?.trim() || undefined;
-  const institution = row.institution?.trim() || undefined;
-  const whatsappContact = row.whatsappContact?.trim() || undefined;
   let plainPassword = (row.password || '').trim();
 
   if (!nipNidn) {
@@ -1018,9 +886,6 @@ export async function fixAndImportTeacher(row: {
             nip_nidn: nipNidn,
             full_name_with_title: fullNameWithTitle,
             official_email: officialEmail,
-            functional_position: functionalPosition || null,
-            institution: institution || null,
-            whatsapp_contact: whatsappContact || null,
           },
         },
       },
@@ -1035,8 +900,6 @@ export async function fixAndImportTeacher(row: {
         nipNidn,
         fullNameWithTitle,
         officialEmail,
-        functionalPosition,
-        institution,
         plainPassword,
       },
     };
@@ -1046,14 +909,14 @@ export async function fixAndImportTeacher(row: {
   }
 }
 
-// ── 3. BACKWARD-COMPATIBILITY EXPORTS (UNTUK HALAMAN YANG MASIH MENGGUNAKAN VERSI LAMA) ──
+// ── 3. BACKWARD-COMPATIBILITY EXPORTS ──────────────────────────
 
 export interface ParsedStudentRow {
   rowNumber: number;
   nis: string;
   fullName: string;
-  className: string;
-  semester: string;
+  className?: string;
+  semester?: string;
   password?: string;
   status: 'VALID' | 'DUPLICATE' | 'INVALID';
   errorMessage?: string;
@@ -1074,8 +937,8 @@ export async function validateStudentCsv(csvContent: string): Promise<StudentCsv
     rowNumber: idx + 2,
     nis: s.nis,
     fullName: s.fullName,
-    className: s.className,
-    semester: s.semester,
+    className: '-',
+    semester: 'Aktif',
     password: s.plainPassword,
     status: 'VALID',
   }));
@@ -1084,8 +947,8 @@ export async function validateStudentCsv(csvContent: string): Promise<StudentCsv
     rowNumber: f.rowNumber,
     nis: f.nis,
     fullName: f.fullName,
-    className: f.className,
-    semester: f.semester,
+    className: '-',
+    semester: 'Aktif',
     password: f.password,
     status: f.errorType === 'DUPLICATE_NIS' || f.errorType === 'DUPLICATE_IN_CSV' ? 'DUPLICATE' : 'INVALID',
     errorMessage: f.errorMessage,
@@ -1104,8 +967,6 @@ export async function executeStudentBulkImport(
   rows: Array<{
     nis: string;
     fullName: string;
-    className: string;
-    semester: string;
     password?: string;
   }>
 ) {
@@ -1135,8 +996,6 @@ export async function executeStudentBulkImport(
             create: {
               nis: row.nis,
               full_name: row.fullName,
-              class_name: row.className,
-              semester: row.semester || 'Ganjil 2026/2027',
             },
           },
         },
@@ -1158,9 +1017,6 @@ export interface ParsedTeacherRow {
   nipNidn: string;
   fullNameWithTitle: string;
   officialEmail: string;
-  functionalPosition?: string;
-  institution?: string;
-  whatsappContact?: string;
   password?: string;
   status: 'VALID' | 'DUPLICATE' | 'INVALID';
   errorMessage?: string;
@@ -1182,8 +1038,6 @@ export async function validateTeacherCsv(csvContent: string): Promise<TeacherCsv
     nipNidn: t.nipNidn,
     fullNameWithTitle: t.fullNameWithTitle,
     officialEmail: t.officialEmail,
-    functionalPosition: t.functionalPosition,
-    institution: t.institution,
     password: t.plainPassword,
     status: 'VALID',
   }));
@@ -1193,9 +1047,6 @@ export async function validateTeacherCsv(csvContent: string): Promise<TeacherCsv
     nipNidn: f.nipNidn,
     fullNameWithTitle: f.fullNameWithTitle,
     officialEmail: f.officialEmail,
-    functionalPosition: f.functionalPosition,
-    institution: f.institution,
-    whatsappContact: f.whatsappContact,
     password: f.password,
     status: f.errorType === 'DUPLICATE_NIP' || f.errorType === 'DUPLICATE_EMAIL' || f.errorType === 'DUPLICATE_IN_CSV' ? 'DUPLICATE' : 'INVALID',
     errorMessage: f.errorMessage,
@@ -1215,9 +1066,6 @@ export async function executeTeacherBulkImport(
     nipNidn: string;
     fullNameWithTitle: string;
     officialEmail: string;
-    functionalPosition?: string;
-    institution?: string;
-    whatsappContact?: string;
     password?: string;
   }>
 ) {
@@ -1248,9 +1096,6 @@ export async function executeTeacherBulkImport(
               nip_nidn: row.nipNidn,
               full_name_with_title: row.fullNameWithTitle,
               official_email: row.officialEmail,
-              functional_position: row.functionalPosition || null,
-              institution: row.institution || null,
-              whatsapp_contact: row.whatsappContact || null,
             },
           },
         },

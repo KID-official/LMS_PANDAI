@@ -43,8 +43,8 @@ export async function generateMetadata({ params }: ChapterPageProps) {
   const course = getCourseByKey(params.courseKey);
   return {
     title: chapter
-      ? `Bab ${chapter.chapterNumber}: ${chapter.title} | ${course?.title || 'SFA Learn'}`
-      : 'Player Materi | SFA Learn',
+      ? `Bab ${chapter.chapterNumber}: ${chapter.title} | ${course?.title || 'PANDAI LEARNING'}`
+      : 'Player Materi | PANDAI LEARNING',
   };
 }
 

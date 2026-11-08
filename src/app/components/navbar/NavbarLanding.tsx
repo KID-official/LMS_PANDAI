@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Search, LogIn, Menu, X, User } from 'lucide-react';
+import { LogIn, Menu, X, User, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import {
@@ -46,15 +46,15 @@ export function NavbarLanding() {
         {/* Left: Logo */}
         <div className="flex items-center gap-3">
           <Link href={PUBLIC_ROUTES.HOME} className="flex items-center gap-3 group">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-[15px] font-bold text-white shadow-sm transition-transform duration-150 group-hover:scale-105">
-              SF
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white shadow-sm transition-transform duration-150 group-hover:scale-105">
+              <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div className="flex flex-col">
               <span className="text-[15px] font-bold leading-tight text-heading">
-                SFA Learn
+                PANDAI LEARNING
               </span>
               <span className="text-[11px] font-medium text-muted-foreground">
-                AI Literacy Portal
+                panduan digital & literasi AI siswa
               </span>
             </div>
           </Link>
@@ -81,22 +81,8 @@ export function NavbarLanding() {
           })}
         </nav>
 
-        {/* Right: Search, Lang, Login */}
+        {/* Right: Login / Portal Button */}
         <div className="hidden md:flex items-center gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Cari modul, riset, atau berita AI..." 
-              className="h-9 w-64 rounded-full bg-surface-soft pl-9 pr-4 text-[12px] text-body focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary transition-colors duration-150"
-            />
-          </div>
-          
-          <div className="flex items-center rounded-full bg-surface-soft p-0.5 text-[11px] font-bold text-muted-foreground">
-            <button className="rounded-full bg-white px-3 py-1 text-heading shadow-sm transition-colors">ID</button>
-            <button className="rounded-full px-3 py-1 hover:text-heading transition-colors">EN</button>
-          </div>
-
           {session?.user ? (
             <Link
               href={dashboardHref}
@@ -147,15 +133,6 @@ export function NavbarLanding() {
               );
             })}
           </nav>
-          
-          <div className="relative mt-2">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Cari modul..." 
-              className="h-10 w-full rounded-lg bg-surface-soft pl-9 pr-4 text-[13px] text-body focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary"
-            />
-          </div>
 
           {session?.user ? (
             <Link

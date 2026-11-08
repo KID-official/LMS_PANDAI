@@ -98,7 +98,7 @@ export const COURSES_DATA: Course[] = [
     tagline: "Membangun Pemahaman Esensial tentang Cara Mesin Berpikir, Belajar, dan Membantu Manusia",
     category: "Kecerdasan Buatan & Robotika",
     level: "Tingkat: Pengenalan",
-    badge: "Sertifikasi Fondasi AI SFA 2026",
+    badge: "Sertifikasi Fondasi AI PANDAI 2026",
     // [MEDIA CONTEXT - COVER]: Foto banner ilustrasi course | Tema: Dasar Kecerdasan Buatan & Robotika Cerdas
     thumbnail: '/images/materi/thumb-level-1.jpg',
     description: "Kursus pengantar yang mengeksplorasi hakikat kecerdasan buatan, perbedaannya dengan program komputer konvensional, pemrosesan sensorik pada robot pintar, sejarah perkembangan AI sejak Alan Turing, hingga pemanfaatannya dalam kehidupan sehari-hari.",
@@ -249,7 +249,7 @@ export const COURSES_DATA: Course[] = [
     tagline: "Mengurai Masalah Kompleks dan Menemukan Keteraturan Data untuk Solusi Efektif",
     category: "Berpikir Komputasional",
     level: "Tingkat: Analisis Logika",
-    badge: "Sertifikasi Logika Komputasi SFA 2026",
+    badge: "Sertifikasi Logika Komputasi PANDAI 2026",
     // [MEDIA CONTEXT - COVER]: Foto banner ilustrasi course | Tema: Berpikir Komputasional: Dekomposisi & Pengenalan Pola
     thumbnail: '/images/materi/thumb-level-2.jpg',
     description: "Mempelajari dua pilar fundamental computational thinking: teknik dekomposisi untuk membedah tantangan besar menjadi unit terukur, visualisasi peta pikiran (mind mapping), serta pengenalan pola (pattern recognition) sebagai basis inferensi AI.",
@@ -400,7 +400,7 @@ export const COURSES_DATA: Course[] = [
     tagline: "Menyaring Inti Informasi dan Merancang Prosedur Solusi Sistematis",
     category: "Berpikir Komputasional",
     level: "Tingkat: Algoritma Praktis",
-    badge: "Sertifikasi Algoritma Terapan SFA 2026",
+    badge: "Sertifikasi Algoritma Terapan PANDAI 2026",
     // [MEDIA CONTEXT - COVER]: Foto banner ilustrasi course | Tema: Berpikir Komputasional: Abstraksi & Desain Algoritma
     thumbnail: '/images/materi/thumb-level-3.jpg',
     description: "Mendalami teknik abstraksi untuk menyaring esensi data dan mengeliminasi detail periferal, serta merumuskan urutan solusi logis, terbatas, dan efektif menggunakan representasi flowchart dan pseudocode.",
@@ -551,7 +551,7 @@ export const COURSES_DATA: Course[] = [
     tagline: "Menjunjung Moralitas Siber, Menjaga Privasi, dan Mengenal Tata Kelola Domain .id",
     category: "Etika Siber & Tata Kelola Internet",
     level: "Tingkat: Literasi Digital",
-    badge: "Sertifikasi Etika & Kedaulatan Siber SFA 2026",
+    badge: "Sertifikasi Etika & Kedaulatan Siber PANDAI 2026",
     // [MEDIA CONTEXT - COVER]: Foto banner ilustrasi course | Tema: Etika Kecerdasan Buatan & Kedaulatan Digital Indonesia
     thumbnail: '/images/materi/thumb-level-4.jpg',
     description: "Menganalisis prinsip pertanggungjawaban dalam pemanfaatan AI, mitigasi ancaman manipulasi visual (deepfake), pencegahan bias algoritma, menjaga integritas akademik, serta menelaah tata kelola internet nasional melalui domain resmi .id dan peran kelembagaan PANDI.",

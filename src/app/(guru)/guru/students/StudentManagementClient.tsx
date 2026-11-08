@@ -16,8 +16,6 @@ type StudentUser = {
   student: {
     nis: string;
     full_name: string;
-    class_name: string;
-    semester: string;
     image_url?: string | null;
   } | null;
   progressPercentage?: number;
@@ -56,12 +54,11 @@ export function StudentManagementClient({
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
   const [selectedUser, setSelectedUser] = useState<StudentUser | null>(null);
 
-  // Form State
+  // Form State (Hanya nama, nis, password, status)
   const [formData, setFormData] = useState({
     nis: '',
     fullName: '',
-    className: '',
-    semester: 'Ganjil 2026/2027',
+    password: '',
     isActive: true,
   });
 
@@ -86,8 +83,7 @@ export function StudentManagementClient({
     setFormData({
       nis: '',
       fullName: '',
-      className: '',
-      semester: 'Ganjil 2026/2027',
+      password: '',
       isActive: true,
     });
     setSelectedUser(null);
@@ -99,8 +95,7 @@ export function StudentManagementClient({
     setFormData({
       nis: user.student?.nis || user.identifier,
       fullName: user.student?.full_name || '',
-      className: user.student?.class_name || '',
-      semester: user.student?.semester || 'Ganjil 2026/2027',
+      password: '',
       isActive: user.is_active,
     });
     setSelectedUser(user);
@@ -226,7 +221,6 @@ export function StudentManagementClient({
                 <th className="p-4 w-12"><input type="checkbox" className="rounded border-outline" /></th>
                 <th className="p-4">SISWA</th>
                 <th className="p-4">NIS</th>
-                <th className="p-4">KELAS</th>
                 <th className="p-4">KURSUS DIIKUTI</th>
                 <th className="p-4">PROGRESS BELAJAR</th>
                 <th className="p-4">STATUS AKUN</th>
@@ -236,7 +230,7 @@ export function StudentManagementClient({
             <tbody className="divide-y divide-outline/20">
               {initialUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-muted-foreground">Tidak ada data siswa.</td>
+                  <td colSpan={7} className="p-8 text-center text-muted-foreground">Tidak ada data siswa.</td>
                 </tr>
               ) : initialUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-surface-soft/50 transition-colors">
@@ -264,11 +258,6 @@ export function StudentManagementClient({
                   </td>
                   <td className="p-4 text-body font-mono text-[12px]">{user.student?.nis || user.identifier}</td>
                   <td className="p-4">
-                    <span className="inline-flex rounded-full bg-primary-soft px-2.5 py-0.5 text-[11px] font-bold text-primary-strong">
-                      {user.student?.class_name || '-'}
-                    </span>
-                  </td>
-                  <td className="p-4">
                     <span className="inline-flex items-center gap-1.5 rounded-lg bg-surface-blue px-2.5 py-1 text-[11px] font-bold text-info border border-info-soft">
                       <ShieldCheck className="h-3 w-3" /> Literasi AI Dasar
                     </span>
@@ -278,7 +267,7 @@ export function StudentManagementClient({
                       <div className="flex items-center justify-between text-[11px] font-bold text-heading">
                         <span className="text-primary">{user.progressPercentage ?? 0}%</span>
                         <span className="text-muted-foreground font-medium">
-                          {user.completedChaptersCount ?? 0}/{user.totalChapters ?? 8} Modul
+                          {user.completedChaptersCount ?? 0}/{user.totalChapters ?? 7} Modul
                         </span>
                       </div>
                       <div className="h-1.5 w-full rounded-full bg-surface-soft overflow-hidden">
@@ -307,12 +296,14 @@ export function StudentManagementClient({
                       <button 
                         onClick={() => openEditModal(user)}
                         className="p-1.5 text-muted-foreground hover:text-primary transition-colors"
+                        title="Edit Data Siswa"
                       >
                         <Edit2 className="h-4 w-4" />
                       </button>
                       <button 
                         onClick={() => handleDelete(user.id)}
                         className="p-1.5 text-muted-foreground hover:text-danger transition-colors"
+                        title="Hapus Siswa"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -387,14 +378,13 @@ export function StudentManagementClient({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[12px] font-bold text-heading">Kelas</label>
+                  <label className="text-[12px] font-bold text-heading">Kata Sandi {modalMode === 'edit' && '(Opsional)'}</label>
                   <input 
-                    type="text" 
-                    required
-                    value={formData.className}
-                    onChange={e => setFormData({...formData, className: e.target.value})}
+                    type="password" 
+                    value={formData.password}
+                    onChange={e => setFormData({...formData, password: e.target.value})}
                     className="h-10 rounded-lg border border-outline/50 bg-surface-soft px-3 text-[13px] focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary transition-colors" 
-                    placeholder="Contoh: Kelas VII A"
+                    placeholder={modalMode === 'create' ? 'Default: siswa123' : 'Kosongkan jika tak diubah'}
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">

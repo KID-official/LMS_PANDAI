@@ -131,7 +131,7 @@ export async function getStudents(search = '', status = '', page = 1, limit = 10
   };
 }
 
-export async function createStudent(data: { nis: string; fullName: string; className: string; semester: string; password?: string }) {
+export async function createStudent(data: { nis: string; fullName: string; password?: string; isActive?: boolean }) {
   const passwordHash = await bcrypt.hash(data.password || 'siswa123', 10);
 
   await prisma.user.create({
@@ -139,13 +139,11 @@ export async function createStudent(data: { nis: string; fullName: string; class
       identifier: data.nis,
       password_hash: passwordHash,
       role: UserRole.SISWA,
-      is_active: true,
+      is_active: data.isActive !== undefined ? data.isActive : true,
       student: {
         create: {
           nis: data.nis,
           full_name: data.fullName,
-          class_name: data.className,
-          semester: data.semester,
         },
       },
     },
@@ -154,21 +152,25 @@ export async function createStudent(data: { nis: string; fullName: string; class
   revalidatePath('/guru/students');
 }
 
-export async function updateStudent(id: string, data: { nis: string; fullName: string; className: string; semester: string; isActive: boolean }) {
-  await prisma.user.update({
-    where: { id },
-    data: {
-      identifier: data.nis,
-      is_active: data.isActive,
-      student: {
-        update: {
-          nis: data.nis,
-          full_name: data.fullName,
-          class_name: data.className,
-          semester: data.semester,
-        },
+export async function updateStudent(id: string, data: { nis: string; fullName: string; isActive: boolean; password?: string }) {
+  const updateUserData: Record<string, unknown> = {
+    identifier: data.nis,
+    is_active: data.isActive,
+    student: {
+      update: {
+        nis: data.nis,
+        full_name: data.fullName,
       },
     },
+  };
+
+  if (data.password && data.password.trim() !== '') {
+    updateUserData.password_hash = await bcrypt.hash(data.password, 10);
+  }
+
+  await prisma.user.update({
+    where: { id },
+    data: updateUserData,
   });
 
   revalidatePath('/guru/students');

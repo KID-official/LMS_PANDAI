@@ -136,8 +136,8 @@ export async function getStudentDashboardData(userId: string): Promise<StudentDa
         ? {
             fullName: student.full_name,
             nis: student.nis,
-            className: student.class_name,
-            semester: student.semester,
+            className: 'Siswa Terdaftar',
+            semester: 'Aktif',
             imageUrl: student.image_url,
           }
         : null,

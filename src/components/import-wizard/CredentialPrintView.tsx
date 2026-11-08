@@ -46,15 +46,13 @@ export function CredentialPrintView({
     if (item.entity === 'student') {
       return (
         item.fullName.toLowerCase().includes(q) ||
-        item.nis.toLowerCase().includes(q) ||
-        item.className.toLowerCase().includes(q)
+        item.nis.toLowerCase().includes(q)
       );
     } else {
       return (
         item.fullNameWithTitle.toLowerCase().includes(q) ||
         item.nipNidn.toLowerCase().includes(q) ||
-        item.officialEmail.toLowerCase().includes(q) ||
-        (item.institution && item.institution.toLowerCase().includes(q))
+        item.officialEmail.toLowerCase().includes(q)
       );
     }
   });
@@ -72,18 +70,18 @@ export function CredentialPrintView({
     const isStudent = credentials[0].entity === 'student';
 
     if (isStudent) {
-      csvContent = 'NIS,Nama Lengkap,Kelas,Semester,Username,Password Awal,Peran,Kursus Sasaran\n';
+      csvContent = 'NIS,Nama Lengkap,Username,Password Awal,Peran,Kursus Sasaran\n';
       credentials.forEach((item) => {
         if (item.entity === 'student') {
           const course = item.targetCourse || 'Literasi AI Dasar (Level Beginner)';
-          csvContent += `"${item.nis}","${item.fullName}","${item.className}","${item.semester}","${item.nis}","${item.plainPassword}","SISWA","${course}"\n`;
+          csvContent += `"${item.nis}","${item.fullName}","${item.nis}","${item.plainPassword}","SISWA","${course}"\n`;
         }
       });
     } else {
-      csvContent = 'NIP/NIDN,Nama Lengkap,Email Resmi,Jabatan,Institusi,Username,Password Awal,Peran\n';
+      csvContent = 'NIP/NIDN,Nama Lengkap,Email Resmi,Username,Password Awal,Peran\n';
       credentials.forEach((item) => {
         if (item.entity === 'teacher') {
-          csvContent += `"${item.nipNidn}","${item.fullNameWithTitle}","${item.officialEmail}","${item.functionalPosition || '-'}","${item.institution || '-'}","${item.officialEmail}","${item.plainPassword}","GURU"\n`;
+          csvContent += `"${item.nipNidn}","${item.fullNameWithTitle}","${item.officialEmail}","${item.officialEmail}","${item.plainPassword}","GURU"\n`;
         }
       });
     }
@@ -175,7 +173,7 @@ export function CredentialPrintView({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari nama, NIS, NIP, atau kelas..."
+              placeholder="Cari nama, NIS, NIP, atau email..."
               className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-9.5 pr-4 py-2 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#7F54F8] focus:bg-white focus:ring-2 focus:ring-[#7F54F8]/20 transition"
             />
           </div>
@@ -245,7 +243,7 @@ export function CredentialPrintView({
                   <th className="py-3 px-4">Nama Lengkap</th>
                   <th className="py-3 px-4">Nomor Induk</th>
                   <th className="py-3 px-4">Username Login</th>
-                  <th className="py-3 px-4">Kelas / Lembaga</th>
+                  <th className="py-3 px-4">Peran Akun</th>
                   <th className="py-3 px-4">Password Awal</th>
                   <th className="py-3 px-4 text-center">Tindakan</th>
                 </tr>
@@ -263,7 +261,7 @@ export function CredentialPrintView({
                     const name = isStudent ? item.fullName : item.fullNameWithTitle;
                     const idNumber = isStudent ? item.nis : item.nipNidn;
                     const username = isStudent ? item.nis : item.officialEmail;
-                    const group = isStudent ? item.className : item.institution || item.functionalPosition || '-';
+                    const role = isStudent ? 'SISWA' : 'GURU';
                     const pass = item.plainPassword;
 
                     return (
@@ -282,7 +280,7 @@ export function CredentialPrintView({
                         </td>
                         <td className="py-3 px-4">
                           <span className="inline-flex items-center rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700">
-                            {group}
+                            {role}
                           </span>
                         </td>
                         <td className="py-3 px-4">
@@ -328,7 +326,7 @@ export function CredentialPrintView({
               Ingin mengimpor berkas CSV lainnya?
             </h4>
             <p className="text-xs text-slate-500">
-              Anda dapat mengunggah berkas gelombang baru untuk kelas atau rombel lain.
+              Anda dapat mengunggah berkas gelombang baru untuk data lainnya.
             </p>
           </div>
           {onResetWizard && (
@@ -351,7 +349,7 @@ export function CredentialPrintView({
             KARTU KREDENSIAL AKSES LMS — RESMI
           </h1>
           <p className="text-xs text-gray-600">
-            SFA Learn • Portal Literasi AI • Disdik & Universitas Airlangga
+            PANDAI LEARNING (panduan digital &amp; literasi AI siswa)
           </p>
           <p className="text-[10px] text-gray-500 mt-0.5">
             Dicetak pada: {new Date().toLocaleDateString('id-ID', { dateStyle: 'full' })}
@@ -364,7 +362,6 @@ export function CredentialPrintView({
             const name = isStudent ? item.fullName : item.fullNameWithTitle;
             const idNumber = isStudent ? item.nis : item.nipNidn;
             const username = isStudent ? item.nis : item.officialEmail;
-            const group = isStudent ? `Kelas: ${item.className}` : `Institusi: ${item.institution || '-'}`;
             const role = isStudent ? 'SISWA' : 'GURU / INSTRUKTUR';
             const course = isStudent
               ? item.targetCourse || 'Literasi AI Dasar (Level Beginner)'
@@ -378,8 +375,8 @@ export function CredentialPrintView({
                 {/* Card Header */}
                 <div className="flex items-center justify-between border-b border-gray-300 pb-2 mb-2">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-extrabold text-sm tracking-tight">SFA Learn</span>
-                    <span className="text-[10px] text-gray-500">| AI Literacy LMS</span>
+                    <span className="font-extrabold text-sm tracking-tight">PANDAI LEARNING</span>
+                    <span className="text-[10px] text-gray-500">| panduan digital &amp; literasi AI siswa</span>
                   </div>
                   <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[9px] font-bold text-gray-700 uppercase">
                     {role}
@@ -402,9 +399,9 @@ export function CredentialPrintView({
                     </div>
                     <div>
                       <span className="text-[10px] text-gray-500 uppercase font-semibold">
-                        {isStudent ? 'Rombel:' : 'Jabatan / Inst:'}
+                        Peran Akun:
                       </span>
-                      <p className="font-medium text-black">{group}</p>
+                      <p className="font-medium text-black">{role}</p>
                     </div>
                   </div>
 

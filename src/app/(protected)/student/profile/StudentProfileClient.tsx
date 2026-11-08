@@ -19,8 +19,6 @@ type StudentData = {
   isActive: boolean;
   nis: string;
   fullName: string;
-  className: string;
-  semester: string;
   imageUrl: string | null;
   completedChaptersCount: number;
   certificatesCount: number;
@@ -54,7 +52,7 @@ export function StudentProfileClient({ initialData }: { initialData: StudentData
     .slice(0, 2)
     .map((w) => w[0])
     .join('')
-    .toUpperCase() || 'SF';
+    .toUpperCase() || 'PL';
 
 
 
@@ -207,9 +205,9 @@ export function StudentProfileClient({ initialData }: { initialData: StudentData
             </span>
           </div>
 
-          <p className="text-[12px] text-muted-foreground mt-0.5">
-            {initialData.className} • {initialData.semester}
-          </p>
+
+
+
         </div>
 
         {/* Stats 2-column box */}
@@ -302,9 +300,9 @@ export function StudentProfileClient({ initialData }: { initialData: StudentData
             </div>
             <h3 className="text-[15px] font-bold text-heading">Pengaturan Keamanan Password</h3>
           </div>
-          <p className="text-[12px] text-muted-foreground mt-0.5">
+
             Ganti password sementara dari sekolah demi keamanan data belajarmu.
-          </p>
+
         </div>
 
         {/* Feedback message */}

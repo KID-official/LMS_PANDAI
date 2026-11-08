@@ -169,7 +169,7 @@ export async function getSuperadminDashboardDataAction(): Promise<SuperadminDash
           },
         },
       },
-      orderBy: { class_name: 'asc' },
+      orderBy: { nis: 'asc' },
     }),
     prisma.certificate.count(),
     prisma.userProgress.count(),
@@ -216,7 +216,7 @@ export async function getSuperadminDashboardDataAction(): Promise<SuperadminDash
   >();
 
   for (const s of studentsList) {
-    const cName = s.class_name?.trim() || 'Kelas Umum';
+    const cName = 'Siswa Terdaftar';
     if (!classMap.has(cName)) {
       classMap.set(cName, {
         className: cName,
@@ -270,16 +270,16 @@ export async function getSuperadminDashboardDataAction(): Promise<SuperadminDash
   const recentUsers: RecentUserItem[] = recentUserRecords.map((u) => {
     let name = 'Super Administrator';
     let idNumber = '-';
-    let org = 'SFA Learn Platform';
+    let org = 'PANDAI LEARNING Platform';
 
     if (u.role === UserRole.SISWA && u.student) {
       name = u.student.full_name;
       idNumber = `NIS: ${u.student.nis}`;
-      org = `Kelas ${u.student.class_name}`;
+      org = 'Siswa Terdaftar';
     } else if (u.role === UserRole.GURU && u.teacher) {
       name = u.teacher.full_name_with_title;
       idNumber = `NIP: ${u.teacher.nip_nidn}`;
-      org = u.teacher.institution || 'Pengmas UNAIR';
+      org = 'Tenaga Pendidik';
     }
 
     return {
@@ -302,8 +302,8 @@ export async function getSuperadminDashboardDataAction(): Promise<SuperadminDash
     name: t.full_name_with_title,
     nip: t.nip_nidn,
     email: t.official_email,
-    institution: t.institution || 'Universitas Airlangga',
-    position: t.functional_position || 'Pengajar Modul AI',
+    institution: '-',
+    position: 'Tenaga Pendidik',
     isActive: t.user?.is_active ?? true,
     createdAt: t.user?.created_at ? t.user.created_at.toISOString() : new Date().toISOString(),
   }));

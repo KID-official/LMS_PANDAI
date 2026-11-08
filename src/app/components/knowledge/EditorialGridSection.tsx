@@ -175,7 +175,7 @@ export const EditorialGridSection: React.FC<EditorialGridSectionProps> = ({
               {FACTS[factIndex]}
             </p>
             <div className="pt-1 flex items-center justify-between text-xs">
-              <span className="text-[#7A7486]">Sumber: SFA Research Lab 2026</span>
+              <span className="text-[#7A7486]">Sumber: PANDAI Research Lab 2026</span>
               <button
                 className="text-[#7F54F8] font-bold hover:underline flex items-center gap-1 transition-colors"
                 onClick={() => setFactIndex((i) => (i + 1) % FACTS.length)}

@@ -66,10 +66,10 @@ export default function ImportStudentsPage() {
   // Template CSV download
   const handleDownloadTemplate = () => {
     const templateContent =
-      'NIS,Nama,Kelas,Semester,Password\n' +
-      '20260201,Ahmad Maulana,8-A,Ganjil 2026/2027,\n' +
-      '20260202,Citra Kirana,8-A,Ganjil 2026/2027,\n' +
-      '20260203,Eko Prasetyo,8-B,Ganjil 2026/2027,\n';
+      'NIS,Nama,Password\n' +
+      '20260201,Ahmad Maulana,\n' +
+      '20260202,Citra Kirana,\n' +
+      '20260203,Eko Prasetyo,\n';
 
     const blob = new Blob([templateContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -144,13 +144,12 @@ export default function ImportStudentsPage() {
       const result = await validateAndImportStudents(csvText, {
         autoGeneratePassword,
         autoEnrollCourseKey: selectedCourse,
-        defaultSemester: 'Ganjil 2026/2027',
       });
 
       if (!result.isValidHeader) {
         setHeaderError(
           result.headerErrorMessage ||
-            'Format kolom CSV tidak sesuai. Pastikan kolom NIS, Nama, dan Kelas tersedia.'
+            'Format kolom CSV tidak sesuai. Pastikan kolom NIS dan Nama tersedia.'
         );
         setIsProcessing(false);
         return;
@@ -169,7 +168,6 @@ export default function ImportStudentsPage() {
       if (result.failedRows.length > 0) {
         setCurrentStep(3);
       } else {
-        // If no errors, go straight to Step 4 (or Step 3 then Step 4)
         setCurrentStep(4);
       }
     } catch (err: unknown) {
@@ -188,8 +186,6 @@ export default function ImportStudentsPage() {
       rowNumber: row.rowNumber,
       nis: row.nis,
       fullName: row.fullName,
-      className: row.className,
-      semester: row.semester || 'Ganjil 2026/2027',
       errorType: row.errorType,
       errorMessage: row.errorMessage,
     });
@@ -203,8 +199,6 @@ export default function ImportStudentsPage() {
     const res = await fixAndImportStudent({
       nis: updated.nis,
       fullName: updated.fullName,
-      className: updated.className,
-      semester: updated.semester,
       password: updated.password,
     });
 
@@ -272,7 +266,7 @@ export default function ImportStudentsPage() {
             Import Siswa Massal via CSV
           </h1>
           <p className="text-xs sm:text-sm text-[#64748B]">
-            Daftarkan banyak akun siswa SMP sekaligus dan langsung enroll otomatis ke kursus literasi AI
+            Daftarkan banyak akun siswa sekaligus dan langsung enroll otomatis ke kursus literasi AI
           </p>
         </div>
 
@@ -333,7 +327,7 @@ export default function ImportStudentsPage() {
                   Download Template CSV
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Struktur data akun siswa resmi Disdik &amp; UNAIR
+                  Struktur data akun siswa resmi
                 </p>
               </div>
             </div>
@@ -475,7 +469,7 @@ export default function ImportStudentsPage() {
                       Aktifkan akun siswa secara otomatis
                     </span>
                     <p className="text-[11px] text-[#64748B]">
-                      Siswa dapat langsung login melalui portal LMS UNAIR
+                      Siswa dapat langsung login melalui portal LMS
                     </p>
                   </div>
                 </label>
@@ -514,7 +508,7 @@ export default function ImportStudentsPage() {
       )}
 
       {/* ══════════════════════════════════════════════════════════════
-          STEP 3: VALIDASI & ERROR CHECKING (UI-11 (1).png)
+          STEP 3: VALIDASI & ERROR CHECKING
           ══════════════════════════════════════════════════════════════ */}
       {currentStep === 3 && (
         <div className="space-y-5 animate-in fade-in duration-200">
@@ -612,7 +606,6 @@ export default function ImportStudentsPage() {
                       <th className="py-3 px-4">Baris</th>
                       <th className="py-3 px-4">NIS</th>
                       <th className="py-3 px-4">Nama Lengkap</th>
-                      <th className="py-3 px-4">Kelas</th>
                       <th className="py-3 px-4">Status Isian</th>
                       <th className="py-3 px-4">Jenis Error</th>
                       <th className="py-3 px-4 text-center">Tindakan</th>
@@ -633,11 +626,6 @@ export default function ImportStudentsPage() {
                           ) : (
                             <span className="italic text-slate-400">— (Kosong)</span>
                           )}
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700">
-                            {row.className || '—'}
-                          </span>
                         </td>
                         <td className="py-3 px-4">
                           <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-2.5 py-0.5 text-[10px] font-bold text-rose-700">
@@ -792,13 +780,11 @@ export default function ImportStudentsPage() {
                 Pastikan berkas CSV Anda memiliki susunan header di baris pertama sebagai berikut:
               </p>
               <div className="rounded-xl bg-slate-900 p-3 font-mono text-xs text-emerald-400 overflow-x-auto">
-                NIS,Nama,Kelas,Semester,Password
+                NIS,Nama,Password
               </div>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>NIS:</strong> Nomor Induk Siswa unik, tidak boleh duplikat dengan siswa yang sudah ada.</li>
                 <li><strong>Nama:</strong> Nama lengkap siswa resmi sekolah.</li>
-                <li><strong>Kelas:</strong> Rombongan belajar, contoh: <code>8-A</code>, <code>7-B</code>.</li>
-                <li><strong>Semester:</strong> Opsional, default <code>Ganjil 2026/2027</code>.</li>
                 <li><strong>Password:</strong> Opsional, jika kosong sistem akan menghasilkan kata sandi 6 digit acak.</li>
               </ul>
             </div>

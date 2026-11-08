@@ -13,9 +13,6 @@ export async function updateTeacherProfile(data: {
   fullNameWithTitle: string;
   nipNidn: string;
   officialEmail: string;
-  functionalPosition?: string;
-  institution?: string;
-  whatsappContact?: string;
   imageUrl?: string;
 }) {
   const session = await getServerSession(authOptions);
@@ -34,9 +31,6 @@ export async function updateTeacherProfile(data: {
       full_name_with_title: data.fullNameWithTitle,
       nip_nidn: data.nipNidn,
       official_email: data.officialEmail,
-      functional_position: data.functionalPosition || null,
-      institution: data.institution || null,
-      whatsapp_contact: data.whatsappContact || null,
       ...(data.imageUrl !== undefined ? { image_url: data.imageUrl } : {}),
     },
     create: {
@@ -44,9 +38,6 @@ export async function updateTeacherProfile(data: {
       full_name_with_title: data.fullNameWithTitle,
       nip_nidn: data.nipNidn,
       official_email: data.officialEmail,
-      functional_position: data.functionalPosition || null,
-      institution: data.institution || null,
-      whatsapp_contact: data.whatsappContact || null,
       image_url: data.imageUrl || null,
     },
   });

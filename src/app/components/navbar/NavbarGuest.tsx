@@ -11,7 +11,7 @@ import { PUBLIC_ROUTES, GUEST_NAV_LINKS, type NavLink } from '../navigation/rout
  * NavbarGuest
  *
  * Navbar untuk halaman publik / guest.
- * Menampilkan logo SFA Learn + tagline di kiri,
+ * Menampilkan logo PANDAI LEARNING + tagline di kiri,
  * dan link navigasi + tombol login/daftar di kanan.
  *
  * Design reference: DesignReferences/Navbar Guest.png
@@ -32,7 +32,7 @@ export default function NavbarGuest() {
         <Link
           href={PUBLIC_ROUTES.HOME}
           className="flex items-center gap-3 select-none"
-          aria-label="SFA Learn – halaman utama"
+          aria-label="PANDAI LEARNING – halaman utama"
         >
           {/* Icon tile — violet fill, 12px radius */}
           <span
@@ -49,13 +49,13 @@ export default function NavbarGuest() {
               className="block text-[15px] font-bold leading-tight"
               style={{ color: '#061B38', letterSpacing: '-0.2px' }}
             >
-              SFA Learn
+              PANDAI LEARNING
             </span>
             <span
               className="block text-[12px] font-normal"
               style={{ color: '#7A7486' }}
             >
-              Learning Management System
+              panduan digital & literasi AI siswa
             </span>
           </span>
         </Link>

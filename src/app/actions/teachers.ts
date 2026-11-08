@@ -31,9 +31,6 @@ export interface TeacherRow {
   nipNidn: string;
   fullNameWithTitle: string;
   officialEmail: string;
-  functionalPosition: string | null;
-  institution: string | null;
-  whatsappContact: string | null;
   imageUrl: string | null;
   isActive: boolean;
   createdAt: Date;
@@ -82,7 +79,6 @@ export async function getTeachers(
             { full_name_with_title: { contains: search, mode: 'insensitive' } },
             { nip_nidn: { contains: search, mode: 'insensitive' } },
             { official_email: { contains: search, mode: 'insensitive' } },
-            { institution: { contains: search, mode: 'insensitive' } },
           ],
         },
       },
@@ -110,9 +106,6 @@ export async function getTeachers(
     nipNidn: u.teacher?.nip_nidn || '-',
     fullNameWithTitle: u.teacher?.full_name_with_title || u.identifier,
     officialEmail: u.teacher?.official_email || u.identifier,
-    functionalPosition: u.teacher?.functional_position || null,
-    institution: u.teacher?.institution || null,
-    whatsappContact: u.teacher?.whatsapp_contact || null,
     imageUrl: u.teacher?.image_url || null,
     isActive: u.is_active,
     createdAt: u.created_at,
@@ -131,15 +124,12 @@ export async function getTeachers(
 
 /**
  * 2. createTeacher
- * Membuat akun guru baru beserta profil teacher
+ * Membuat akun guru baru beserta profil teacher (hanya nama, email, password, nip)
  */
 export async function createTeacher(data: {
   nipNidn: string;
   fullNameWithTitle: string;
   officialEmail: string;
-  functionalPosition?: string;
-  institution?: string;
-  whatsappContact?: string;
   password?: string;
 }) {
   await requireSuperAdminOrGuru();
@@ -172,9 +162,6 @@ export async function createTeacher(data: {
           nip_nidn: data.nipNidn,
           full_name_with_title: data.fullNameWithTitle,
           official_email: data.officialEmail,
-          functional_position: data.functionalPosition || null,
-          institution: data.institution || null,
-          whatsapp_contact: data.whatsappContact || null,
         },
       },
     },
@@ -186,7 +173,7 @@ export async function createTeacher(data: {
 
 /**
  * 3. updateTeacher
- * Memperbarui data profil dan status guru
+ * Memperbarui data profil dan status guru (hanya nama, email, password, nip)
  */
 export async function updateTeacher(
   userId: string,
@@ -194,30 +181,31 @@ export async function updateTeacher(
     nipNidn: string;
     fullNameWithTitle: string;
     officialEmail: string;
-    functionalPosition?: string;
-    institution?: string;
-    whatsappContact?: string;
-    isActive: boolean;
+    isActive?: boolean;
+    password?: string;
   }
 ) {
   await requireSuperAdminOrGuru();
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      identifier: data.officialEmail,
-      is_active: data.isActive,
-      teacher: {
-        update: {
-          nip_nidn: data.nipNidn,
-          full_name_with_title: data.fullNameWithTitle,
-          official_email: data.officialEmail,
-          functional_position: data.functionalPosition || null,
-          institution: data.institution || null,
-          whatsapp_contact: data.whatsappContact || null,
-        },
+  const updateUserData: Record<string, unknown> = {
+    identifier: data.officialEmail,
+    ...(data.isActive !== undefined ? { is_active: data.isActive } : {}),
+    teacher: {
+      update: {
+        nip_nidn: data.nipNidn,
+        full_name_with_title: data.fullNameWithTitle,
+        official_email: data.officialEmail,
       },
     },
+  };
+
+  if (data.password && data.password.trim() !== '') {
+    updateUserData.password_hash = await bcrypt.hash(data.password, 10);
+  }
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: updateUserData,
   });
 
   revalidatePath('/superadmin/teachers');

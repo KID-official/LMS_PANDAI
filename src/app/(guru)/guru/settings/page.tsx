@@ -36,9 +36,6 @@ export default async function TeacherSettingsPage() {
     fullNameWithTitle: user.teacher?.full_name_with_title || user.identifier || 'Guru Pengajar',
     nipNidn: user.teacher?.nip_nidn || user.identifier || '',
     officialEmail: user.teacher?.official_email || user.identifier,
-    functionalPosition: user.teacher?.functional_position || 'Pengajar & Fasilitator Literasi Digital AI',
-    institution: user.teacher?.institution || 'SMP Mitra / Pengmas Universitas Airlangga',
-    whatsappContact: user.teacher?.whatsapp_contact || '+62 812-3456-7890',
     imageUrl: user.teacher?.image_url || null,
   };
 

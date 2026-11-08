@@ -87,7 +87,7 @@ export default function LoginPage() {
             Portal Pembelajaran Terpadu & Terakreditasi
           </div>
           <h1 className="text-[34px] font-bold leading-[1.2] tracking-tight text-heading">
-            Selamat Datang di Portal Pembelajaran Digital <span className="text-primary">SFA Learn</span>
+            Selamat Datang di Portal Pembelajaran Digital <span className="text-primary">PANDAI LEARNING</span> <span className="block text-sm font-medium text-muted-foreground mt-1">(panduan digital & literasi AI siswa)</span>
           </h1>
           <p className="text-[15px] text-body leading-relaxed max-w-[90%]">
             Akses materi interaktif berstandar industri, silabus kurikulum terstruktur, kuis adaptif berbasis kompetensi, serta peroleh sertifikat digital terverifikasi.

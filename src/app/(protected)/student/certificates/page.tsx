@@ -10,7 +10,7 @@ export async function generateMetadata() {
   return {
     title: 'Koleksi E-Sertifikat & Kelulusan • Siswa | LMS-KID',
     description:
-      'Daftar e-sertifikat kelulusan resmi literasi AI terakreditasi Pengmas Universitas Airlangga x SFA Learn.',
+      'Daftar e-sertifikat kelulusan resmi literasi AI terakreditasi Pengmas Universitas Airlangga x PANDAI LEARNING.',
   };
 }
 

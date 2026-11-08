@@ -9,8 +9,6 @@ export interface FixStudentData {
   rowNumber: number;
   nis: string;
   fullName: string;
-  className: string;
-  semester?: string;
   password?: string;
   errorType?: string;
   errorMessage?: string;
@@ -21,9 +19,6 @@ export interface FixTeacherData {
   nipNidn: string;
   fullNameWithTitle: string;
   officialEmail: string;
-  functionalPosition?: string;
-  institution?: string;
-  whatsappContact?: string;
   password?: string;
   errorType?: string;
   errorMessage?: string;
@@ -55,16 +50,11 @@ export function FixFieldModal({
   // Student form states
   const [nis, setNis] = useState('');
   const [fullName, setFullName] = useState('');
-  const [className, setClassName] = useState('');
-  const [semester, setSemester] = useState('');
 
   // Teacher form states
   const [nipNidn, setNipNidn] = useState('');
   const [fullNameWithTitle, setFullNameWithTitle] = useState('');
   const [officialEmail, setOfficialEmail] = useState('');
-  const [functionalPosition, setFunctionalPosition] = useState('');
-  const [institution, setInstitution] = useState('');
-  const [whatsappContact, setWhatsappContact] = useState('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -79,15 +69,10 @@ export function FixFieldModal({
     if (entityType === 'student' && studentData) {
       setNis(studentData.nis || '');
       setFullName(studentData.fullName || '');
-      setClassName(studentData.className || '');
-      setSemester(studentData.semester || 'Ganjil 2026/2027');
     } else if (entityType === 'teacher' && teacherData) {
       setNipNidn(teacherData.nipNidn || '');
       setFullNameWithTitle(teacherData.fullNameWithTitle || '');
       setOfficialEmail(teacherData.officialEmail || '');
-      setFunctionalPosition(teacherData.functionalPosition || '');
-      setInstitution(teacherData.institution || '');
-      setWhatsappContact(teacherData.whatsappContact || '');
     }
   }, [isOpen, entityType, studentData, teacherData]);
 
@@ -107,7 +92,7 @@ export function FixFieldModal({
   let modalTitle = 'Perbaiki Data';
   let modalSubtitle = 'Perbarui data pada baris yang bermasalah.';
   let errorTitle = 'Data Bermasalah';
-  let primaryField: 'nis' | 'name' | 'class' | 'nip' | 'teacherName' | 'email' | 'all' = 'all';
+  let primaryField: 'nis' | 'name' | 'nip' | 'teacherName' | 'email' | 'all' = 'all';
 
   if (entityType === 'student') {
     if (errorType === 'DUPLICATE_NIS' || rawErrorMsg.toLowerCase().includes('duplikat')) {
@@ -125,11 +110,6 @@ export function FixFieldModal({
       modalSubtitle = 'Lengkapi NIS pada baris yang bermasalah.';
       errorTitle = 'NIS kosong';
       primaryField = 'nis';
-    } else if (errorType === 'MISSING_CLASS') {
-      modalTitle = 'Perbaiki Kelas';
-      modalSubtitle = 'Lengkapi kelas siswa pada baris yang bermasalah.';
-      errorTitle = 'Kelas belum dipilih';
-      primaryField = 'class';
     }
   } else {
     // Teacher entity
@@ -168,19 +148,12 @@ export function FixFieldModal({
           setIsSubmitting(false);
           return;
         }
-        if (!className.trim()) {
-          setServerError('Kolom Kelas wajib diisi.');
-          setIsSubmitting(false);
-          return;
-        }
 
         if (onSaveStudent && studentData) {
           const res = await onSaveStudent({
             ...studentData,
             nis: nis.trim(),
             fullName: fullName.trim(),
-            className: className.trim(),
-            semester: semester.trim() || 'Ganjil 2026/2027',
           });
 
           if (!res.success) {
@@ -213,9 +186,6 @@ export function FixFieldModal({
             nipNidn: nipNidn.trim(),
             fullNameWithTitle: fullNameWithTitle.trim(),
             officialEmail: officialEmail.trim(),
-            functionalPosition: functionalPosition.trim() || undefined,
-            institution: institution.trim() || undefined,
-            whatsappContact: whatsappContact.trim() || undefined,
           });
 
           if (!res.success) {
@@ -348,37 +318,6 @@ export function FixFieldModal({
                   Gunakan nama lengkap sesuai data resmi sekolah.
                 </p>
               </div>
-
-              {/* Kelas & Semester in 2 cols */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <label className="text-xs sm:text-sm font-bold text-[#0F172A]">
-                    Kelas
-                  </label>
-                  <input
-                    type="text"
-                    value={className}
-                    onChange={(e) => setClassName(e.target.value)}
-                    placeholder="Contoh: 8-A"
-                    autoFocus={primaryField === 'class'}
-                    disabled={isSubmitting}
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:border-[#7F54F8] focus:ring-2 focus:ring-[#7F54F8]/20 transition"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs sm:text-sm font-bold text-[#0F172A]">
-                    Semester
-                  </label>
-                  <input
-                    type="text"
-                    value={semester}
-                    onChange={(e) => setSemester(e.target.value)}
-                    placeholder="Ganjil 2026/2027"
-                    disabled={isSubmitting}
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:border-[#7F54F8] focus:ring-2 focus:ring-[#7F54F8]/20 transition"
-                  />
-                </div>
-              </div>
             </>
           ) : (
             <>
@@ -440,36 +379,6 @@ export function FixFieldModal({
                   disabled={isSubmitting}
                   className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:border-[#7F54F8] focus:ring-2 focus:ring-[#7F54F8]/20 transition disabled:bg-slate-50"
                 />
-              </div>
-
-              {/* Jabatan & Institusi */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <label className="text-xs sm:text-sm font-bold text-[#0F172A]">
-                    Jabatan
-                  </label>
-                  <input
-                    type="text"
-                    value={functionalPosition}
-                    onChange={(e) => setFunctionalPosition(e.target.value)}
-                    placeholder="Instruktur AI"
-                    disabled={isSubmitting}
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:border-[#7F54F8] focus:ring-2 focus:ring-[#7F54F8]/20 transition"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs sm:text-sm font-bold text-[#0F172A]">
-                    Institusi
-                  </label>
-                  <input
-                    type="text"
-                    value={institution}
-                    onChange={(e) => setInstitution(e.target.value)}
-                    placeholder="UNAIR"
-                    disabled={isSubmitting}
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:border-[#7F54F8] focus:ring-2 focus:ring-[#7F54F8]/20 transition"
-                  />
-                </div>
               </div>
             </>
           )}

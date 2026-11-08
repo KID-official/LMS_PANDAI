@@ -104,7 +104,7 @@ export const LeadStorySection: React.FC = () => {
                   UA
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xs font-bold text-[#061B38]">Kolaborasi Riset UNAIR & SFA</span>
+                  <span className="text-xs font-bold text-[#061B38]">Kolaborasi Riset UNAIR & PANDAI LEARNING</span>
                   <span className="text-xs text-[#7A7486]">Kertas Kerja Forensik Komputasi</span>
                 </div>
               </div>

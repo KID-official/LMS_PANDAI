@@ -7,7 +7,7 @@ import { ProgressDashboardClient } from './ProgressDashboardClient';
 import { Loader2 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Laporan Progress & Audit Kuis Siswa | LMS SFA Learn',
+  title: 'Laporan Progress & Audit Kuis Siswa | PANDAI LEARNING',
   description: 'Pantau pencapaian belajar siswa, status kelulusan, dan audit jawaban kuis.',
 };
 

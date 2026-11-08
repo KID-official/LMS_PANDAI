@@ -32,9 +32,7 @@ async function main() {
           nip_nidn: '198001012005011001',
           full_name_with_title: 'Budi Santoso, S.Pd.',
           official_email: 'guru1@amos.com',
-          functional_position: 'Guru Penggerak AI & Kepala Lab',
-          institution: 'SMP Negeri 1 / Mitra UNAIR',
-        },
+                  },
       },
     },
   });
@@ -52,9 +50,7 @@ async function main() {
           nip_nidn: '198502022010012002',
           full_name_with_title: 'Siti Aminah, M.Kom.',
           official_email: 'guru2@amos.com',
-          functional_position: 'Instruktur Literasi Digital',
-          institution: 'Pengmas Universitas Airlangga',
-        },
+                  },
       },
     },
   });
@@ -272,8 +268,6 @@ async function main() {
           create: {
             nis: item.nis,
             full_name: item.fullName,
-            class_name: item.className,
-            semester: item.semester,
           },
         },
       },

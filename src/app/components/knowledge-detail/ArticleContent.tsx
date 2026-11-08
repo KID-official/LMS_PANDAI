@@ -53,13 +53,13 @@ const INITIAL_COMMENTS: CommentItem[] = [
   {
     id: 'c2',
     name: 'Nadia Azzahra',
-    role: 'Siswa Kelas 9 • Lab Forensik Muda SFA',
+    role: 'Siswa Kelas 9 • Lab Forensik Muda PANDAI',
     badge: 'Duta Literasi',
     time: '5 jam lalu',
     avatar: 'NA',
     avatarBg: 'bg-[#7F54F8] text-white',
     content:
-      'Langkah SIFT yang paling membantu buat saya adalah poin pertama: "Stop". Dulu sering reflek kirim ke grup WhatsApp kelas kalau ada gambar aneh, sekarang cek dulu di portal forensik SFA.',
+      'Langkah SIFT yang paling membantu buat saya adalah poin pertama: "Stop". Dulu sering reflek kirim ke grup WhatsApp kelas kalau ada gambar aneh, sekarang cek dulu di portal forensik PANDAI.',
     likes: 41,
   },
 ];
@@ -80,7 +80,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
       id: `c_${Date.now()}`,
       name: 'Pengunjung Terverifikasi',
       role: 'Praktisi Literasi Digital',
-      badge: 'Anggota SFA',
+      badge: 'Anggota PANDAI',
       time: 'Baru saja',
       avatar: 'PT',
       avatarBg: 'bg-[#00685F] text-white',
@@ -116,7 +116,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
           <span>Poin Kunci Riset (Key Takeaways)</span>
         </div>
         <p className="text-xs sm:text-sm text-[#494455] leading-relaxed">
-          Rangkuman eksekutif hasil uji coba lapangan kurikulum keamanan media sintetik SFA Learn di 12 sekolah menengah:
+          Rangkuman eksekutif hasil uji coba lapangan kurikulum keamanan media sintetik PANDAI LEARNING di 12 sekolah menengah:
         </p>
         <ul className="flex flex-col gap-2.5 mt-1 text-xs sm:text-sm">
           {article.keyTakeaways.map((point, index) => (
@@ -269,14 +269,14 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
         <div className="relative w-full rounded-2xl overflow-hidden bg-[#E7EEFF] aspect-[21/9] max-h-72 shadow-subtle border border-[#CAC3D8]/30">
           <Image
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUzbFRXuHqB9LZqeUPSJMF2dJf3xa_lVXVJ67rcuI7zdEiJofyW9E_4oWfl9u_-BGEH_QZF0Y6Coc6WrExUvoGM_84_e8DDG2Jo6qK-rl_vGSjr9DAOTEE4Ris3GCLFZsE4z4vlbMZrUgwSf_teT23BDtzg31r2RoFyJyOcL9e9x7ojsgtaN0p7qVJeR5aLm_a9xAdykRobPlUjl38QKZR7HuOrRSF64wOQGrl-i5saLSJ1M3sSswj"
-            alt="Antarmuka aplikasi verifikator mandiri SFA Learn"
+            alt="Antarmuka aplikasi verifikator mandiri PANDAI LEARNING"
             fill
             unoptimized
             className="object-cover"
           />
         </div>
         <figcaption className="text-xs text-[#7A7486] text-center">
-          Antarmuka aplikasi verifikator mandiri yang disematkan langsung pada Portal Siswa SFA Learn.
+          Antarmuka aplikasi verifikator mandiri yang disematkan langsung pada Portal Siswa PANDAI LEARNING.
         </figcaption>
       </figure>
 
@@ -432,7 +432,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = ({
           />
           <div className="flex items-center justify-between flex-wrap gap-2">
             <span className="text-xs text-[#7A7486]">
-              Komentar akan dimoderasi oleh tim kurator SFA.
+              Komentar akan dimoderasi oleh tim kurator PANDAI.
             </span>
             <button
               type="submit"

@@ -30,7 +30,7 @@ export const StudentBannerHeader: React.FC<StudentBannerHeaderProps> = ({
     setFormattedDate(now.toLocaleDateString('id-ID', options));
   }, []);
 
-  const displayName = studentProfile?.fullName || 'Siswa SFA Learn';
+  const displayName = studentProfile?.fullName || 'Siswa PANDAI LEARNING';
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-[#F1EDFF] border border-[#EAE8F2] p-6 sm:p-8 lg:p-10 shadow-xs">
@@ -49,7 +49,7 @@ export const StudentBannerHeader: React.FC<StudentBannerHeaderProps> = ({
               Halo, <span className="text-[#7950F2]">{displayName}</span>! 👋
             </h1>
             <p className="text-xs sm:text-sm lg:text-base text-[#7B8198] leading-relaxed">
-              Selamat datang kembali di SFA Learn. Jelajahi modul kecerdasan buatan, robotika cerdas, dan literasi teknologi kamu hari ini.
+              Selamat datang kembali di PANDAI LEARNING (panduan digital & literasi AI siswa). Jelajahi modul kecerdasan buatan, robotika cerdas, dan literasi teknologi kamu hari ini.
             </p>
           </div>
 

@@ -29,17 +29,17 @@ export default function Footer() {
         <Link
           href={PUBLIC_ROUTES.HOME}
           className="flex items-center gap-2.5 select-none"
-          aria-label="SFA Learn – halaman utama"
+          aria-label="PANDAI LEARNING – halaman utama"
         >
           <span
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#7950F2]"
             aria-hidden
           >
-            <span className="text-[13px] font-bold text-white">S</span>
+            <span className="text-[13px] font-bold text-white">P</span>
           </span>
 
           <span className="text-[13px] font-bold text-[#172554]">
-            SFA Learn
+            PANDAI LEARNING
           </span>
 
           <span
@@ -51,7 +51,7 @@ export default function Footer() {
 
         {/* ── CENTER : Copyright ── */}
         <p className="text-center text-[12px] text-[#7B8198]">
-          &copy; {currentYear} SFA Learn Student Portal. Hak Cipta Dilindungi.
+          &copy; {currentYear} PANDAI LEARNING (panduan digital & literasi AI siswa). Hak Cipta Dilindungi.
         </p>
 
         {/* ── RIGHT : Footer links ── */}

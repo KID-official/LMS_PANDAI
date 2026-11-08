@@ -92,7 +92,7 @@ export const PublicVerifyClient: React.FC<PublicVerifyClientProps> = ({
           </h1>
 
           <p className="text-sm sm:text-base text-[#494455] max-w-lg mb-6 leading-relaxed">
-            Nomor seri <code className="font-mono font-bold text-[#BA1A1A] bg-[#FFDAD6]/40 px-2 py-0.5 rounded">{serialNumber}</code> tidak tercatat dalam pangkalan data verifikasi akademik Universitas Airlangga &amp; SFA Learn.
+            Nomor seri <code className="font-mono font-bold text-[#BA1A1A] bg-[#FFDAD6]/40 px-2 py-0.5 rounded">{serialNumber}</code> tidak tercatat dalam pangkalan data verifikasi akademik Universitas Airlangga &amp; PANDAI LEARNING.
           </p>
 
           {/* Form Cek Nomor Seri Lain */}
@@ -119,7 +119,7 @@ export const PublicVerifyClient: React.FC<PublicVerifyClientProps> = ({
             href="/"
             className="text-xs sm:text-sm font-bold text-[#7F54F8] hover:underline"
           >
-            ← Kembali ke Beranda SFA Learn
+            ← Kembali ke Beranda PANDAI LEARNING
           </Link>
         </div>
       </div>
@@ -155,7 +155,7 @@ export const PublicVerifyClient: React.FC<PublicVerifyClientProps> = ({
             </h1>
 
             <p className="text-xs sm:text-sm text-white/90 mt-1 max-w-2xl leading-relaxed">
-              Diterbitkan secara sah oleh Program Pengabdian Masyarakat Universitas Airlangga bersama SFA Learn (AmosProduction). Terdata dalam register nasional kelulusan literasi AI.
+              Diterbitkan secara sah oleh Program Pengabdian Masyarakat Universitas Airlangga bersama PANDAI LEARNING (AmosProduction). Terdata dalam register nasional kelulusan literasi AI.
             </p>
           </div>
         </div>
@@ -295,7 +295,7 @@ export const PublicVerifyClient: React.FC<PublicVerifyClientProps> = ({
                 Penyelenggara
               </span>
               <span className="text-sm font-extrabold text-[#061B38]">
-                Pengmas UNAIR x SFA
+                Pengmas UNAIR x PANDAI
               </span>
               <span className="text-xs text-[#494455]">
                 Universitas Airlangga

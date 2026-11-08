@@ -39,8 +39,6 @@ export default async function StudentProfilePage() {
     isActive: user.is_active,
     nis: user.student?.nis || user.identifier,
     fullName: user.student?.full_name || 'Siswa Pembelajar',
-    className: user.student?.class_name || 'Kelas 8-A SMP',
-    semester: user.student?.semester || 'Genap TA 2026/2027',
     imageUrl: user.student?.image_url || null,
     completedChaptersCount: user.progress.filter((p) => p.is_completed).length,
     certificatesCount: user.certificates.length,

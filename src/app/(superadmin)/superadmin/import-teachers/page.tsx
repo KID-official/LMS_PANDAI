@@ -43,8 +43,6 @@ export default function ImportTeachersPage() {
   const [detectedRowCount, setDetectedRowCount] = useState<number | null>(null);
 
   // Configuration options (Step 2)
-  const [defaultInstitution, setDefaultInstitution] = useState('UNAIR');
-  const [defaultPosition, setDefaultPosition] = useState('Instruktur AI');
   const [autoGeneratePassword, setAutoGeneratePassword] = useState(true);
   const [autoActivate, setAutoActivate] = useState(true);
 
@@ -67,10 +65,10 @@ export default function ImportTeachersPage() {
   // Template CSV download
   const handleDownloadTemplate = () => {
     const templateContent =
-      'NIP/NIDN,Nama,Email,Jabatan,Institusi,WA,Password\n' +
-      '198703032015011003,Dr. Rizal Pratama M.T.,rizal@amos.com,Dosen Vokasi,UNAIR,081234567890,\n' +
-      '199004042018012004,Dewi Lestari M.Pd.,dewi@amos.com,Instruktur AI,Mitra AMOS,081298765432,\n' +
-      '198505052010011002,Arief Wicaksono S.Kom.,arief@amos.com,Pengajar Pemrograman,UNAIR,081377889900,\n';
+      'NIP/NIDN,Nama,Email,Password\n' +
+      '198703032015011003,Dr. Rizal Pratama M.T.,rizal@amos.com,\n' +
+      '199004042018012004,Dewi Lestari M.Pd.,dewi@amos.com,\n' +
+      '198505052010011002,Arief Wicaksono S.Kom.,arief@amos.com,\n';
 
     const blob = new Blob([templateContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -142,8 +140,6 @@ export default function ImportTeachersPage() {
       const csvText = await file.text();
       const result = await validateAndImportTeachers(csvText, {
         autoGeneratePassword,
-        defaultInstitution: defaultInstitution.trim() || undefined,
-        defaultFunctionalPosition: defaultPosition.trim() || undefined,
       });
 
       if (!result.isValidHeader) {
@@ -186,9 +182,6 @@ export default function ImportTeachersPage() {
       nipNidn: row.nipNidn,
       fullNameWithTitle: row.fullNameWithTitle,
       officialEmail: row.officialEmail,
-      functionalPosition: row.functionalPosition || defaultPosition,
-      institution: row.institution || defaultInstitution,
-      whatsappContact: row.whatsappContact,
       errorType: row.errorType,
       errorMessage: row.errorMessage,
     });
@@ -203,9 +196,6 @@ export default function ImportTeachersPage() {
       nipNidn: updated.nipNidn,
       fullNameWithTitle: updated.fullNameWithTitle,
       officialEmail: updated.officialEmail,
-      functionalPosition: updated.functionalPosition,
-      institution: updated.institution,
-      whatsappContact: updated.whatsappContact,
       password: updated.password,
     });
 
@@ -250,10 +240,10 @@ export default function ImportTeachersPage() {
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
             <Link
-              href="/superadmin/dashboard"
+              href="/guru/dashboard"
               className="hover:text-[#7F54F8] transition"
             >
-              User Administration
+              Learning Management
             </Link>
             <span>&gt;</span>
             <Link
@@ -270,11 +260,11 @@ export default function ImportTeachersPage() {
             Import Guru Massal via CSV
           </h1>
           <p className="text-xs sm:text-sm text-[#64748B]">
-            Daftarkan banyak akun guru dan instruktur AI sekaligus ke dalam sistem LMS
+            Daftarkan akun staf pengajar &amp; instruktur AI secara massal dengan kredensial instan
           </p>
         </div>
 
-        {/* Panduan Format CSV button */}
+        {/* Panduan Format CSV Guru button */}
         <button
           type="button"
           onClick={() => setIsGuideOpen(true)}
@@ -309,14 +299,14 @@ export default function ImportTeachersPage() {
               onClick={handleDownloadTemplate}
               className="rounded-xl bg-rose-700 px-4 py-2 text-xs font-bold text-white hover:bg-rose-800 transition cursor-pointer"
             >
-              Unduh Template Guru yang Benar
+              Unduh Template yang Benar
             </button>
           </div>
         </div>
       )}
 
       {/* ══════════════════════════════════════════════════════════════
-          STEPS 1 & 2: UNDUH TEMPLATE, UPLOAD CSV & KONFIGURASI GURU
+          STEPS 1 & 2: UNDUH TEMPLATE, UPLOAD CSV & KONFIGURASI
           ══════════════════════════════════════════════════════════════ */}
       {(currentStep === 1 || currentStep === 2) && (
         <div className="space-y-6 animate-in fade-in duration-200">
@@ -331,13 +321,13 @@ export default function ImportTeachersPage() {
                   Download Template CSV Guru
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Struktur data akun pengajar resmi institusi &amp; UNAIR
+                  Struktur data akun pengajar resmi
                 </p>
               </div>
             </div>
 
             <p className="text-xs text-[#64748B] leading-relaxed">
-              Kolom wajib: <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-800">NIP/NIDN, Nama, Email</code>. Kolom opsional: <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-800">Jabatan, Institusi, WA, Password</code>.
+              Format baku impor mencakup kolom NIP/NIDN, Nama, dan Email Resmi (opsional: Password).
             </p>
 
             <button
@@ -354,7 +344,7 @@ export default function ImportTeachersPage() {
           <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm sm:text-base font-bold text-[#061B38]">
-                Upload File Berkas Guru
+                Upload Berkas Guru (.csv)
               </h3>
               <span className="rounded-full bg-[#F0EEFE] px-2.5 py-0.5 text-[11px] font-bold text-[#7F54F8]">
                 Wajib
@@ -377,7 +367,7 @@ export default function ImportTeachersPage() {
                 <UploadCloud className="h-6 w-6" />
               </div>
               <p className="text-xs sm:text-sm font-bold text-[#061B38]">
-                Tarik file CSV guru ke sini atau klik Telusuri
+                Tarik file CSV ke sini atau klik Telusuri
               </p>
               <p className="mt-1 text-[11px] text-[#94A3B8]">
                 Maksimal 5MB, format berkas .csv (UTF-8)
@@ -396,7 +386,7 @@ export default function ImportTeachersPage() {
                       {fileName}
                     </p>
                     <p className="text-[11px] text-[#64748B]">
-                      {fileSizeStr} • {detectedRowCount !== null ? `${detectedRowCount} Baris Pengajar Terdeteksi` : 'Berkas Siap Diproses'}
+                      {fileSizeStr} • {detectedRowCount !== null ? `${detectedRowCount} Baris Guru Terdeteksi` : 'Berkas Siap Diproses'}
                     </p>
                   </div>
                 </div>
@@ -414,39 +404,11 @@ export default function ImportTeachersPage() {
               </div>
             )}
 
-            {/* Section: Konfigurasi Default Guru */}
+            {/* Section: Konfigurasi Akun Guru */}
             <div className="pt-3 border-t border-slate-100 space-y-4">
               <h4 className="text-xs sm:text-sm font-bold text-[#061B38]">
-                Konfigurasi Default Guru
+                Konfigurasi Pembuatan Akun Guru
               </h4>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-700">
-                    Institusi Default (Jika di CSV Kosong)
-                  </label>
-                  <input
-                    type="text"
-                    value={defaultInstitution}
-                    onChange={(e) => setDefaultInstitution(e.target.value)}
-                    placeholder="UNAIR"
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-xs sm:text-sm font-medium text-[#061B38] focus:outline-none focus:border-[#7F54F8] focus:ring-2 focus:ring-[#7F54F8]/20 transition"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-700">
-                    Jabatan Default (Jika di CSV Kosong)
-                  </label>
-                  <input
-                    type="text"
-                    value={defaultPosition}
-                    onChange={(e) => setDefaultPosition(e.target.value)}
-                    placeholder="Instruktur AI"
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-xs sm:text-sm font-medium text-[#061B38] focus:outline-none focus:border-[#7F54F8] focus:ring-2 focus:ring-[#7F54F8]/20 transition"
-                  />
-                </div>
-              </div>
 
               {/* Checkboxes */}
               <div className="space-y-3 pt-1">
@@ -479,7 +441,7 @@ export default function ImportTeachersPage() {
                       Aktifkan akun guru secara otomatis
                     </span>
                     <p className="text-[11px] text-[#64748B]">
-                      Guru dapat langsung login melalui portal admin LMS
+                      Guru dapat langsung login melalui portal LMS
                     </p>
                   </div>
                 </label>
@@ -518,7 +480,7 @@ export default function ImportTeachersPage() {
       )}
 
       {/* ══════════════════════════════════════════════════════════════
-          STEP 3: VALIDASI & ERROR CHECKING GURU
+          STEP 3: VALIDASI & ERROR CHECKING
           ══════════════════════════════════════════════════════════════ */}
       {currentStep === 3 && (
         <div className="space-y-5 animate-in fade-in duration-200">
@@ -541,7 +503,7 @@ export default function ImportTeachersPage() {
 
           {/* 3 KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* KPI 1 */}
+            {/* KPI 1: TOTAL BARIS */}
             <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -557,7 +519,7 @@ export default function ImportTeachersPage() {
               </div>
             </div>
 
-            {/* KPI 2 */}
+            {/* KPI 2: VALID & SUDAH MASUK DB */}
             <div className="rounded-2xl border border-emerald-200/80 bg-white p-5 shadow-xs flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">
@@ -575,7 +537,7 @@ export default function ImportTeachersPage() {
               </div>
             </div>
 
-            {/* KPI 3 */}
+            {/* KPI 3: GAGAL / ERROR */}
             <div className="rounded-2xl border border-rose-200/80 bg-white p-5 shadow-xs flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-rose-600">
@@ -594,7 +556,7 @@ export default function ImportTeachersPage() {
             </div>
           </div>
 
-          {/* Table: Detail Audit Baris Berkas Guru */}
+          {/* Table: Detail Audit Baris Berkas (if errors exist) */}
           {failedRows.length > 0 && (
             <div className="rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden">
               <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
@@ -680,7 +642,7 @@ export default function ImportTeachersPage() {
           <div className="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50/70 p-3.5 text-xs text-emerald-800">
             <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
             <p>
-              <strong>{credentials.length} Guru lainnya</strong> lolos verifikasi dan otomatis terdaftar ke database sistem LMS.
+              <strong>{credentials.length} Guru lainnya</strong> lolos verifikasi dan otomatis terdaftar ke database sistem.
             </p>
           </div>
 
@@ -691,7 +653,7 @@ export default function ImportTeachersPage() {
                 Langkah Eksekusi Impor Guru
               </h3>
               <p className="text-xs text-slate-500">
-                Sistem siap mengaktifkan {credentials.length} akun guru dan mengirimkan kredensial awal.
+                Sistem siap membuat {credentials.length} akun pengajar aktif untuk portal pembelajaran.
               </p>
             </div>
 
@@ -701,7 +663,7 @@ export default function ImportTeachersPage() {
                 onClick={handleResetWizard}
                 className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
               >
-                Batalkan Impor Data Guru
+                Batalkan Impor Data
               </button>
 
               <button
@@ -723,10 +685,10 @@ export default function ImportTeachersPage() {
             </div>
             <div>
               <p className="font-bold text-[#061B38]">
-                Catatan Keamanan &amp; Kredensial Guru
+                Catatan Keamanan Akun Pengajar
               </p>
               <p className="mt-0.5 text-[#64748B] leading-relaxed">
-                Password guru di-hash dengan aman menggunakan standar <strong>bcrypt</strong>. Lembar cetak kredensial dapat langsung dibagikan kepada pengajar yang bersangkutan.
+                Kata sandi awal dienkripsi dengan standar <strong>bcrypt</strong> dan pengajar disarankan memperbarui kata sandi setelah login pertama kali.
               </p>
             </div>
           </div>
@@ -734,7 +696,7 @@ export default function ImportTeachersPage() {
       )}
 
       {/* ══════════════════════════════════════════════════════════════
-          STEP 4: HASIL & CETAK KREDENSIAL GURU
+          STEP 4: HASIL & CETAK KREDENSIAL
           ══════════════════════════════════════════════════════════════ */}
       {currentStep === 4 && (
         <div className="space-y-6 animate-in fade-in duration-200">
@@ -747,7 +709,7 @@ export default function ImportTeachersPage() {
               Pendaftaran Massal Berhasil! {credentials.length} Akun Guru Telah Dibuat
             </h2>
             <p className="text-xs sm:text-sm text-[#64748B] max-w-xl mx-auto">
-              Seluruh akun pengajar telah aktif di database sistem dan dapat langsung mengakses dashboard guru &amp; materi pembelajaran.
+              Seluruh akun pengajar telah aktif dan siap digunakan untuk masuk ke portal LMS.
             </p>
           </div>
 
@@ -756,7 +718,7 @@ export default function ImportTeachersPage() {
             credentials={credentials}
             title="Daftar Kredensial Akun Guru Baru"
             finishHref="/superadmin/teachers"
-            finishLabel="Lihat di Manajemen Guru"
+            finishLabel="Lihat di Kelola Guru"
             onResetWizard={handleResetWizard}
           />
         </div>
@@ -794,15 +756,12 @@ export default function ImportTeachersPage() {
                 Susunan kolom header CSV pengajar di baris pertama:
               </p>
               <div className="rounded-xl bg-slate-900 p-3 font-mono text-xs text-emerald-400 overflow-x-auto">
-                NIP/NIDN,Nama,Email,Jabatan,Institusi,WA,Password
+                NIP/NIDN,Nama,Email,Password
               </div>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>NIP/NIDN:</strong> Nomor induk pegawai atau dosen unik.</li>
                 <li><strong>Nama:</strong> Nama lengkap beserta gelar akademik resmi.</li>
                 <li><strong>Email:</strong> Alamat email aktif resmi yang digunakan untuk login akun.</li>
-                <li><strong>Jabatan:</strong> Opsional, contoh: <code>Instruktur AI</code>, <code>Dosen Vokasi</code>.</li>
-                <li><strong>Institusi:</strong> Opsional, contoh: <code>UNAIR</code>.</li>
-                <li><strong>WA:</strong> Nomor kontak WhatsApp pengajar.</li>
                 <li><strong>Password:</strong> Opsional, jika kosong sistem akan menghasilkan sandi 6 digit acak.</li>
               </ul>
             </div>

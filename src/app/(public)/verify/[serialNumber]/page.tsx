@@ -10,7 +10,7 @@ interface VerifyPageProps {
 
 export async function generateMetadata({ params }: VerifyPageProps) {
   return {
-    title: `Verifikasi Keaslian Sertifikat • ${params.serialNumber} | UNAIR & SFA Learn`,
+    title: `Verifikasi Keaslian Sertifikat • ${params.serialNumber} | UNAIR & PANDAI LEARNING`,
     description: `Verifikasi pangkalan data ijazah & sertifikat digital resmi Pengabdian Masyarakat UNAIR nomor seri ${params.serialNumber}.`,
   };
 }

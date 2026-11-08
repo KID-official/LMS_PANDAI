@@ -107,7 +107,7 @@ export const CertificateViewerClient: React.FC<CertificateViewerClientProps> = (
               Selamat atas Kelulusanmu, {student.fullName}!
             </h2>
             <p className="text-xs sm:text-sm text-[#E8DEFF] font-medium opacity-95 mt-0.5">
-              Sertifikat kompetensi resmi terverifikasi pangkalan data Pengmas UNAIR &amp; SFA Learn.
+              Sertifikat kompetensi resmi terverifikasi pangkalan data Pengmas UNAIR &amp; PANDAI LEARNING.
             </p>
           </div>
         </div>

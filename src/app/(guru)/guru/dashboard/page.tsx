@@ -4,7 +4,7 @@ import GuruDashboardClient from './GuruDashboardClient';
 import { Loader2 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Dashboard Guru | SFA Learn Literasi AI',
+  title: 'Dashboard Guru | PANDAI LEARNING',
   description: 'Ringkasan aktivitas, progres belajar siswa, dan pemantauan capaian kurikulum AI.',
 };
 

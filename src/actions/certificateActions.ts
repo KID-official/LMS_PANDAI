@@ -207,8 +207,8 @@ export async function getStudentCertificateAction(
       student: {
         fullName: student?.full_name || session.user.name || 'Siswa Berprestasi',
         nis: student?.nis || session.user.identifier || '-',
-        className: student?.class_name || 'X TKJ A',
-        semester: student?.semester || 'Ganjil 2026/2027',
+        className: 'Siswa Terdaftar',
+        semester: 'Aktif',
         imageUrl: student?.image_url,
       },
       course: {
@@ -269,7 +269,7 @@ export async function verifyCertificatePublicAction(
     if (!cert) {
       return {
         isValid: false,
-        message: `Nomor seri ${cleanSerial} tidak ditemukan dalam pangkalan data verifikasi resmi UNAIR & SFA Learn.`,
+        message: `Nomor seri ${cleanSerial} tidak ditemukan dalam pangkalan data verifikasi resmi UNAIR & PANDAI LEARNING.`,
       };
     }
 
@@ -286,7 +286,7 @@ export async function verifyCertificatePublicAction(
       serialNumber: cert.serial_number,
       studentName,
       studentNis: student?.nis || '-',
-      className: student?.class_name || 'Siswa Terdaftar',
+      className: 'Siswa Terdaftar',
       courseTitle: course?.title || 'Literasi & Etika Kecerdasan Buatan',
       instructorName: course?.instructorName || 'Dr. Alwan Hakim, M.Kom.',
       issuedAt: cert.issued_at.toISOString(),

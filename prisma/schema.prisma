@@ -37,8 +37,6 @@ model Student {
   id          String  @id @default(cuid())
   nis         String  @unique
   full_name   String
-  class_name  String
-  semester    String
   image_url   String?
 
   user_id     String  @unique
@@ -52,9 +50,6 @@ model Teacher {
   nip_nidn              String  @unique
   full_name_with_title  String
   official_email        String  @unique
-  functional_position   String?
-  institution           String?
-  whatsapp_contact      String?
   image_url             String?
 
   user_id               String  @unique

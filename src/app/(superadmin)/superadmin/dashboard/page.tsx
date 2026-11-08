@@ -4,7 +4,7 @@ import SuperAdminDashboardClient from './SuperAdminDashboardClient';
 import { Loader2 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Dashboard Super Admin | SFA Learn Literasi AI',
+  title: 'Dashboard Super Admin | PANDAI LEARNING',
   description: 'Pusat kendali ekosistem, administrasi akun pengajar, dan audit operasional LMS.',
 };
 

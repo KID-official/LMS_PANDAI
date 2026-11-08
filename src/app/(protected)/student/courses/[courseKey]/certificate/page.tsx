@@ -14,8 +14,8 @@ interface CertificatePageProps {
 
 export async function generateMetadata({ params }: CertificatePageProps) {
   return {
-    title: `E-Sertifikat Kelulusan Resmi • ${params.courseKey} | SFA Learn UNAIR`,
-    description: 'Penampil dan pengunduh sertifikat kelulusan resmi Pengmas Vokasi UNAIR & SFA Learn.',
+    title: `E-Sertifikat Kelulusan Resmi • ${params.courseKey} | PANDAI LEARNING UNAIR`,
+    description: 'Penampil dan pengunduh sertifikat kelulusan resmi Pengmas Vokasi UNAIR & PANDAI LEARNING.',
   };
 }
 

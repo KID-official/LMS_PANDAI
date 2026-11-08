@@ -59,7 +59,7 @@ export const CertificateActions: React.FC<CertificateActionsProps> = ({
         : `https://sfa-learn.org/verify/${serialNumber}`;
 
     const shareData = {
-      title: `Sertifikat Kelulusan ${studentName} - UNAIR & SFA Learn`,
+      title: `Sertifikat Kelulusan ${studentName} - UNAIR & PANDAI LEARNING`,
       text: `Alhamdulillah, saya telah berhasil menyelesaikan kursus "${courseTitle}" dengan predikat Sangat Baik. Cek keaslian sertifikat di:`,
       url: fullUrl,
     };
@@ -188,7 +188,7 @@ export const CertificateActions: React.FC<CertificateActionsProps> = ({
               Jaminan Keabsahan Akademik &amp; Pangkalan Data Resmi
             </span>
             <p className="text-xs text-[#494455] leading-relaxed">
-              Dokumen ini diterbitkan oleh program Pengabdian Masyarakat Fakultas Vokasi Universitas Airlangga bersama SFA Learn. QR Code dapat dipindai secara publik kapan pun untuk memvalidasi nomor seri resmi <strong className="text-[#061B38] font-mono">{serialNumber}</strong>.
+              Dokumen ini diterbitkan oleh program Pengabdian Masyarakat Fakultas Vokasi Universitas Airlangga bersama PANDAI LEARNING. QR Code dapat dipindai secara publik kapan pun untuk memvalidasi nomor seri resmi <strong className="text-[#061B38] font-mono">{serialNumber}</strong>.
             </p>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { TeacherManagementClient } from './TeacherManagementClient';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Kelola Akun Guru | Super Admin LMS SFA Learn',
+  title: 'Kelola Akun Guru | Super Admin PANDAI LEARNING',
   description: 'Manajemen data pengajar, verifikasi profil, dan hak akses guru.',
 };
 

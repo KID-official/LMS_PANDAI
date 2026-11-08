@@ -9,8 +9,8 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "LMS AI - Amos Production",
-  description: "Platform E-Learning Literasi AI",
+  title: "PANDAI LEARNING (panduan digital & literasi AI siswa)",
+  description: "PANDAI LEARNING - Platform panduan digital & literasi AI siswa",
 };
 
 import { Providers } from "./providers";

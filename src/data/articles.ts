@@ -45,10 +45,10 @@ export const LEAD_ARTICLE: ArticleData = {
   image:
     'https://lh3.googleusercontent.com/aida-public/AB6AXuCPeiptoSn8t2O-_nMKe_zwFs5P812AbI7fF_3HvXBZDGP5_U1Bf2JHbLYIpFdNn3f62gxlUB5w_ELsFptGk1JSwz7SbwpqAh91iooO4JRaA2jAEhazNTXmhl4NXrXbTC-83VzWYHN_OSW38dF1LYXUre1BswWpwWI96i_vA4fd519vGMTCLlWXjgZTMN_YWchhceT0WDV3Q_jshOGxrNHmSw5XHJDjOYKHTInGy9HnEOv_RuJKViXE',
   imageCaption:
-    'Siswa SMP mengamati anomali artefak bayangan dan metadata EXIF pada materi pengujian media sintetik di laboratorium multimedia SFA Learn. (Dok. Tim Litbang Pengmas UNAIR)',
-  imageExif: 'ISO 200 • f/2.8 • 1/250s (Kamera Forensik Lab SFA)',
+    'Siswa SMP mengamati anomali artefak bayangan dan metadata EXIF pada materi pengujian media sintetik di laboratorium multimedia PANDAI LEARNING. (Dok. Tim Litbang Pengmas UNAIR)',
+  imageExif: 'ISO 200 • f/2.8 • 1/250s (Kamera Forensik Lab PANDAI)',
   c2paId: '#ID-8842-LAB',
-  tags: ['#DeepfakeForensics', '#C2PA', '#LiterasiDigitalSMP', '#EtikaAI', '#SFAlearn'],
+  tags: ['#DeepfakeForensics', '#C2PA', '#LiterasiDigitalSMP', '#EtikaAI', '#PANDAIlearning'],
   keyTakeaways: [
     'Standar C2PA menyematkan manifest digital kriptografi anti-manipulasi langsung ke dalam berkas media sejak tombol rana kamera ditekan.',
     'Inspeksi mata telanjang tak lagi memadai karena generator difusi AI 2026 telah mengatasi galat anatomi jari, pantulan kornea, dan cacat tekstur kulit mikro.',
@@ -57,7 +57,7 @@ export const LEAD_ARTICLE: ArticleData = {
   pullQuote: {
     text: 'Literasi AI bukan sekadar melarang penggunaan alat, melainkan membentuk nalar kritis siswa agar tidak mudah terperdaya oleh distorsi informasi digital.',
     author: 'Dr. Alwan Hakim, M.Kom.',
-    role: 'Kepala Laboratorium Forensik Digital UNAIR & Penasihat Riset SFA Learn',
+    role: 'Kepala Laboratorium Forensik Digital UNAIR & Penasihat Riset PANDAI LEARNING',
   },
 };
 
@@ -81,7 +81,7 @@ export const ALL_ARTICLES: ArticleData[] = [
     image:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDJBLjGlN82fQ34oRqwKhOPsVmJGqHzcvGi45UIB6Ak_sdkFHvs3OXfPQfM-mhSptUyXi0JAfYJeSDGrUyHuKsITyYV7dwyvtRuKP_NUFkE9jRDUpLKKBkTX_KUkb-KmCBytg29Go1IQVzsLYm8C_PEXxNgASP0edo4vWMiPO2W_C9s1EG55jnxU9E92cr0kKE1agKEOoP4y7SfIS8rTbtCHPjBC0uWoHldlH1iYDzWOu4t8Fz_W-UZ',
     imageCaption:
-      'Tampilan antarmuka pengujian komparasi algoritma NLP detektor teks AI pada laboratorium komputasi SFA Learn.',
+      'Tampilan antarmuka pengujian komparasi algoritma NLP detektor teks AI pada laboratorium komputasi PANDAI LEARNING.',
     imageExif: 'Node JS v20.12 • Python 3.11 • Model Classifier v4.2',
     c2paId: '#ID-9912-EXP',
     tags: ['#DetektorAI', '#TugasSekolah', '#FalsePositive', '#BahasaIndonesia'],
@@ -154,7 +154,7 @@ export const ALL_ARTICLES: ArticleData[] = [
     category: 'Wawancara & Opini',
     categoryColor: 'bg-[#DFE0FF] text-[#3A4BD4]',
     badgeTag: 'Kajian 3T',
-    author: 'Redaksi SFA Learn',
+    author: 'Redaksi PANDAI LEARNING',
     authorRole: 'Tim Jurnalisme Literasi AI',
     authorAvatar: 'SL',
     date: '05 Oktober 2026',

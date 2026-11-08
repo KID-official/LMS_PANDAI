@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { 
-  Camera, Mail, Building, Phone, Award, Shield, Eye, EyeOff, 
+  Camera, Mail, Award, Shield, Eye, EyeOff, 
   Check, AlertCircle, LogOut, Loader2, UserCheck 
 } from 'lucide-react';
 import { updateTeacherProfile, changePassword } from '@/app/actions/profile';
@@ -18,9 +18,6 @@ type TeacherData = {
   fullNameWithTitle: string;
   nipNidn: string;
   officialEmail: string;
-  functionalPosition: string;
-  institution: string;
-  whatsappContact: string;
   imageUrl: string | null;
 };
 
@@ -28,14 +25,11 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
   const { update } = useSession();
   const router = useRouter();
 
-  // Form profile state
+  // Form profile state (hanya Nama, NIP, Email)
   const [profileForm, setProfileForm] = useState({
     fullNameWithTitle: initialData.fullNameWithTitle,
     nipNidn: initialData.nipNidn,
     officialEmail: initialData.officialEmail,
-    functionalPosition: initialData.functionalPosition,
-    institution: initialData.institution,
-    whatsappContact: initialData.whatsappContact,
     showSignatureBlock: true,
   });
 
@@ -78,8 +72,6 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
     }
   })();
 
-
-
   // Handle upload avatar
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -111,9 +103,6 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
         fullNameWithTitle: profileForm.fullNameWithTitle,
         nipNidn: profileForm.nipNidn,
         officialEmail: profileForm.officialEmail,
-        functionalPosition: profileForm.functionalPosition,
-        institution: profileForm.institution,
-        whatsappContact: profileForm.whatsappContact,
         imageUrl: data.url,
       });
       // Sinkronkan session NextAuth agar navbar & sidebar langsung memuat gambar baru
@@ -138,9 +127,6 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
         fullNameWithTitle: profileForm.fullNameWithTitle,
         nipNidn: profileForm.nipNidn,
         officialEmail: profileForm.officialEmail,
-        functionalPosition: profileForm.functionalPosition,
-        institution: profileForm.institution,
-        whatsappContact: profileForm.whatsappContact,
         imageUrl: avatarUrl || undefined,
       });
       // Sinkronkan session NextAuth
@@ -192,9 +178,6 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
       fullNameWithTitle: initialData.fullNameWithTitle,
       nipNidn: initialData.nipNidn,
       officialEmail: initialData.officialEmail,
-      functionalPosition: initialData.functionalPosition,
-      institution: initialData.institution,
-      whatsappContact: initialData.whatsappContact,
       showSignatureBlock: true,
     });
     setProfileFeedback(null);
@@ -212,7 +195,7 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
             <div className="flex flex-col gap-0.5">
               <h2 className="text-[17px] font-bold text-heading">Informasi Profil Pengajar</h2>
               <p className="text-[12px] text-muted-foreground">
-                Data ini ditampilkan pada tanda tangan sertifikat dan kontak bantuan laboratorium siswa SMP.
+                Data identitas resmi pengajar dan validator kompetensi digital siswa.
               </p>
             </div>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-3 py-1 text-[11px] font-bold text-primary-strong shrink-0">
@@ -275,7 +258,7 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
                   type="button"
                   disabled={isUploadingAvatar}
                   onClick={() => fileInputRef.current?.click()}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-[12px] font-bold text-primary border border-outline/50 shadow-sm hover:bg-surface-soft transition-colors active:scale-[0.96] duration-150 ease-out"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-[12px] font-bold text-primary border border-outline/50 shadow-sm hover:bg-surface-soft transition-colors active:scale-[0.96] duration-150 ease-out cursor-pointer"
                 >
                   {isUploadingAvatar ? (
                     <>
@@ -340,57 +323,12 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
                   required
                   value={profileForm.officialEmail}
                   onChange={(e) => setProfileForm({ ...profileForm, officialEmail: e.target.value })}
-                  placeholder="nuraini@smp.literasi.id"
+                  placeholder="guru@amos.com"
                   className="h-10 w-full rounded-lg bg-surface-soft border border-transparent pl-9 pr-3 text-[13px] text-body focus:bg-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
                 />
               </div>
               <p className="text-[11px] text-muted-foreground">
-                Digunakan untuk notifikasi verifikasi kuis dan laporan pengmas bulanan.
-              </p>
-            </div>
-
-            {/* Jabatan Fungsional */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-bold text-heading">Jabatan Fungsional</label>
-              <input
-                type="text"
-                value={profileForm.functionalPosition}
-                onChange={(e) => setProfileForm({ ...profileForm, functionalPosition: e.target.value })}
-                placeholder="Kepala Laboratorium Komputer & Pengajar Literasi Digital"
-                className="h-10 rounded-lg bg-surface-soft border border-transparent px-3 text-[13px] text-body focus:bg-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-              />
-            </div>
-
-            {/* Asal Institusi / Sekolah */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-bold text-heading">Asal Institusi / Sekolah Mitra</label>
-              <div className="relative">
-                <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="text"
-                  value={profileForm.institution}
-                  onChange={(e) => setProfileForm({ ...profileForm, institution: e.target.value })}
-                  placeholder="SMP Negeri 1 AI Ceria / Mitra Pengmas UNAIR"
-                  className="h-10 w-full rounded-lg bg-surface-soft border border-transparent pl-9 pr-3 text-[13px] text-body focus:bg-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                />
-              </div>
-            </div>
-
-            {/* Kontak WhatsApp */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-bold text-heading">Kontak WhatsApp Konsultasi Siswa</label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="text"
-                  value={profileForm.whatsappContact}
-                  onChange={(e) => setProfileForm({ ...profileForm, whatsappContact: e.target.value })}
-                  placeholder="+62 812-3456-7890"
-                  className="h-10 w-full rounded-lg bg-surface-soft border border-transparent pl-9 pr-3 text-[13px] font-mono text-body focus:bg-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                />
-              </div>
-              <p className="text-[11px] text-muted-foreground">
-                Kontak ini akan tampil di menu &apos;Pusat Bantuan Siswa&apos; saat jam praktikum aktif.
+                Digunakan untuk autentikasi login dan notifikasi sistem resmi.
               </p>
             </div>
 
@@ -405,7 +343,7 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
                     Tampilkan nama di blok tanda tangan sertifikat resmi kelulusan siswa
                   </span>
                   <span className="text-[11px] text-muted-foreground">
-                    Sertifikat digital akan menyematkan NIP dan barcode digital validator Anda.
+                    Sertifikat digital akan menyematkan NIP dan tanda tangan digital Anda.
                   </span>
                 </div>
               </div>
@@ -426,14 +364,14 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
               <button
                 type="button"
                 onClick={handleResetProfile}
-                className="rounded-lg px-4 py-2.5 text-[13px] font-bold text-muted-foreground hover:bg-surface-soft hover:text-heading transition-colors"
+                className="rounded-lg px-4 py-2.5 text-[13px] font-bold text-muted-foreground hover:bg-surface-soft hover:text-heading transition-colors cursor-pointer"
               >
                 Batal
               </button>
               <button
                 type="submit"
                 disabled={profileLoading}
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-[13px] font-bold text-white shadow-sm hover:bg-primary-strong transition-colors active:scale-[0.96] duration-150 ease-out disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-[13px] font-bold text-white shadow-sm hover:bg-primary-strong transition-colors active:scale-[0.96] duration-150 ease-out disabled:opacity-50 cursor-pointer"
               >
                 {profileLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                 <span>Simpan Perubahan Profil</span>
@@ -458,7 +396,7 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
               <h2 className="text-[17px] font-bold">Keamanan Kata Sandi</h2>
             </div>
             <p className="text-[12px] text-muted-foreground mt-1">
-              Ganti kata sandi secara berkala untuk menjaga integritas data siswa dan bank soal.
+              Ganti kata sandi secara berkala untuk menjaga integritas akun Anda.
             </p>
           </div>
 
@@ -492,7 +430,7 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
                 <button
                   type="button"
                   onClick={() => setShowCurrentPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-heading"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-heading cursor-pointer"
                 >
                   {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -514,17 +452,15 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
                 <button
                   type="button"
                   onClick={() => setShowNewPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-heading"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-heading cursor-pointer"
                 >
                   {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
               <p className="text-[11px] text-muted-foreground">
-                Kombinasi minimal 8 karakter, huruf kapital, angka, dan simbol.
+                Kombinasi minimal 8 karakter.
               </p>
             </div>
-
-
 
             {/* Konfirmasi Password Baru */}
             <div className="flex flex-col gap-1.5">
@@ -541,7 +477,7 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-heading"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-heading cursor-pointer"
                 >
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -552,7 +488,7 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
             <button
               type="submit"
               disabled={passwordLoading}
-              className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 text-[13px] font-bold text-white shadow-sm hover:bg-primary-strong transition-colors active:scale-[0.96] duration-150 ease-out disabled:opacity-50"
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 text-[13px] font-bold text-white shadow-sm hover:bg-primary-strong transition-colors active:scale-[0.96] duration-150 ease-out disabled:opacity-50 cursor-pointer"
             >
               {passwordLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -574,7 +510,7 @@ export function TeacherSettingsClient({ initialData }: { initialData: TeacherDat
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: '/login' })}
-            className="inline-flex items-center gap-2 rounded-lg border border-danger/40 bg-danger-soft px-3.5 py-2 text-[12px] font-bold text-danger hover:bg-danger hover:text-white transition-colors active:scale-[0.96] duration-150 ease-out"
+            className="inline-flex items-center gap-2 rounded-lg border border-danger/40 bg-danger-soft px-3.5 py-2 text-[12px] font-bold text-danger hover:bg-danger hover:text-white transition-colors active:scale-[0.96] duration-150 ease-out cursor-pointer"
           >
             <LogOut className="h-4 w-4" />
             <span>Keluar Akun</span>

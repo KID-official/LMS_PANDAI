@@ -12,9 +12,7 @@ import {
   Edit2,
   Trash2,
   RotateCw,
-  Phone,
   Mail,
-  Building,
   X,
   Loader2,
 } from 'lucide-react';
@@ -77,14 +75,11 @@ export function TeacherManagementClient({
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<TeacherRow | null>(null);
 
-  // Form states
+  // Form states (hanya NIP, nama, email, password, status)
   const [formData, setFormData] = useState({
     nipNidn: '',
     fullNameWithTitle: '',
     officialEmail: '',
-    functionalPosition: '',
-    institution: '',
-    whatsappContact: '',
     password: '',
     isActive: true,
   });
@@ -107,9 +102,6 @@ export function TeacherManagementClient({
       nipNidn: '',
       fullNameWithTitle: '',
       officialEmail: '',
-      functionalPosition: '',
-      institution: '',
-      whatsappContact: '',
       password: '',
       isActive: true,
     });
@@ -124,9 +116,6 @@ export function TeacherManagementClient({
       nipNidn: teacher.nipNidn,
       fullNameWithTitle: teacher.fullNameWithTitle,
       officialEmail: teacher.officialEmail,
-      functionalPosition: teacher.functionalPosition || '',
-      institution: teacher.institution || '',
-      whatsappContact: teacher.whatsappContact || '',
       password: '',
       isActive: teacher.isActive,
     });
@@ -151,9 +140,6 @@ export function TeacherManagementClient({
         nipNidn: formData.nipNidn,
         fullNameWithTitle: formData.fullNameWithTitle,
         officialEmail: formData.officialEmail,
-        functionalPosition: formData.functionalPosition,
-        institution: formData.institution,
-        whatsappContact: formData.whatsappContact,
         password: formData.password || 'guru123',
       });
       setIsAddOpen(false);
@@ -177,9 +163,7 @@ export function TeacherManagementClient({
         nipNidn: formData.nipNidn,
         fullNameWithTitle: formData.fullNameWithTitle,
         officialEmail: formData.officialEmail,
-        functionalPosition: formData.functionalPosition,
-        institution: formData.institution,
-        whatsappContact: formData.whatsappContact,
+        password: formData.password,
         isActive: formData.isActive,
       });
       setIsEditOpen(false);
@@ -215,9 +199,6 @@ export function TeacherManagementClient({
         nipNidn: teacher.nipNidn,
         fullNameWithTitle: teacher.fullNameWithTitle,
         officialEmail: teacher.officialEmail,
-        functionalPosition: teacher.functionalPosition || '',
-        institution: teacher.institution || '',
-        whatsappContact: teacher.whatsappContact || '',
         isActive: !teacher.isActive,
       });
       router.refresh();
@@ -301,7 +282,7 @@ export function TeacherManagementClient({
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" />
           <input
             type="text"
-            placeholder="Cari berdasarkan nama, NIP/NIDN, email, atau institusi..."
+            placeholder="Cari berdasarkan nama, NIP/NIDN, atau email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleFilterApply(search, status)}
@@ -346,7 +327,7 @@ export function TeacherManagementClient({
         </button>
       </div>
 
-      {/* ── TEACHER DATA TABLE ── */}
+      {/* ── TEACHER DATA TABLE (5 Columns) ── */}
       <div className="rounded-2xl border border-[#E2E8F0] bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -355,8 +336,6 @@ export function TeacherManagementClient({
                 <th className="py-4 pl-6 pr-4">GURU & PENGAJAR</th>
                 <th className="py-4 px-4">NIP / NIDN</th>
                 <th className="py-4 px-4">EMAIL RESMI</th>
-                <th className="py-4 px-4">JABATAN & INSTITUSI</th>
-                <th className="py-4 px-4">WHATSAPP</th>
                 <th className="py-4 px-4 text-center">STATUS</th>
                 <th className="py-4 pl-4 pr-6 text-center">AKSI</th>
               </tr>
@@ -370,15 +349,13 @@ export function TeacherManagementClient({
                     </td>
                     <td className="py-4 px-4"><div className="h-4 w-28 bg-slate-100 rounded" /></td>
                     <td className="py-4 px-4"><div className="h-4 w-32 bg-slate-100 rounded" /></td>
-                    <td className="py-4 px-4"><div className="h-4 w-36 bg-slate-100 rounded" /></td>
-                    <td className="py-4 px-4"><div className="h-4 w-24 bg-slate-100 rounded" /></td>
                     <td className="py-4 px-4 text-center"><div className="h-6 w-16 mx-auto bg-slate-100 rounded-full" /></td>
                     <td className="py-4 pl-4 pr-6 text-center"><div className="h-8 w-20 mx-auto bg-slate-100 rounded" /></td>
                   </tr>
                 ))
               ) : initialTeachers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-[#94A3B8]">
+                  <td colSpan={5} className="py-12 text-center text-[#94A3B8]">
                     Tidak ada data guru yang ditemukan.
                   </td>
                 </tr>
@@ -421,32 +398,7 @@ export function TeacherManagementClient({
                         </div>
                       </td>
 
-                      {/* 4. Jabatan & Institusi */}
-                      <td className="py-4 px-4">
-                        <div>
-                          <div className="font-semibold text-[#0F172A]">
-                            {t.functionalPosition || 'Tenaga Pendidik'}
-                          </div>
-                          <div className="text-[11px] text-[#64748B] flex items-center gap-1 mt-0.5">
-                            <Building className="h-3 w-3 text-[#94A3B8]" />
-                            <span>{t.institution || 'Mitra UNAIR x AMOS'}</span>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* 5. WhatsApp */}
-                      <td className="py-4 px-4 text-[#475569]">
-                        {t.whatsappContact ? (
-                          <div className="flex items-center gap-1.5 text-xs text-[#059669]">
-                            <Phone className="h-3.5 w-3.5" />
-                            <span>{t.whatsappContact}</span>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-[#94A3B8]">-</span>
-                        )}
-                      </td>
-
-                      {/* 6. Status */}
+                      {/* 4. Status */}
                       <td className="py-4 px-4 text-center">
                         <button
                           onClick={() => handleToggleStatus(t)}
@@ -471,7 +423,7 @@ export function TeacherManagementClient({
                         </button>
                       </td>
 
-                      {/* 7. Aksi */}
+                      {/* 5. Aksi */}
                       <td className="py-4 pl-4 pr-6 text-center">
                         <div className="flex items-center justify-center gap-2">
                           <button
@@ -563,50 +515,15 @@ export function TeacherManagementClient({
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-bold text-[#0F172A]">Jabatan Fungsional</label>
-                  <input
-                    type="text"
-                    placeholder="Guru Mata Pelajaran / Instruktur"
-                    value={formData.functionalPosition}
-                    onChange={(e) => setFormData({ ...formData, functionalPosition: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#CBD5E1] p-2.5 text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#7C3AED]"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-[#0F172A]">Institusi / Sekolah</label>
-                  <input
-                    type="text"
-                    placeholder="SMP Negeri 1 / UNAIR"
-                    value={formData.institution}
-                    onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#CBD5E1] p-2.5 text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#7C3AED]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-bold text-[#0F172A]">No. WhatsApp</label>
-                  <input
-                    type="text"
-                    placeholder="08123456789"
-                    value={formData.whatsappContact}
-                    onChange={(e) => setFormData({ ...formData, whatsappContact: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#CBD5E1] p-2.5 text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#7C3AED]"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-[#0F172A]">Kata Sandi Awal</label>
-                  <input
-                    type="password"
-                    placeholder="Default: guru123"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#CBD5E1] p-2.5 text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#7C3AED]"
-                  />
-                </div>
+              <div>
+                <label className="text-xs font-bold text-[#0F172A]">Kata Sandi Awal</label>
+                <input
+                  type="password"
+                  placeholder="Default: guru123"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="mt-1 w-full rounded-xl border border-[#CBD5E1] p-2.5 text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#7C3AED]"
+                />
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-[#E2E8F0]">
@@ -686,33 +603,13 @@ export function TeacherManagementClient({
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-bold text-[#0F172A]">Jabatan Fungsional</label>
-                  <input
-                    type="text"
-                    value={formData.functionalPosition}
-                    onChange={(e) => setFormData({ ...formData, functionalPosition: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#CBD5E1] p-2.5 text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#7C3AED]"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-[#0F172A]">Institusi / Sekolah</label>
-                  <input
-                    type="text"
-                    value={formData.institution}
-                    onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#CBD5E1] p-2.5 text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#7C3AED]"
-                  />
-                </div>
-              </div>
-
               <div>
-                <label className="text-xs font-bold text-[#0F172A]">No. WhatsApp</label>
+                <label className="text-xs font-bold text-[#0F172A]">Kata Sandi Baru (Opsional)</label>
                 <input
-                  type="text"
-                  value={formData.whatsappContact}
-                  onChange={(e) => setFormData({ ...formData, whatsappContact: e.target.value })}
+                  type="password"
+                  placeholder="Kosongkan jika tidak ingin mengubah password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="mt-1 w-full rounded-xl border border-[#CBD5E1] p-2.5 text-xs text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#7C3AED]"
                 />
               </div>

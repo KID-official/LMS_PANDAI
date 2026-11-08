@@ -78,7 +78,7 @@ export default function TeacherSupervisorWidget({
                       {t.name}
                     </p>
                     <p className="text-[11px] text-[#64748B] truncate">
-                      NIP: {t.nip} • {t.institution}
+                      NIP: {t.nip}
                     </p>
                   </div>
                 </div>

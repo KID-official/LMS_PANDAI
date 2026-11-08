@@ -141,7 +141,7 @@ export default function SidebarGuru({
               collapsed && 'opacity-0 pointer-events-none'
             )}
             tabIndex={collapsed ? -1 : 0}
-            aria-label="SFA Learn — Portal LMS"
+            aria-label="PANDAI LEARNING (panduan digital & literasi AI siswa)"
           >
             <span
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
@@ -155,10 +155,10 @@ export default function SidebarGuru({
                 className="block text-[15px] font-bold leading-tight"
                 style={{ color: '#061B38', letterSpacing: '-0.2px' }}
               >
-                SFA Learn
+                PANDAI LEARNING
               </span>
               <span className="block text-[11px] font-semibold" style={{ color: '#7F54F8' }}>
-                {isSuperAdmin ? 'Super Admin Portal' : 'AI Literacy LMS'}
+                {isSuperAdmin ? 'Super Admin Portal' : 'panduan digital & literasi AI siswa'}
               </span>
             </span>
           </Link>
@@ -169,7 +169,7 @@ export default function SidebarGuru({
               href={homeRoute}
               className="mx-auto flex h-9 w-9 items-center justify-center rounded-xl"
               style={{ background: '#7F54F8' }}
-              aria-label="SFA Learn — Portal LMS"
+              aria-label="PANDAI LEARNING (panduan digital & literasi AI siswa)"
             >
               <Sparkles className="h-4.5 w-4.5 text-white" />
             </Link>

@@ -22,11 +22,11 @@ export function FooterLanding() {
           <div className="lg:col-span-2 flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-[15px] font-bold text-white shadow-sm">
-                SF
+                PL
               </div>
               <div className="flex flex-col">
                 <span className="text-[15px] font-bold leading-tight text-heading">
-                  SFA Learn
+                  PANDAI LEARNING
                 </span>
                 <span className="text-[11px] font-medium text-muted-foreground">
                   Inisiatif Pengmas Universitas Airlangga
@@ -70,7 +70,7 @@ export function FooterLanding() {
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t border-outline/30 pt-8 text-[12px] text-muted-foreground">
-          <p>© {new Date().getFullYear()} SFA Learn. Pengabdian Kepada Masyarakat (Pengmas) Universitas Airlangga. Hak cipta dilindungi.</p>
+          <p>© {new Date().getFullYear()} PANDAI LEARNING. Pengabdian Kepada Masyarakat (Pengmas) Universitas Airlangga. Hak cipta dilindungi.</p>
           <p className="font-semibold text-heading">Surabaya, Jawa Timur, Indonesia</p>
         </div>
       </div>

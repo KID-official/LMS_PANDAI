@@ -209,7 +209,7 @@ export async function getGuruDashboardDataAction(): Promise<GuruDashboardData> {
 
   for (const user of allActiveStudentUsers) {
     const student = user.student;
-    const className = student?.class_name?.trim() || 'Kelas Umum';
+    const className = 'Siswa Terdaftar';
 
     // Initialize class map entry if missing
     if (!classMap.has(className)) {
@@ -426,7 +426,7 @@ export async function getGuruDashboardDataAction(): Promise<GuruDashboardData> {
       studentId: q.user.student.id,
       studentName: q.user.student.full_name,
       nis: q.user.student.nis,
-      className: q.user.student.class_name,
+      className: 'Siswa Terdaftar',
       imageUrl: q.user.student.image_url,
       activityType: 'QUIZ_SUBMISSION',
       title: 'Evaluasi Pemahaman AI',
@@ -446,7 +446,7 @@ export async function getGuruDashboardDataAction(): Promise<GuruDashboardData> {
       studentId: p.user.student.id,
       studentName: p.user.student.full_name,
       nis: p.user.student.nis,
-      className: p.user.student.class_name,
+      className: 'Siswa Terdaftar',
       imageUrl: p.user.student.image_url,
       activityType: 'CHAPTER_COMPLETION',
       title: resolveChapterTitle(p.chapter_key),

@@ -134,7 +134,7 @@ export const StudentCertificatesClient: React.FC<StudentCertificatesClientProps>
           <div className="flex flex-col min-w-0">
             <span className="text-xs font-semibold text-[#7A7486]">Otentikasi Nasional</span>
             <span className="text-sm font-extrabold text-[#061B38]">
-              UNAIR x SFA Learn
+              UNAIR x PANDAI LEARNING
             </span>
             <span className="text-[11px] text-[#3A4BD4] font-semibold mt-0.5">
               QR Code Terdaftar Publik

@@ -40,7 +40,7 @@ export const ArticleBreadcrumbs: React.FC<ArticleBreadcrumbsProps> = ({ article 
         <div className="flex items-center gap-2 text-xs text-[#494455]">
           <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#89F5E7]/40 text-[#00201D] font-bold text-[11px]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#00685F] animate-pulse" />
-            Tinjauan Sejawat SFA 2026
+            Tinjauan Sejawat PANDAI 2026
           </span>
           <span className="hidden sm:inline text-[#CAC3D8]">•</span>
           <span className="hidden sm:inline text-[#494455] font-mono text-[11px]">

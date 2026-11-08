@@ -190,26 +190,16 @@ export async function getStudentProgressReport(
   await requireGuruOrAdmin();
 
   const search = params.search?.trim() || '';
-  const className = params.className?.trim() || '';
   const certificateStatus = params.certificateStatus || 'ALL';
   const courseKey = params.courseKey || DEFAULT_COURSE_KEY;
   const page = Math.max(1, params.page || 1);
   const limit = Math.max(1, params.limit || 10);
 
-  // Ambil daftar kelas unik yang tersedia untuk filter dropdown
-  const distinctClasses = await prisma.student.findMany({
-    select: { class_name: true },
-    distinct: ['class_name'],
-    orderBy: { class_name: 'asc' },
-  });
-  const availableClasses = distinctClasses.map((c) => c.class_name).filter(Boolean);
+  // Daftar kelas unik tidak lagi digunakan karena kolom class_name telah dihapus
+  const availableClasses: string[] = [];
 
   // Susun filter query
   const studentWhere: Record<string, unknown> = {};
-
-  if (className && className !== 'ALL' && className !== 'Semua Kelas') {
-    studentWhere.class_name = className;
-  }
 
   if (search) {
     studentWhere.OR = [
@@ -338,7 +328,7 @@ export async function getStudentProgressReport(
       studentId: student.id,
       nis: student.nis,
       fullName: student.full_name,
-      className: student.class_name,
+      className: '-',
       imageUrl: student.image_url,
       courseKey,
       courseName: targetCourseName,
@@ -551,7 +541,7 @@ export async function getQuizAuditDetail(userId: string, quizKey: string): Promi
       userId,
       fullName: student.full_name,
       nis: student.nis,
-      className: student.class_name,
+      className: '-',
     },
     quizMetadata: {
       quizKey: latestQuizScore.quiz_key,

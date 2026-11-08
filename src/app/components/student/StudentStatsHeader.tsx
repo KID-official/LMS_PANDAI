@@ -30,10 +30,10 @@ export const StudentStatsHeader: React.FC<StudentStatsHeaderProps> = ({
   studentProfile,
   stats,
 }) => {
-  const displayName = studentProfile?.fullName || 'Siswa SFA Learn';
+  const displayName = studentProfile?.fullName || 'Siswa PANDAI LEARNING';
   const nis = studentProfile?.nis || '20260101';
-  const className = studentProfile?.className || '8A';
-  const semester = studentProfile?.semester || 'Ganjil 2026/2027';
+
+
 
   return (
     <div className="flex flex-col gap-6">
@@ -67,7 +67,7 @@ export const StudentStatsHeader: React.FC<StudentStatsHeaderProps> = ({
             </div>
             <div className="flex flex-col text-xs text-white/90 gap-0.5">
               <span>NIS: <strong className="text-white font-mono">{nis}</strong></span>
-              <span>Kelas: <strong className="text-white">{className}</strong> ({semester})</span>
+              <span>Status: <strong className="text-emerald-300">Akun Siswa Aktif</strong></span>
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@ export const StudentStatsHeader: React.FC<StudentStatsHeaderProps> = ({
             <span className="text-2xl sm:text-3xl font-extrabold text-[#061B38]">
               {stats.certificatesEarnedCount} <span className="text-xs font-semibold text-[#7A7486]">Sertifikat</span>
             </span>
-            <span className="text-[11px] text-[#5010C8] font-semibold mt-0.5">Terverifikasi SFA</span>
+            <span className="text-[11px] text-[#5010C8] font-semibold mt-0.5">Terverifikasi PANDAI</span>
           </div>
         </div>
       </div>

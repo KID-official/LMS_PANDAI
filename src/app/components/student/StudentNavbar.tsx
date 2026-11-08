@@ -46,7 +46,7 @@ export const StudentNavbar: React.FC = () => {
             </div>
             <div className="flex flex-col">
               <span className="text-base font-extrabold tracking-tight text-[#172554]">
-                SFA <span className="text-[#7950F2]">Learn</span>
+                PANDAI <span className="text-[#7950F2]">LEARNING</span>
               </span>
               <span className="text-[10px] font-bold text-[#7B8198] uppercase tracking-wider">
                 Portal Siswa
