@@ -34,28 +34,33 @@ export const StudentAchievementWidget: React.FC<StudentAchievementWidgetProps> =
       : claimedCertificates.length;
 
   return (
-    <div className="h-full rounded-3xl bg-gradient-to-br from-[#061B38] via-[#0D2447] to-[#160E36] text-white p-5 flex flex-col justify-between relative overflow-hidden shadow-lg border border-[#7F54F8]/30">
-      {/* Top Header Section */}
-      <div className="flex items-center justify-between border-b border-white/10 pb-3 shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-[#7F54F8] to-[#9E7AFF] text-white shadow-sm">
-            <Award className="w-4 h-4" />
+    <div className="rounded-3xl bg-white border border-[#EAE8F2] p-5 sm:p-6 shadow-xs flex flex-col justify-between gap-4 h-full">
+      {/* Header Section */}
+      <div className="flex items-center justify-between pb-3 border-b border-[#EAE8F2]">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#F1EDFF] text-[#7950F2]">
+            <Award className="w-4 h-4 text-[#7950F2]" />
           </div>
-          <h3 className="text-sm font-extrabold tracking-tight text-white">
-            E-Sertifikat Siswa
-          </h3>
+          <div>
+            <h3 className="text-sm font-extrabold text-[#172554]">
+              E-Sertifikat Siswa
+            </h3>
+            <span className="text-[11px] text-[#7B8198] font-medium">
+              Bukti kompetensi digital
+            </span>
+          </div>
         </div>
 
-        <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#89F5E7]/20 text-[#89F5E7] text-[10px] font-bold">
-          <CheckCircle2 className="w-3 h-3" />
+        <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#F1EDFF] text-[#7950F2] text-[11px] font-bold">
+          <CheckCircle2 className="w-3.5 h-3.5" />
           <span>{ownedCount} Dimiliki</span>
         </span>
       </div>
 
-      {/* Certificate Titles List (Scrollable Content Area) */}
-      <div className="flex-1 overflow-y-auto my-3 pr-1 flex flex-col gap-2.5 min-h-[140px]">
+      {/* Certificate Items List */}
+      <div className="flex-1 flex flex-col gap-2.5 my-1 min-h-[120px]">
         {displayCertificates.length > 0 ? (
-          displayCertificates.map((cert) => {
+          displayCertificates.slice(0, 3).map((cert) => {
             const isClaimed = cert.status === 'CLAIMED' && cert.certificate;
             const certUrl = `/student/courses/${cert.courseKey}/certificate`;
 
@@ -63,30 +68,30 @@ export const StudentAchievementWidget: React.FC<StudentAchievementWidgetProps> =
               <Link
                 key={cert.courseKey}
                 href={certUrl}
-                className="p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-between gap-3 group hover:border-[#7F54F8]/60 hover:bg-white/10 transition-all"
+                className="p-3 rounded-2xl bg-[#FAFAFF] hover:bg-[#F1EDFF] border border-[#EAE8F2] flex items-center justify-between gap-3 group transition-colors"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-xl bg-[#7F54F8]/25 border border-[#7F54F8]/40 flex items-center justify-center text-[#89F5E7] shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-white border border-[#EAE8F2] flex items-center justify-center text-[#7950F2] shrink-0 group-hover:border-[#7950F2]/40 transition-colors">
                     <Award className="w-4 h-4" />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-bold text-white/95 leading-tight truncate group-hover:text-[#89F5E7] transition-colors">
+                    <span className="text-xs font-bold text-[#172554] leading-tight truncate group-hover:text-[#7950F2] transition-colors">
                       {cert.courseTitle}
                     </span>
                     <div className="flex items-center gap-1.5 mt-0.5 text-[10px]">
                       {isClaimed ? (
                         <>
-                          <span className="font-mono font-bold text-[#89F5E7]">
+                          <span className="font-mono font-bold text-[#7950F2]">
                             {cert.certificate?.serialNumber}
                           </span>
-                          <span className="text-white/40">•</span>
-                          <span className="text-white/70">
+                          <span className="text-[#7B8198]">•</span>
+                          <span className="text-[#7B8198]">
                             Nilai: {cert.certificate?.finalScore}/100
                           </span>
                         </>
                       ) : (
-                        <span className="text-[#89F5E7] font-semibold flex items-center gap-1">
-                          <Sparkles className="w-2.5 h-2.5 text-[#FFD700]" />
+                        <span className="text-[#7950F2] font-semibold flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-[#EAB308]" />
                           Siap Diklaim
                         </span>
                       )}
@@ -96,35 +101,35 @@ export const StudentAchievementWidget: React.FC<StudentAchievementWidgetProps> =
 
                 <div className="shrink-0 flex items-center">
                   {isClaimed ? (
-                    <CheckCircle2 className="w-4 h-4 text-[#89F5E7]" />
+                    <CheckCircle2 className="w-4 h-4 text-[#059669]" />
                   ) : (
-                    <Sparkles className="w-4 h-4 text-[#FFD700] animate-pulse" />
+                    <Sparkles className="w-4 h-4 text-[#EAB308]" />
                   )}
                 </div>
               </Link>
             );
           })
         ) : (
-          <div className="h-full flex flex-col items-center justify-center text-center p-3 my-auto">
-            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/50 mb-2">
-              <Award className="w-5 h-5 text-white/50" />
-            </div>
-            <p className="text-xs font-bold text-white/90">Belum Ada E-Sertifikat</p>
-            <p className="text-[11px] text-white/60 mt-1 max-w-[200px] leading-relaxed">
-              Selesaikan materi modul dan lulus kuis untuk memperoleh sertifikat resmi UNAIR.
+          <div className="h-full flex flex-col items-center justify-center text-center p-4 my-auto rounded-2xl bg-[#FAFAFF] border border-dashed border-[#EAE8F2]">
+            <Award className="w-7 h-7 text-[#A78BFA] mb-1.5" />
+            <p className="text-xs font-bold text-[#172554]">
+              Belum Ada Sertifikat
+            </p>
+            <p className="text-[11px] text-[#7B8198] mt-0.5 max-w-[200px]">
+              Selesaikan modul belajar untuk menerbitkan e-sertifikat resmi.
             </p>
           </div>
         )}
       </div>
 
-      {/* Sticky Bottom Action CTA Button */}
-      <div className="sticky bottom-0 pt-2 bg-gradient-to-t from-[#160E36] via-[#160E36]/90 to-transparent shrink-0">
+      {/* Footer Link */}
+      <div className="pt-2 border-t border-[#EAE8F2]">
         <Link
           href="/student/certificates"
-          className="w-full py-2.5 px-4 rounded-xl bg-[#7F54F8] hover:bg-[#6636DE] text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors shadow-md border border-white/10 group active:scale-95"
+          className="w-full py-2 px-3 rounded-xl bg-[#FAFAFF] hover:bg-[#F1EDFF] text-[#7950F2] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors border border-[#EAE8F2]"
         >
-          <span>Buka Sertifikat Utama</span>
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          <span>Buka Direktori Sertifikat</span>
+          <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
     </div>

@@ -21,8 +21,10 @@ interface CourseHeroBannerProps {
 }
 
 export function getCourseModuleCode(courseKey: string): string {
-  if (courseKey === 'course-beginner') return 'AI-LIT-2026-B';
-  if (courseKey === 'course-intermediate') return 'AI-FOR-2026-M';
+  if (courseKey === 'ai-robotika' || courseKey === 'course-level-1' || courseKey === 'course-beginner') return 'AI-ROB-2026';
+  if (courseKey === 'dekomposisi-pola' || courseKey === 'course-level-2' || courseKey === 'course-intermediate') return 'KOM-POL-2026';
+  if (courseKey === 'abstraksi-algoritma' || courseKey === 'course-level-3') return 'KOM-ALG-2026';
+  if (courseKey === 'etika-digital' || courseKey === 'course-level-4') return 'ETIK-DIG-2026';
   return courseKey.toUpperCase().replace(/^COURSE-/, 'MOD-');
 }
 

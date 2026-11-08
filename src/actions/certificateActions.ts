@@ -108,14 +108,12 @@ export async function getStudentCertificateAction(
       },
     });
 
-    // Cek fallback jika tersimpan dengan alias lama (misal: 'literasi-ai-dasar')
-    if (!certificate && course.key === 'course-beginner') {
-      certificate = await prisma.certificate.findUnique({
+    // Cek fallback jika tersimpan dengan alias lama (misal: 'literasi-ai-dasar', 'course-level-1')
+    if (!certificate && (course.key === 'ai-robotika' || course.key === 'course-level-1' || course.key === 'course-beginner')) {
+      certificate = await prisma.certificate.findFirst({
         where: {
-          user_id_course_key: {
-            user_id: userId,
-            course_key: 'literasi-ai-dasar',
-          },
+          user_id: userId,
+          course_key: { in: ['ai-robotika', 'course-level-1', 'course-beginner', 'literasi-ai-dasar'] },
         },
       });
     }
@@ -377,11 +375,26 @@ export async function getStudentCertificatesListAction(): Promise<StudentCertifi
 
     const items: CertificateListItem[] = allCourses.map((course) => {
       // Find matching certificate if already issued
-      const cert = user.certificates.find(
-        (c) =>
-          c.course_key === course.key ||
-          (course.key === 'course-beginner' && c.course_key === 'literasi-ai-dasar')
-      );
+      const cert = user.certificates.find((c) => {
+        if (c.course_key === course.key) return true;
+        if (
+          (course.key === 'ai-robotika' || course.key === 'course-level-1' || course.key === 'course-beginner') &&
+          ['ai-robotika', 'course-level-1', 'course-beginner', 'literasi-ai-dasar'].includes(c.course_key)
+        ) return true;
+        if (
+          (course.key === 'dekomposisi-pola' || course.key === 'course-level-2' || course.key === 'course-intermediate') &&
+          ['dekomposisi-pola', 'course-level-2', 'course-intermediate'].includes(c.course_key)
+        ) return true;
+        if (
+          (course.key === 'abstraksi-algoritma' || course.key === 'course-level-3') &&
+          ['abstraksi-algoritma', 'course-level-3'].includes(c.course_key)
+        ) return true;
+        if (
+          (course.key === 'etika-digital' || course.key === 'course-level-4') &&
+          ['etika-digital', 'course-level-4', 'etika-keamanan-ai'].includes(c.course_key)
+        ) return true;
+        return false;
+      });
 
       // Count completed chapters
       let completedCount = 0;

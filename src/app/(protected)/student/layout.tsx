@@ -25,7 +25,7 @@ export default async function StudentLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F9F9FF]">
+    <div className="flex min-h-screen flex-col bg-[#FAFAFF]">
       <StudentNavbar />
       <main className="flex-1 w-full">
         {children}

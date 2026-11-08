@@ -89,9 +89,11 @@ export function ReportFilterBar({
                 onChange={(e) => onCourseChange(e.target.value)}
                 className="cursor-pointer bg-transparent font-bold text-[#7C3AED] focus:outline-none"
               >
-                <option value="ALL">Semua Kursus (7 Bab)</option>
-                <option value="course-beginner">Etika & Keamanan AI Siswa (4 Bab)</option>
-                <option value="course-intermediate">Forensik Visual & Deteksi Deepfake (3 Bab)</option>
+                <option value="ALL">Semua Modul (4 Modul / 12 Bab)</option>
+                <option value="ai-robotika">Dasar AI & Robotika Cerdas (3 Bab)</option>
+                <option value="dekomposisi-pola">Dekomposisi & Pengenalan Pola (3 Bab)</option>
+                <option value="abstraksi-algoritma">Abstraksi & Desain Algoritma (3 Bab)</option>
+                <option value="etika-digital">Etika AI & Kedaulatan Digital (3 Bab)</option>
               </select>
             </div>
           </div>
