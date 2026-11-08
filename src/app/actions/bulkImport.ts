@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { UserRole } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
 import { CURRICULUM } from '@/constants/curriculum';
 
