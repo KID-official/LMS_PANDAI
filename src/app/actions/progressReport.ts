@@ -112,10 +112,14 @@ export async function getStudentAnalyticsKPIs(courseKey: string = DEFAULT_COURSE
   // c. Total row di tabel certificates
   const certWhere: Record<string, unknown> = {};
   if (courseKey && courseKey !== 'ALL') {
-    if (courseKey === 'course-beginner' || courseKey === 'literasi-ai-dasar') {
-      certWhere.course_key = { in: ['course-beginner', 'literasi-ai-dasar'] };
-    } else if (courseKey === 'course-intermediate' || courseKey === 'forensik-deepfake') {
-      certWhere.course_key = { in: ['course-intermediate', 'forensik-deepfake'] };
+    if (courseKey === 'ai-robotika' || courseKey === 'course-level-1' || courseKey === 'course-beginner' || courseKey === 'literasi-ai-dasar') {
+      certWhere.course_key = { in: ['ai-robotika', 'course-level-1', 'course-beginner', 'literasi-ai-dasar'] };
+    } else if (courseKey === 'dekomposisi-pola' || courseKey === 'course-level-2' || courseKey === 'course-intermediate' || courseKey === 'forensik-deepfake') {
+      certWhere.course_key = { in: ['dekomposisi-pola', 'course-level-2', 'course-intermediate', 'forensik-deepfake'] };
+    } else if (courseKey === 'abstraksi-algoritma' || courseKey === 'course-level-3') {
+      certWhere.course_key = { in: ['abstraksi-algoritma', 'course-level-3'] };
+    } else if (courseKey === 'etika-digital' || courseKey === 'course-level-4' || courseKey === 'etika-keamanan-ai') {
+      certWhere.course_key = { in: ['etika-digital', 'course-level-4', 'etika-keamanan-ai'] };
     } else {
       certWhere.course_key = courseKey;
     }
@@ -251,18 +255,30 @@ export async function getStudentProgressReport(
     let validChapters: string[] = ALL_CHAPTERS;
     let certKeys: string[] = ['course-beginner', 'course-intermediate', 'literasi-ai-dasar', 'forensik-deepfake'];
 
-    if (courseKey === 'course-beginner' || courseKey === 'literasi-ai-dasar') {
-      targetTotalChapters = 4;
-      targetCourseName = 'Etika & Keamanan AI Siswa';
-      targetCourseLevel = 'Pemula (4 Bab)';
-      validChapters = BEGINNER_CHAPTERS;
-      certKeys = ['course-beginner', 'literasi-ai-dasar'];
-    } else if (courseKey === 'course-intermediate' || courseKey === 'forensik-deepfake') {
+    if (courseKey === 'ai-robotika' || courseKey === 'course-level-1' || courseKey === 'course-beginner' || courseKey === 'literasi-ai-dasar') {
       targetTotalChapters = 3;
-      targetCourseName = 'Forensik Visual & Deteksi Deepfake';
-      targetCourseLevel = 'Menengah (3 Bab)';
-      validChapters = INTERMEDIATE_CHAPTERS;
-      certKeys = ['course-intermediate', 'forensik-deepfake'];
+      targetCourseName = 'Dasar AI & Robotika Cerdas';
+      targetCourseLevel = 'Tingkat: Pengenalan (3 Bab)';
+      validChapters = ['air-ch-1', 'air-ch-2', 'air-ch-3', 'level1-ch-1', 'level1-ch-2', 'level1-ch-3'];
+      certKeys = ['ai-robotika', 'course-level-1', 'course-beginner', 'literasi-ai-dasar'];
+    } else if (courseKey === 'dekomposisi-pola' || courseKey === 'course-level-2' || courseKey === 'course-intermediate' || courseKey === 'forensik-deepfake') {
+      targetTotalChapters = 3;
+      targetCourseName = 'Dekomposisi & Pengenalan Pola';
+      targetCourseLevel = 'Tingkat: Analisis Logika (3 Bab)';
+      validChapters = ['dek-ch-1', 'dek-ch-2', 'dek-ch-3', 'level2-ch-1', 'level2-ch-2', 'level2-ch-3'];
+      certKeys = ['dekomposisi-pola', 'course-level-2', 'course-intermediate', 'forensik-deepfake'];
+    } else if (courseKey === 'abstraksi-algoritma' || courseKey === 'course-level-3') {
+      targetTotalChapters = 3;
+      targetCourseName = 'Abstraksi & Desain Algoritma';
+      targetCourseLevel = 'Tingkat: Algoritma Praktis (3 Bab)';
+      validChapters = ['alg-ch-1', 'alg-ch-2', 'alg-ch-3', 'level3-ch-1', 'level3-ch-2', 'level3-ch-3'];
+      certKeys = ['abstraksi-algoritma', 'course-level-3'];
+    } else if (courseKey === 'etika-digital' || courseKey === 'course-level-4' || courseKey === 'etika-keamanan-ai') {
+      targetTotalChapters = 3;
+      targetCourseName = 'Etika AI & Kedaulatan Digital';
+      targetCourseLevel = 'Tingkat: Literasi Digital (3 Bab)';
+      validChapters = ['etika-ch-1', 'etika-ch-2', 'etika-ch-3', 'level4-ch-1', 'level4-ch-2', 'level4-ch-3'];
+      certKeys = ['etika-digital', 'course-level-4', 'etika-keamanan-ai'];
     }
 
     const completedChapters = user?.progress?.filter(
@@ -275,10 +291,14 @@ export async function getStudentProgressReport(
 
     // Kuis terbaru (sesuai filter kursus jika ada)
     let userQuizzes = user?.quiz_scores || [];
-    if (courseKey === 'course-beginner' || courseKey === 'literasi-ai-dasar') {
-      userQuizzes = userQuizzes.filter((q) => q.quiz_key.includes('beginner') || q.quiz_key.includes('literasi'));
-    } else if (courseKey === 'course-intermediate' || courseKey === 'forensik-deepfake') {
-      userQuizzes = userQuizzes.filter((q) => q.quiz_key.includes('intermediate') || q.quiz_key.includes('deepfake'));
+    if (courseKey === 'ai-robotika' || courseKey === 'course-level-1' || courseKey === 'course-beginner' || courseKey === 'literasi-ai-dasar') {
+      userQuizzes = userQuizzes.filter((q) => q.quiz_key.includes('air-') || q.quiz_key.includes('level1') || q.quiz_key.includes('beginner') || q.quiz_key.includes('literasi'));
+    } else if (courseKey === 'dekomposisi-pola' || courseKey === 'course-level-2' || courseKey === 'course-intermediate' || courseKey === 'forensik-deepfake') {
+      userQuizzes = userQuizzes.filter((q) => q.quiz_key.includes('dek-') || q.quiz_key.includes('level2') || q.quiz_key.includes('intermediate') || q.quiz_key.includes('deepfake'));
+    } else if (courseKey === 'abstraksi-algoritma' || courseKey === 'course-level-3') {
+      userQuizzes = userQuizzes.filter((q) => q.quiz_key.includes('alg-') || q.quiz_key.includes('level3'));
+    } else if (courseKey === 'etika-digital' || courseKey === 'course-level-4' || courseKey === 'etika-keamanan-ai') {
+      userQuizzes = userQuizzes.filter((q) => q.quiz_key.includes('etika-') || q.quiz_key.includes('level4'));
     }
     const latestQuiz = userQuizzes[0] || user?.quiz_scores?.[0];
     const hasQuiz = !!latestQuiz;

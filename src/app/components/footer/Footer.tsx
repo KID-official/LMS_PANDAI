@@ -18,15 +18,11 @@ export default function Footer() {
 
   return (
     <footer
-      className="w-full border-t"
-      style={{
-        background: '#FFFFFF',
-        borderColor: '#CAC3D8',
-      }}
+      className="w-full border-t border-[#EAE8F2] bg-white"
       role="contentinfo"
     >
       <div
-        className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-6 py-5
+        className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-6 py-6
                     md:flex-row md:justify-between md:gap-0"
       >
         {/* ── LEFT : Logo + tagline ── */}
@@ -36,27 +32,25 @@ export default function Footer() {
           aria-label="SFA Learn – halaman utama"
         >
           <span
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-            style={{ background: '#7F54F8' }}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#7950F2]"
             aria-hidden
           >
             <span className="text-[13px] font-bold text-white">S</span>
           </span>
 
-          <span className="text-[13px] font-bold" style={{ color: '#061B38' }}>
+          <span className="text-[13px] font-bold text-[#172554]">
             SFA Learn
           </span>
 
           <span
-            className="hidden text-[13px] font-normal before:mx-2 before:content-['•'] sm:inline"
-            style={{ color: '#7A7486' }}
+            className="hidden text-[13px] font-normal before:mx-2 before:content-['•'] sm:inline text-[#7B8198]"
           >
             Sekolah Masa Depan
           </span>
         </Link>
 
         {/* ── CENTER : Copyright ── */}
-        <p className="text-center text-[12px]" style={{ color: '#7A7486' }}>
+        <p className="text-center text-[12px] text-[#7B8198]">
           &copy; {currentYear} SFA Learn Student Portal. Hak Cipta Dilindungi.
         </p>
 
@@ -66,8 +60,7 @@ export default function Footer() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-[13px] font-medium transition-colors hover:text-[#7F54F8]"
-              style={{ color: '#494455' }}
+              className="text-[13px] font-medium text-[#7B8198] transition-colors hover:text-[#7950F2]"
             >
               {link.label}
             </Link>

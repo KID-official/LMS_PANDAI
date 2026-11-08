@@ -34,11 +34,11 @@ export interface StaticQuiz {
  * Bank soal kuis statis kurikulum multi-level (4 Levels) AI & Computational Thinking.
  */
 export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
-  "quiz-level1-ch-1": {
-    quizKey: "quiz-level1-ch-1",
+  "quiz-air-ch-1": {
+    quizKey: "quiz-air-ch-1",
     title: "Evaluasi Bab 1: Hakikat Kecerdasan Buatan",
-    courseKey: "course-level-1",
-    moduleBadge: "Level 1 - Bab 1",
+    courseKey: "ai-robotika",
+    moduleBadge: "Fondasi AI - Bab 1",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -94,11 +94,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level1-ch-2": {
-    quizKey: "quiz-level1-ch-2",
+  "quiz-air-ch-2": {
+    quizKey: "quiz-air-ch-2",
     title: "Evaluasi Bab 2: Pemanfaatan AI Lintas Sektor",
-    courseKey: "course-level-1",
-    moduleBadge: "Level 1 - Bab 2",
+    courseKey: "ai-robotika",
+    moduleBadge: "Fondasi AI - Bab 2",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -154,11 +154,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level1-ch-3": {
-    quizKey: "quiz-level1-ch-3",
+  "quiz-air-ch-3": {
+    quizKey: "quiz-air-ch-3",
     title: "Evaluasi Bab 3: Sejarah & Detektif AI",
-    courseKey: "course-level-1",
-    moduleBadge: "Level 1 - Bab 3",
+    courseKey: "ai-robotika",
+    moduleBadge: "Fondasi AI - Bab 3",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -214,11 +214,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level2-ch-1": {
-    quizKey: "quiz-level2-ch-1",
+  "quiz-dek-ch-1": {
+    quizKey: "quiz-dek-ch-1",
     title: "Evaluasi Bab 1: Konsep Dasar Dekomposisi",
-    courseKey: "course-level-2",
-    moduleBadge: "Level 2 - Bab 1",
+    courseKey: "dekomposisi-pola",
+    moduleBadge: "Pemecahan Masalah - Bab 1",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -274,11 +274,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level2-ch-2": {
-    quizKey: "quiz-level2-ch-2",
+  "quiz-dek-ch-2": {
+    quizKey: "quiz-dek-ch-2",
     title: "Evaluasi Bab 2: Visualisasi Masalah & Mind Mapping",
-    courseKey: "course-level-2",
-    moduleBadge: "Level 2 - Bab 2",
+    courseKey: "dekomposisi-pola",
+    moduleBadge: "Pemecahan Masalah - Bab 2",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -334,11 +334,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level2-ch-3": {
-    quizKey: "quiz-level2-ch-3",
+  "quiz-dek-ch-3": {
+    quizKey: "quiz-dek-ch-3",
     title: "Evaluasi Bab 3: Pengenalan Pola & AI",
-    courseKey: "course-level-2",
-    moduleBadge: "Level 2 - Bab 3",
+    courseKey: "dekomposisi-pola",
+    moduleBadge: "Pemecahan Masalah - Bab 3",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -394,11 +394,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level3-ch-1": {
-    quizKey: "quiz-level3-ch-1",
+  "quiz-alg-ch-1": {
+    quizKey: "quiz-alg-ch-1",
     title: "Evaluasi Bab 1: Konsep Abstraksi Komputasional",
-    courseKey: "course-level-3",
-    moduleBadge: "Level 3 - Bab 1",
+    courseKey: "abstraksi-algoritma",
+    moduleBadge: "Desain Solusi - Bab 1",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -454,11 +454,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level3-ch-2": {
-    quizKey: "quiz-level3-ch-2",
+  "quiz-alg-ch-2": {
+    quizKey: "quiz-alg-ch-2",
     title: "Evaluasi Bab 2: Ciri & Karakteristik Algoritma",
-    courseKey: "course-level-3",
-    moduleBadge: "Level 3 - Bab 2",
+    courseKey: "abstraksi-algoritma",
+    moduleBadge: "Desain Solusi - Bab 2",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -514,11 +514,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level3-ch-3": {
-    quizKey: "quiz-level3-ch-3",
+  "quiz-alg-ch-3": {
+    quizKey: "quiz-alg-ch-3",
     title: "Evaluasi Bab 3: Flowchart & Pseudocode",
-    courseKey: "course-level-3",
-    moduleBadge: "Level 3 - Bab 3",
+    courseKey: "abstraksi-algoritma",
+    moduleBadge: "Desain Solusi - Bab 3",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -574,11 +574,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level4-ch-1": {
-    quizKey: "quiz-level4-ch-1",
+  "quiz-etika-ch-1": {
+    quizKey: "quiz-etika-ch-1",
     title: "Evaluasi Bab 1: Lima Pilar Etika AI",
-    courseKey: "course-level-4",
-    moduleBadge: "Level 4 - Bab 1",
+    courseKey: "etika-digital",
+    moduleBadge: "Etika & Tata Kelola - Bab 1",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -634,11 +634,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level4-ch-2": {
-    quizKey: "quiz-level4-ch-2",
+  "quiz-etika-ch-2": {
+    quizKey: "quiz-etika-ch-2",
     title: "Evaluasi Bab 2: Integritas Digital & Mitigasi Risiko AI",
-    courseKey: "course-level-4",
-    moduleBadge: "Level 4 - Bab 2",
+    courseKey: "etika-digital",
+    moduleBadge: "Etika & Tata Kelola - Bab 2",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -694,11 +694,11 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
       },
     ],
   },
-  "quiz-level4-ch-3": {
-    quizKey: "quiz-level4-ch-3",
+  "quiz-etika-ch-3": {
+    quizKey: "quiz-etika-ch-3",
     title: "Evaluasi Bab 3: Tata Kelola Domain .id",
-    courseKey: "course-level-4",
-    moduleBadge: "Level 4 - Bab 3",
+    courseKey: "etika-digital",
+    moduleBadge: "Etika & Tata Kelola - Bab 3",
     passingScore: 75,
     durationMinutes: 15,
     questions: [
@@ -756,9 +756,34 @@ export const STATIC_QUIZZES: Record<string, StaticQuiz> = {
   },
 };
 
+export const QUIZ_KEY_ALIASES: Record<string, string> = {
+  "quiz-level1-ch-1": "quiz-air-ch-1",
+  "quiz-level1-ch-2": "quiz-air-ch-2",
+  "quiz-level1-ch-3": "quiz-air-ch-3",
+  "quiz-level2-ch-1": "quiz-dek-ch-1",
+  "quiz-level2-ch-2": "quiz-dek-ch-2",
+  "quiz-level2-ch-3": "quiz-dek-ch-3",
+  "quiz-level3-ch-1": "quiz-alg-ch-1",
+  "quiz-level3-ch-2": "quiz-alg-ch-2",
+  "quiz-level3-ch-3": "quiz-alg-ch-3",
+  "quiz-level4-ch-1": "quiz-etika-ch-1",
+  "quiz-level4-ch-2": "quiz-etika-ch-2",
+  "quiz-level4-ch-3": "quiz-etika-ch-3",
+  "quiz-beginner-ch-1": "quiz-air-ch-1",
+  "quiz-beginner-ch-2": "quiz-air-ch-2",
+  "quiz-beginner-ch-3": "quiz-air-ch-3",
+  "quiz-beginner-ch-4": "quiz-dek-ch-1",
+  "quiz-intermediate-ch-1": "quiz-dek-ch-2",
+  "quiz-intermediate-ch-2": "quiz-dek-ch-3",
+  "quiz-intermediate-ch-3": "quiz-alg-ch-1",
+};
+
 export function getStaticQuiz(quizKey?: string): StaticQuiz {
-  if (quizKey && STATIC_QUIZZES[quizKey]) {
-    return STATIC_QUIZZES[quizKey];
+  if (quizKey) {
+    const resolvedKey = QUIZ_KEY_ALIASES[quizKey] || quizKey;
+    if (STATIC_QUIZZES[resolvedKey]) {
+      return STATIC_QUIZZES[resolvedKey];
+    }
   }
   if (quizKey) {
     const matched = Object.values(STATIC_QUIZZES).find(

@@ -14,7 +14,7 @@ import {
   EmptyCourseState,
 } from '@/app/components/student';
 import { PUBLIC_ROUTES } from '@/app/components/navigation/routes';
-import { BookOpen, Sparkles } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 
 export default async function StudentDashboardPage() {
   const session = await getServerSession(authOptions);
@@ -29,10 +29,10 @@ export default async function StudentDashboardPage() {
   ]);
   const { studentProfile, activeCourses } = dashboardData;
 
-  // Determine last accessed course (or null if no active course)
+  // Determine primary active / last accessed course
   const lastAccessedCourse = activeCourses.length > 0 ? activeCourses[0] : null;
 
-  // Count fully completed courses for achievement stats
+  // Count fully completed courses
   const completedCoursesCount = activeCourses.filter((c) => c.isFullyCompleted).length;
 
   // Real certificate items and count
@@ -42,61 +42,63 @@ export default async function StudentDashboardPage() {
     certificateItems.filter((c) => c.status === 'CLAIMED').length;
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col gap-6">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
       
-      {/* Top Row: Div 1 (Welcome Banner Header) & Div 2 (Live Date Widget) */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
-        {/* Div 1: Welcome Greeting Banner Header */}
-        <div className="lg:col-span-4">
-          <StudentBannerHeader studentProfile={studentProfile} />
-        </div>
+      {/* Section B: Welcome Hero Banner (Full Width) */}
+      <section aria-label="Welcome Hero">
+        <StudentBannerHeader studentProfile={studentProfile} />
+      </section>
 
-        {/* Div 2: Live Date & Schedule Info Widget */}
-        <div className="lg:col-span-1">
-          <StudentDateWidget />
-        </div>
-      </div>
-
-      {/* Middle Row Section: Combined 1 Row Div Wrapper for Div 3, 4, 5 (Full Container Height & Scrollable Content) */}
-      <div className="w-full grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch lg:h-[460px]">
+      {/* Sections C, D, F: Main Learning Section */}
+      <section aria-label="Main Learning Dashboard" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* Div 3: List Course yang Pernah / Sedang Diambil (2 Cols) */}
-        <div className="lg:col-span-2 h-full min-h-0">
-          <div className="h-full rounded-3xl bg-white border border-[#CAC3D8]/40 shadow-subtle p-5 flex flex-col gap-4 overflow-hidden">
-            {/* Header Title */}
-            <div className="flex items-center justify-between flex-wrap gap-2 border-b border-[#CAC3D8]/30 pb-3 shrink-0">
-              <div className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-[#7F54F8]" />
-                <h3 className="text-base font-bold text-[#061B38]">
-                  Course yang Pernah &amp; Sedang Diambil
-                </h3>
+        {/* Left Column (8 cols on desktop): Course Saya (Large Horizontal Card) */}
+        <div className="lg:col-span-8 flex flex-col gap-4">
+          <div className="flex items-center justify-between pb-1">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#F1EDFF] text-[#7950F2]">
+                <BookOpen className="h-4.5 w-4.5 text-[#7950F2]" />
               </div>
-              <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E8DEFF] text-[#5010C8] text-[11px] font-bold">
-                <Sparkles className="w-3 h-3" />
-                <span>{activeCourses.length} Course</span>
+              <h2 className="text-xl font-extrabold text-[#172554]">
+                Course Saya
+              </h2>
+            </div>
+
+            {activeCourses.length > 0 && (
+              <span className="px-3 py-1 rounded-full bg-[#F1EDFF] text-[#7950F2] text-xs font-bold">
+                {activeCourses.length} Course Aktif
               </span>
-            </div>
-
-            {/* Course Cards List or Empty State (Scrollable when exceeding container height) */}
-            <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-4">
-              {activeCourses.length === 0 ? (
-                <EmptyCourseState />
-              ) : (
-                activeCourses.map((course) => (
-                  <CourseCard key={course.key} course={course} />
-                ))
-              )}
-            </div>
+            )}
           </div>
+
+          {/* Large Horizontal Ongoing-Course Card */}
+          {lastAccessedCourse ? (
+            <LastAccessedCourseWidget lastCourse={lastAccessedCourse} />
+          ) : (
+            <EmptyCourseState />
+          )}
+
+          {/* Additional Ongoing Courses if enrolled in more than one */}
+          {activeCourses.length > 1 && (
+            <div className="flex flex-col gap-3 pt-2">
+              <h3 className="text-xs font-bold text-[#7B8198] uppercase tracking-wider px-1">
+                Course Lainnya yang Sedang Diambil
+              </h3>
+              <div className="flex flex-col gap-3">
+                {activeCourses.slice(1).map((course) => (
+                  <CourseCard key={course.key} course={course} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Div 4: Course Terakhir yang Diakses / Dikerjakan (2 Cols) */}
-        <div className="lg:col-span-2 h-full min-h-0">
-          <LastAccessedCourseWidget lastCourse={lastAccessedCourse} />
-        </div>
+        {/* Right Sidebar (4 cols on desktop): Jadwal Belajar & E-Sertifikat */}
+        <div className="lg:col-span-4 flex flex-col gap-6">
+          {/* Section D: Jadwal Belajar */}
+          <StudentDateWidget />
 
-        {/* Div 5: Ringkasan Pencapaian & Status Sertifikat Siswa (1 Col) */}
-        <div className="lg:col-span-1 h-full min-h-0">
+          {/* Section F: Certificate (Lightweight, Non-Dominating) */}
           <StudentAchievementWidget
             completedCoursesCount={completedCoursesCount}
             totalCertificatesCount={claimedCertificatesCount}
@@ -104,12 +106,12 @@ export default async function StudentDashboardPage() {
           />
         </div>
 
-      </div>
+      </section>
 
-      {/* Bottom Section: Div 6 Rekomendasi Course (Full Width 5 Cols) */}
-      <div className="w-full">
+      {/* Section E: Rekomendasi Course Pilihan (Full Width Responsive Grid) */}
+      <section aria-label="Rekomendasi Course">
         <StudentRecommendedCoursesWidget />
-      </div>
+      </section>
 
     </div>
   );
